@@ -1,0 +1,6 @@
+<h2>New environment</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: environment_path(@conn, :create) %>
+
+<%= link "Back", to: environment_path(@conn, :index) %>

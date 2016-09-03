@@ -1,0 +1,6 @@
+<h2>Edit your profile</h2>
+
+<%= render "form.html", changeset: @changeset,
+                        action: profile_path(@conn, :update) %>
+
+<%= link "Back", to: profile_path(@conn, :show) %>

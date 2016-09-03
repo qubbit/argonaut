@@ -1,0 +1,23 @@
+<h2>Show environment</h2>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @environment.name %>
+  </li>
+
+  <li>
+    <strong>Description:</strong>
+    <%= @environment.description %>
+  </li>
+
+  <li>
+    <strong>Owning team:</strong>
+    <%= @environment.owning_team %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: environment_path(@conn, :edit, @environment) %>
+<%= link "Back", to: environment_path(@conn, :index) %>

@@ -1,0 +1,53 @@
+<style>
+  .container {
+    width: 100%;
+  }
+</style>
+<div class="info-section"></div>
+
+<nav class="navbar navbar-right">
+  Signed in as <%= Guardian.Plug.current_resource(@conn).username %>
+  <a class="btn btn-default" href="/profile"><i class="fa fa-user-circle-o"></i> Profile</a>
+  <a class="btn btn-default" href="/logout"><i class="fa fa-sign-out"></i> Log Out</a>
+  <a class="btn btn-default" href="http://git.innova-partners.com/gadhikari/argonaut">
+    <i class="fa fa-git"></i> Git Repo
+  </a>
+</nav>
+
+<div id="environments">
+  <table class="table table-bordered" id="reservations"></table>
+</div>
+
+
+<script id='cell-template' type='text/x-underscore-template'>
+  <div class='environment' data-environment-id='{{= e.id}}' data-application-id='{{= a.id}}'>
+    <div class='toolbar'>
+      <span class='tool-item'>
+        {{ if(reservation){ }}
+        <a href='#' data-action='release'>
+         <i class='fa fa-unlock fa-2x'> </i> <span class='action'>Release</span>
+        </a>
+        {{ } else { }}
+        <a href='#' data-action='reserve'>
+         <i class='fa fa-lock fa-2x'> </i> <span class='action'>Reserve</span>
+        </a>
+        {{ } }}
+      </span>
+      <span class='tool-item'>
+        <a href='https://{{= e.name}}-{{= a.name}}.testing.covermymeds.com/{{= a.ping}}'>
+          <i class='fa fa-info-circle fa-2x'> </i>
+        </a>
+      </span>
+    </div>
+    {{ if (reservation) { }}
+    <div class='reservation-username'>
+      <h4 class='text-center'>
+        <img onerror="this.style.display='none';" class="profile-picture" src="https://teamdirectory.covermymeds.com/user_thumbnails/{{= reservation.user.username}}.jpg" /> {{= reservation.user.username}} since {{= reservation.reserved_at}}
+      </h4>
+    </div>
+    {{ } }}
+  </div>
+</script>
+
+<!-- creative commons attribution -->
+<p class='text-center credits'>Logo Credit: Viking Ship by Andrejs Kirma from the Noun Project</p>

@@ -1,0 +1,43 @@
+<style>
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+</style>
+<h2>Profile</h2>
+
+<ul>
+
+  <li>
+    <strong>Username:</strong>
+    <%= @user.username %>
+  </li>
+
+  <li>
+    <strong>Avatar url:</strong>
+    <%= @user.avatar_url %>
+  </li>
+
+  <li>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+
+  <li>
+    <strong>First name:</strong>
+    <%= @user.first_name %>
+  </li>
+
+  <li>
+    <strong>Last name:</strong>
+    <%= @user.last_name %>
+  </li>
+
+  <li>
+    <strong>Time zone:</strong>
+    <%= @user.time_zone %>
+  </li>
+
+</ul>
+
+<%= link "Edit", to: profile_path(@conn, :edit) %>

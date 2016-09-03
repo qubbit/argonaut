@@ -1,0 +1,28 @@
+<h2>Listing applications</h2>
+
+<table class="table table-striped table-responsive">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Ping</th>
+      <th>Repo</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for application <- @applications do %>
+    <tr>
+      <td><%= application.name %></td>
+      <td><%= application.ping %></td>
+      <td><%= application.repo %></td>
+      <td class="toolbar text-right">
+        <%= link "Show", to: application_path(@conn, :show, application), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: application_path(@conn, :edit, application), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: application_path(@conn, :delete, application), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= link "New application", to: application_path(@conn, :new) %>
