@@ -66,6 +66,6 @@ exports.config = {
 
   npm: {
     enabled: true,
-    globals: {_: 'underscore'}
+    globals: {_: 'underscore', moment: 'moment-timezone'}
   }
 };

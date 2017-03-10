@@ -3,6 +3,7 @@ import "phoenix_html"
 
 const GITHUB_URL_BASE = 'http://git.innova-partners.com/';
 const token = $("meta[name='guardian_token']").prop('content');
+window.timeZone = $("meta[name='time_zone']").prop('content');
 const cellTemplate = $("#cell-template").html();
 
 class ArgonautDatabase {

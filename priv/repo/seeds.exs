@@ -56,7 +56,7 @@ request_updater = Repo.insert!(%Application{name: "request-updater",
                                             ping: "_ping"})
 
 # users
-gopal = Repo.insert!(User.registration_changeset(%User{}, %{username: "gadhikari", password: "abcd1234", is_admin: true, time_zone: "America/New York"}))
+gopal = Repo.insert!(User.registration_changeset(%User{}, %{username: "gadhikari", password: "abcd1234", is_admin: true, time_zone: "America/New_York"}))
 wade = Repo.insert!(User.registration_changeset(%User{}, %{username: "wjohnson", password: "changeme", time_zone: "American/Chicago"}))
 chris = Repo.insert!(User.registration_changeset(%User{}, %{username: "cdoggett", password: "changeme", time_zone: "America/Chicago"}))
 
