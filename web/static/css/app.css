@@ -17,6 +17,10 @@ label {
   margin-bottom: 20px;
 }
 
+.logo-container a {
+  text-decoration: none;
+}
+
 .logo-image {
   width: 48px;
 }
@@ -34,14 +38,11 @@ label {
 .alert:empty { display: none; }
 
 .info-section {
-  position: absolute;
-  top: 0;
-  left: 0;
   display: none;
-  margin: 25px;
   padding: 10px;
   color: white;
   border-left: 6px solid #444;
+  font-size: 1.5em;
 }
 
 .connection-success {

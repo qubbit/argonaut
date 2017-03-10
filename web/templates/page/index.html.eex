@@ -3,7 +3,6 @@
     width: 100%;
   }
 </style>
-<div class="info-section"></div>
 
 <nav class="navbar navbar-right">
   Signed in as <%= Guardian.Plug.current_resource(@conn).username %>
@@ -17,7 +16,6 @@
 <div id="environments">
   <table class="table table-bordered" id="reservations"></table>
 </div>
-
 
 <script id='cell-template' type='text/x-underscore-template'>
   <div class='environment' data-environment-id='{{= e.id}}' data-application-id='{{= a.id}}'>

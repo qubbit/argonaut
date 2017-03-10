@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
   <body>
+    <div class="info-section"></div>
     <div class="container main-container">
       <div class="logo-container text-center">
         <a href="<%= index_path(@conn, :index) %>">

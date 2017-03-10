@@ -116,7 +116,7 @@ function connectionSuccess() {
     .css('display', 'block')
     .removeClass('connection-error')
     .addClass('connection-success')
-    .html('Connected :)')
+    .html('Connected 😌')
     .delay(5000)
     .fadeOut('slow');
 }
@@ -126,7 +126,7 @@ function connectionError() {
     .css('display', 'block')
     .removeClass('connection-success')
     .addClass('connection-error')
-    .html('Connection lost... :(');
+    .html('Connection lost 😔');
 }
 
 function connect(database) {
