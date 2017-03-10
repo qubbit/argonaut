@@ -1,36 +1,16 @@
-import {Socket} from "phoenix"
-import "phoenix_html"
+import {Socket} from "phoenix";
+import "phoenix_html";
+import {ArgonautDatabase} from "./argonaut_database";
 
 const GITHUB_URL_BASE = 'http://git.innova-partners.com/';
 const token = $("meta[name='guardian_token']").prop('content');
 window.timeZone = $("meta[name='time_zone']").prop('content');
 const cellTemplate = $("#cell-template").html();
 
-class ArgonautDatabase {
-  constructor() {
-    this.reservations = [];
-    this.applications = [];
-    this.environments = [];
-  }
-
-  getReservation(appId, envId) {
-    return this.reservations.find(r => r.application.id == appId && r.environment.id == envId);
-  }
-
-  setReservation(reservation) {
-    this.reservations.push(reservation);
-  }
-
-  deleteReservation(appId, envId) {
-    const reservation = this.reservations.find(r => r.application.id == appId && r.environment.id == envId);
-    if(reservation) {
-      const index = this.reservations.indexOf(reservation);
-      if(index > -1) this.reservations.splice(index, 1);
-    }
-  }
-}
-
 const database = new ArgonautDatabase();
+
+var positiveFaces = ['😀', '☺️', '🙂', '😇', '😊', '😛'];
+var negativeFaces = ['😥', '😢', '😕', '😒', '☹️', '😞', '😦', '😓', '😫', '🤕', '💩', '😰'];
 
 var getData = function(url, callback){
   return $.ajax({
@@ -69,7 +49,7 @@ function render(database){
   var $tableHeader = $('<thead><tr><th>Applications</th></tr></thead>');
 
   environments.forEach(function(env){
-    $(`<th>${env.name}</th>`).appendTo($tableHeader.find('tr'));
+    $('<th>', {text: env.name}).appendTo($tableHeader.find('tr'));
   });
 
   $table.append($tableHeader);
@@ -91,14 +71,6 @@ function render(database){
 
     environments.forEach(function(env){
       var reservation = database.getReservation(a.id, env.id);
-      var lockIconClass = 'fa-unlock';
-      var action = 'Reserve';
-
-      if (reservation) {
-        lockIconClass = 'fa-lock';
-        action = 'Release';
-      }
-
       let tpl = _.template(cellTemplate);
       var cellHtml = tpl({reservation: reservation, e: env, a: a});
       markup += `<td id='${env.name}-${a.name}'>${cellHtml}</td>`;
@@ -116,7 +88,7 @@ function connectionSuccess() {
     .css('display', 'block')
     .removeClass('connection-error')
     .addClass('connection-success')
-    .html('Connected 😌')
+    .html('Connected ' + _.sample(positiveFaces))
     .delay(5000)
     .fadeOut('slow');
 }
@@ -126,7 +98,7 @@ function connectionError() {
     .css('display', 'block')
     .removeClass('connection-success')
     .addClass('connection-error')
-    .html('Connection lost 😔');
+    .html('Connection lost ' + _.sample(negativeFaces));
 }
 
 function connect(database) {
