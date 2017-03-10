@@ -3,9 +3,9 @@ defmodule Argonaut.Repo.Migrations.CreateReservation do
 
   def change do
     create table(:reservations) do
-      add :user_id, references(:users)
-      add :environment_id, references(:environments)
-      add :application_id, references(:applications)
+      add :user_id, references(:users, on_delete: :delete_all)
+      add :environment_id, references(:environments, on_delete: :delete_all)
+      add :application_id, references(:applications, on_delete: :delete_all)
       add :reserved_at, :utc_datetime, default: "now()"
 
       timestamps()

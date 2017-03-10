@@ -4,7 +4,7 @@ import {ArgonautDatabase} from "./argonaut_database";
 
 const GITHUB_URL_BASE = 'http://git.innova-partners.com/';
 const token = $("meta[name='guardian_token']").prop('content');
-window.timeZone = $("meta[name='time_zone']").prop('content');
+window.timeZone = $("meta[name='time_zone']").prop('content') || "America/New_York";
 const cellTemplate = $("#cell-template").html();
 
 const database = new ArgonautDatabase();
@@ -111,7 +111,7 @@ function connect(database) {
 
   // Now that you are connected, you can join channels with a topic:
   let channel = socket.channel("reservations:lobby", {})
-  $("table").on("click", "td a", function(e){
+  $("table").on("click", "td a[data-action]", function(e){
     var $target = $(this);
     var cellData = $target.parents('.environment').data();
 

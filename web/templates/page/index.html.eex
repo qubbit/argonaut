@@ -7,9 +7,9 @@
 <nav class="navbar navbar-right">
   Signed in as <%= Guardian.Plug.current_resource(@conn).username %>
   <a class="btn btn-default" href="/profile"><i class="fa fa-user-circle-o"></i> Profile</a>
-  <a class="btn btn-default" href="/logout"><i class="fa fa-sign-out"></i> Log Out</a>
-  <a class="btn btn-default" href="http://git.innova-partners.com/gadhikari/argonaut">
-    <i class="fa fa-git"></i> Git Repo
+  <a class="btn btn-default" href="/logout"><i class="fa fa-sign-out"></i> Log out</a>
+  <a class="btn btn-default" href="https://github.com/qubbit/argonaut">
+    <i class="fa fa-github"></i> GitHub Repo
   </a>
 </nav>
 

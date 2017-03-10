@@ -18,28 +18,33 @@ defmodule Argonaut.User do
     timestamps()
   end
 
-  @required_fields ~w(username password)
-  @optional_fields ~w(first_name last_name is_admin avatar_url email time_zone)
+  @required_fields ~w(username password)a
+  @optional_fields ~w(first_name last_name is_admin avatar_url email time_zone)a
 
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
     |> common_changeset
   end
 
-  @required_profile_fields ~w(username)
-
   def profile_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, @required_profile_fields, @optional_fields ++ ["password"])
+    |> cast(params, @required_fields ++ @optional_fields)
+    |> validate_required([:username])
     |> common_changeset
     |> generate_encrypted_password
   end
 
   def common_changeset(struct) do
     struct
+    |> validate_format(:username, ~r{^\w+$})
     |> validate_format(:email, ~r/@/)
+    |> validate_length(:username, min: 1)
+    |> validate_length(:username, max: 127)
     |> validate_length(:password, min: 5)
+    |> validate_length(:password, max: 127)
+    |> validate_format(:avatar_url, ~r{^(https?|ftp)://[^\s/$.?#].[^\s]*$})
     |> validate_confirmation(:password, message: "Password does not match")
     |> unique_constraint(:username, message: "Username already taken")
     |> unique_constraint(:email, message: "Email already taken")
@@ -47,7 +52,8 @@ defmodule Argonaut.User do
 
   def registration_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, @required_fields ++  @optional_fields)
+    |> validate_required(@required_fields)
     |> generate_encrypted_password
     |> changeset
   end

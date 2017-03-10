@@ -10,7 +10,7 @@ defmodule Argonaut.Repo.Migrations.CreateUser do
       add :avatar_url, :string
       add :email, :string, unique: true
       add :is_admin, :boolean, default: false
-      add :time_zone, :string
+      add :time_zone, :string, default: "America/New_York"
       timestamps()
     end
 
