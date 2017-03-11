@@ -14,12 +14,13 @@ defmodule Argonaut.User do
     field :avatar_url, :string
     field :time_zone, :string
     field :is_admin, :boolean
+    field :background_url, :string
 
     timestamps()
   end
 
   @required_fields ~w(username password)a
-  @optional_fields ~w(first_name last_name is_admin avatar_url email time_zone)a
+  @optional_fields ~w(first_name last_name is_admin avatar_url email time_zone background_url)a
 
   def changeset(struct, params \\ %{}) do
     struct
@@ -32,6 +33,7 @@ defmodule Argonaut.User do
     struct
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required([:username])
+    |> validate_inclusion(:background_url, Argonaut.UserPreferences.background_image_urls)
     |> common_changeset
     |> generate_encrypted_password
   end

@@ -96,6 +96,10 @@ label {
   color: #ff8f1c;
 }
 
+#reservations {
+  background: #ffffff;
+}
+
 #reservations td:not(.application-name):hover{
   background: #f0fdff;
 }
@@ -158,4 +162,13 @@ label {
 
 .admin-page table tr:hover{
   background: #f0fdff;
+}
+
+/* main */
+main {
+  background: white;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px #8d8c8c;
+  margin-bottom: 40px;
 }

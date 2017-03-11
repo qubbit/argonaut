@@ -4,16 +4,20 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Reserve a testing environment">
+    <meta name="description" content="Reserve testing environment">
     <%= if Guardian.Plug.current_token(@conn) do %>
     <meta name='guardian_token' content="<%= Guardian.Plug.current_token(@conn) %>">
     <meta name='time_zone' content="<%= Argonaut.User.current_user(@conn).time_zone %>">
     <% end %>
-    <meta name="author" content="gopal adhikari">
+    <meta name="author" content="gopal adhikari and contributors">
     <title>🛳  Argonaut</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
+  <%= if Guardian.Plug.current_token(@conn) && Argonaut.User.current_user(@conn).background_url != "" do %>
+  <body style="background-image: url(<%= Argonaut.User.current_user(@conn).background_url %>)">
+  <% else %>
   <body>
+  <% end %>
     <div class="info-section"></div>
     <div class="container main-container">
       <div class="logo-container text-center">

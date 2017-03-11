@@ -88,7 +88,7 @@ function connectionSuccess() {
     .css('display', 'block')
     .removeClass('connection-error')
     .addClass('connection-success')
-    .html('Connected ' + _.sample(positiveFaces))
+    .html('Real-time connection established ' + _.sample(positiveFaces))
     .delay(5000)
     .fadeOut('slow');
 }
@@ -98,7 +98,7 @@ function connectionError() {
     .css('display', 'block')
     .removeClass('connection-success')
     .addClass('connection-error')
-    .html('Connection lost ' + _.sample(negativeFaces));
+    .html('Real-time connection lost ' + _.sample(negativeFaces));
 }
 
 function connect(database) {

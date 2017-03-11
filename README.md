@@ -70,6 +70,9 @@ No tests have been added yet.
 Credits
 -------
 Logo: Viking Ship by Andrejs Kirma from the Noun Project
+Images: Subtle Patterns
+
+Assets used with CC attribution
 
 ## Learn more
 
