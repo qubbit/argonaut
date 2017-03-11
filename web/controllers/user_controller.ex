@@ -33,13 +33,13 @@ defmodule Argonaut.UserController do
 
   def edit(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
-    changeset = User.changeset(user)
+    changeset = User.profile_changeset(user)
     render(conn, "edit.html", user: user, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Repo.get!(User, id)
-    changeset = User.changeset(user, user_params)
+    changeset = User.profile_changeset(user, user_params)
 
     case Repo.update(changeset) do
       {:ok, user} ->
@@ -54,8 +54,6 @@ defmodule Argonaut.UserController do
   def delete(conn, %{"id" => id}) do
     user = Repo.get!(User, id)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
     Repo.delete!(user)
 
     conn

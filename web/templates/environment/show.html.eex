@@ -19,5 +19,5 @@
 
 </ul>
 
-<%= link "Edit", to: environment_path(@conn, :edit, @environment) %>
-<%= link "Back", to: environment_path(@conn, :index) %>
+<%= link "Edit", to: environment_path(@conn, :edit, @environment), class: "admin-tool-button" %>
+<%= link "Back", to: environment_path(@conn, :index), class: "admin-tool-button" %>

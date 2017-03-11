@@ -24,5 +24,5 @@
 
 </ul>
 
-<%= link "Edit", to: user_path(@conn, :edit, @user) %>
-<%= link "Back", to: user_path(@conn, :index) %>
+<%= link "Edit", to: user_path(@conn, :edit, @user), class: "admin-tool-button" %>
+<%= link "Back", to: user_path(@conn, :index), class: "admin-tool-button"  %>

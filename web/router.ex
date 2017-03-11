@@ -52,9 +52,10 @@ defmodule Argonaut.Router do
   scope "/", Argonaut do
     pipe_through [:browser, :browser_auth, :admin]
 
-    resources "/users", UserController
-    resources "/applications", ApplicationController
-    resources "/environments", EnvironmentController
+    get "/admin", AdminController, :index, as: :index
+    resources "/admin/users", UserController
+    resources "/admin/applications", ApplicationController
+    resources "/admin/environments", EnvironmentController
   end
 
   scope "/api", Argonaut do

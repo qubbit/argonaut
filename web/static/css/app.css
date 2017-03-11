@@ -62,10 +62,6 @@ label {
 #environments {
 }
 
-table > tbody > tr > td {
-  padding: 0 !important;
-}
-
 .profile-picture {
   height: 64px;
   border-radius: 32px;
@@ -137,4 +133,28 @@ td:not(.application-name) .toolbar {
 
 .toolbar form {
   display: inline-block;
+}
+
+/* admin page styles */
+
+.admin-tool-button:not(:last-child) {
+  margin-right: 20px;
+}
+
+.admin-panel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-panel-option {
+}
+
+.admin-panel-option:not(:last-child) {
+  margin-right: 40px;
+}
+
+.admin-panel-option a {
+  text-decoration: none;
+  font-size: 2em;
 }

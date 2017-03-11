@@ -19,5 +19,5 @@
 
 </ul>
 
-<%= link "Edit", to: application_path(@conn, :edit, @application) %>
-<%= link "Back", to: application_path(@conn, :index) %>
+<%= link "Edit", to: application_path(@conn, :edit, @application), class: "admin-tool-button" %>
+<%= link "Back", to: application_path(@conn, :index), class: "admin-tool-button" %>
