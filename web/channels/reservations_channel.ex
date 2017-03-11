@@ -41,19 +41,17 @@ defmodule Argonaut.ReservationsChannel do
   end
 
   def release(reservation, user, _application_id, _environment_id) do
-    reservation = if has_reservation?(reservation, user) do
+    reservation = if can_release?(reservation, user) do
       Repo.delete!(reservation)
     end
     reservation
   end
 
   def handle_in("action:" <> action, payload, socket) do
-
     %{"application_id" => application_id, "environment_id" => environment_id} = payload
-
     user = current_user(socket)
-
     reservation = reservation_for_environment_app(application_id, environment_id)
+    status = "success"
 
     answer = case action do
       "reserve" ->
@@ -64,14 +62,12 @@ defmodule Argonaut.ReservationsChannel do
         nil
     end
 
-    #reservation = reservation
-    #              |> Repo.preload(:user)
-    #              |> Repo.preload(:application)
-    #              |> Repo.preload(:environment)
-    #reservation = reservation_for_environment_app(application_id, environment_id)
+    if answer == nil do
+      status = "failure"
+    end
 
     reservation_response = %ReservationResponse{
-                              status: "success",
+                              status: status,
                               reservation: answer
                             }
 
@@ -87,6 +83,10 @@ defmodule Argonaut.ReservationsChannel do
   def handle_in("shout", payload, socket) do
     broadcast socket, "shout", payload
     {:noreply, socket}
+  end
+
+  defp can_release?(reservation, user) do
+    user.is_admin or has_reservation?(reservation, user)
   end
 
   defp has_reservation?(reservation, user) do
