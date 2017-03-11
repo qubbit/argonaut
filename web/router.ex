@@ -63,5 +63,6 @@ defmodule Argonaut.Router do
     resources "/reservations", ReservationController, except: [:new, :edit]
     get "/applications", ApplicationController, :application_json
     get "/environments", EnvironmentController, :environment_json
+    get "/gravatar", GravatarController, :get_url
   end
 end

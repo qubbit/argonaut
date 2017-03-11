@@ -1,4 +1,7 @@
+<div class='admin-page'>
 <h2>Listing users</h2>
+
+<hr>
 
 <table class="table table-striped table-responsive">
   <thead>
@@ -26,4 +29,8 @@
   </tbody>
 </table>
 
+<hr>
+
 <%= link "New user", to: user_path(@conn, :new) %>
+
+</div>

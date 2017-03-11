@@ -24,15 +24,18 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :avatar_url, class: "control-label" %>
-    <%= text_input f, :avatar_url, class: "form-control" %>
-    <%= error_tag f, :avatar_url %>
-  </div>
-
-  <div class="form-group">
     <%= label f, :email, class: "control-label" %>
     <%= text_input f, :email, class: "form-control" %>
     <%= error_tag f, :email %>
+  </div>
+
+  <div class="form-group">
+    <%= label f, :avatar_url, class: "control-label" %>
+    <div class='input-group'>
+    <%= text_input f, :avatar_url, class: "form-control" %>
+    <span id='btn-gravatar' class='input-group-addon btn btn-primary'>Gravatar</span>
+    </div>
+    <%= error_tag f, :avatar_url %>
   </div>
 
   <div class="form-group">
@@ -57,3 +60,36 @@
     <%= submit "Submit", class: "btn btn-primary" %>
   </div>
 <% end %>
+
+
+<script>
+
+// Welp, I fucked up. I fucked up badly.
+// Should have started with a react project
+
+function xhr(options, successCallback){
+  var req = new XMLHttpRequest();
+  req.open(options.method, options.url);
+  req.setRequestHeader('Authorization', document.querySelector('meta[name="guardian_token"]').content);
+
+  req.onreadystatechange = function(){
+    if(req.readyState == 4 && req.status == 200){
+      successCallback(req.responseText);
+    }
+  }
+  req.send(options.data || null);
+}
+window.onload = function(){
+
+  var btnGravatar = document.querySelector('#btn-gravatar');
+  var emailField = document.querySelector('#user_email');
+
+  btnGravatar.addEventListener('click', function(e){
+    xhr({url: `/api/gravatar?email=${emailField.value}`, method: 'get'}, function(data){
+      document.querySelector('#user_avatar_url').value = data;
+    });
+    e.preventDefault();
+  });
+
+};
+</script>

@@ -1,4 +1,7 @@
+<div class='admin-page'>
 <h2>Listing applications</h2>
+
+<hr>
 
 <table class="table table-striped table-responsive">
   <thead>
@@ -25,4 +28,8 @@
   </tbody>
 </table>
 
+<hr>
+
 <%= link "New application", to: application_path(@conn, :new) %>
+
+</div>

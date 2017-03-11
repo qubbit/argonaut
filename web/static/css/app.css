@@ -64,9 +64,6 @@ label {
 
 .profile-picture {
   height: 64px;
-  border-radius: 32px;
-  border: 2px solid #fff;
-  box-shadow: 0 0 10px #919191;
   margin-right: 10px;
 }
 
@@ -99,12 +96,12 @@ label {
   color: #ff8f1c;
 }
 
-td:not(.application-name):hover{
+#reservations td:not(.application-name):hover{
   background: #f0fdff;
 }
 
 
-td:not(.application-name) .toolbar {
+#reservations td:not(.application-name) .toolbar {
   visibility: hidden;
   display: flex;
   flex-direction: row;
@@ -157,4 +154,8 @@ td:not(.application-name) .toolbar {
 .admin-panel-option a {
   text-decoration: none;
   font-size: 2em;
+}
+
+.admin-page table tr:hover{
+  background: #f0fdff;
 }
