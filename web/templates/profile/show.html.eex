@@ -2,9 +2,21 @@
 ul {
   list-style-type: none;
   padding: 0;
+  display: inline-block;
+  float: left;
+}
+
+ul li:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+img {
+  margin-left: 50px;
 }
 </style>
+
 <h2>Profile</h2>
+<hr>
 
 <ul>
 
@@ -40,4 +52,12 @@ ul {
 
 </ul>
 
-<%= link "Edit", to: profile_path(@conn, :edit) %>
+<img src="<%= @user.avatar_url %>">
+
+<div class='clearfix'></div>
+
+<hr>
+
+<div>
+  <%= link "Edit", to: profile_path(@conn, :edit) %>
+</div>
