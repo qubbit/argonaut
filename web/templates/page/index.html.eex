@@ -43,7 +43,7 @@
     {{ if (reservation) { }}
     <div class='reservation-username'>
       <h4 class='text-center'>
-        <img onerror="this.style.display='none';" class="profile-picture" src="{{= reservation.user.avatar_url}}" /> {{= reservation.user.username}} since {{= moment().tz(window.timeZone, reservation.reserved_at).format('MMMM D, h:mm a')}}
+        <img onerror="this.style.display='none';" class="profile-picture" src="{{= reservation.user.avatar_url}}" /> {{= reservation.user.username}} since {{= moment(reservation.reserved_at).tz(window.timeZone).format('MMMM D, h:mm a')}}
       </h4>
     </div>
     {{ } }}

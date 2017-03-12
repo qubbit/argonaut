@@ -10,3 +10,12 @@ defimpl Poison.Encoder, for: [Argonaut.Application, Argonaut.Environment, Argona
     Map.drop(map, [:password, :password_hash, :__meta__, :__struct__])
   end
 end
+
+
+defimpl Poison.Encoder, for: [Ecto.DateTime] do
+  # this is a hack, it will append Z to the timestamps
+  # to covert them to UTC time string
+  def encode(t, options) do
+    "\"" <> to_string(t) <> "Z\""
+  end
+end
