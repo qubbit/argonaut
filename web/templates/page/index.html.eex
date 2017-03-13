@@ -4,18 +4,6 @@
   }
 </style>
 
-<nav class="navbar navbar-right">
-<%= if @conn.assigns.current_user.avatar_url do %>
-  <img id="avatar-display" src="<%= Argonaut.User.current_user(@conn).avatar_url %>">
-<% end %>
-  Signed in as <%= Guardian.Plug.current_resource(@conn).username %>
-  <a class="btn btn-default" href="/profile"><i class="fa fa-user-circle-o"></i> Profile</a>
-  <%= if Guardian.Plug.current_resource(@conn).is_admin do %>
-  <a class="btn btn-default" href="/admin"><i class="fa fa-cubes"></i> Admin</a>
-  <% end %>
-  <a class="btn btn-default" href="/logout"><i class="fa fa-sign-out"></i> Log out</a>
-</nav>
-
 <div id="environments">
   <table class="table table-bordered" id="reservations"></table>
 </div>

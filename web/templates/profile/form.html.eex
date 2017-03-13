@@ -58,7 +58,7 @@
 
   <div class="form-group">
     <%= label f, :time_zone, class: "control-label" %>
-    <%= select f, :time_zone, Argonaut.TimeZone.zones, class: "form-control" %>
+    <%= select f, :time_zone, Argonaut.TimeZone.zones_dropdown, class: "form-control" %>
     <%= error_tag f, :time_zone %>
   </div>
 

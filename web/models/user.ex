@@ -34,6 +34,7 @@ defmodule Argonaut.User do
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required([:username])
     |> validate_inclusion(:background_url, Argonaut.UserPreferences.background_image_urls)
+    |> validate_inclusion(:time_zone, Argonaut.TimeZone.zones)
     |> common_changeset
     |> generate_encrypted_password
   end
@@ -56,6 +57,7 @@ defmodule Argonaut.User do
     struct
     |> cast(params, @required_fields ++  @optional_fields)
     |> validate_required(@required_fields)
+    |> put_change(:avatar_url, default_gravatar)
     |> generate_encrypted_password
     |> changeset
   end
@@ -86,6 +88,13 @@ defmodule Argonaut.User do
   end
 
   def logged_in?(conn), do: !!current_user(conn)
+
+
+  def default_gravatar do
+    s = to_string :random.uniform * 1000000000039
+    md5_hash = :crypto.hash(:md5, s) |> Base.encode16(case: :lower)
+    "https://www.gravatar.com/avatar/#{md5_hash}?d=identicon"
+  end
 
   defp generate_encrypted_password(current_changeset) do
     case current_changeset do
