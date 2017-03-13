@@ -16,7 +16,7 @@ defmodule Argonaut.TimeZone do
   end
 
   def zones_dropdown do
-    @supported_zones |> Enum.zip(zones) |> Enum.into(%{})
+    @supported_zones |> Enum.zip(zones()) |> Enum.into(%{})
   end
 
 end

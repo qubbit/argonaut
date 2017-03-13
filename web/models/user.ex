@@ -57,7 +57,7 @@ defmodule Argonaut.User do
     struct
     |> cast(params, @required_fields ++  @optional_fields)
     |> validate_required(@required_fields)
-    |> put_change(:avatar_url, default_gravatar)
+    |> put_change(:avatar_url, default_gravatar())
     |> generate_encrypted_password
     |> changeset
   end
@@ -91,7 +91,7 @@ defmodule Argonaut.User do
 
 
   def default_gravatar do
-    s = to_string :random.uniform * 1000000000039
+    s = to_string :rand.uniform * 1000000000039
     md5_hash = :crypto.hash(:md5, s) |> Base.encode16(case: :lower)
     "https://www.gravatar.com/avatar/#{md5_hash}?d=identicon"
   end

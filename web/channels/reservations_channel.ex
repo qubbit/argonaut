@@ -51,7 +51,6 @@ defmodule Argonaut.ReservationsChannel do
     %{"application_id" => application_id, "environment_id" => environment_id} = payload
     user = current_user(socket)
     reservation = reservation_for_environment_app(application_id, environment_id)
-    status = "success"
 
     answer = case action do
       "reserve" ->
@@ -62,8 +61,10 @@ defmodule Argonaut.ReservationsChannel do
         nil
     end
 
-    if answer == nil do
-      status = "failure"
+    status = if answer == nil do
+      "failure"
+    else
+      "success"
     end
 
     reservation_response = %ReservationResponse{
