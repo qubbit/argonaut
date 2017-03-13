@@ -33,7 +33,8 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-# Configure your database
+
+# database URL is overridden in production by the value of DATABASE_URL environment variable
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "argonaut",
