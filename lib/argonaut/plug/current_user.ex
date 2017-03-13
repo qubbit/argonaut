@@ -1,6 +1,7 @@
 defmodule Argonaut.Plug.CurrentUser do
   import Plug.Conn
 
+  alias Argonaut.Router.Helpers, as: Routes
   alias Argonaut.User
 
   def init(opts) do
@@ -19,5 +20,9 @@ defmodule Argonaut.Plug.CurrentUser do
   defp assign_current_user(conn, user = %User{}) do
     assign(conn, :current_user, user)
   end
+
+  defp assign_current_user(conn, _), do: redirect_to_sign_in(conn)
+
+  defp redirect_to_sign_in(conn), do: Argonaut.CookieToken.unauthenticated(conn, %{})
 
 end
