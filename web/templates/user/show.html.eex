@@ -1,6 +1,8 @@
 <h2>Show user</h2>
 
-<ul>
+<hr>
+
+<ul class='model-details'>
 
   <li>
     <strong>Username:</strong>
@@ -23,6 +25,8 @@
   </li>
 
 </ul>
+
+<hr>
 
 <%= link "Edit", to: user_path(@conn, :edit, @user), class: "admin-tool-button" %>
 <%= link "Back", to: user_path(@conn, :index), class: "admin-tool-button"  %>

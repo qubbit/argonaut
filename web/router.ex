@@ -7,14 +7,13 @@ defmodule Argonaut.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
   end
 
   pipeline :browser_auth do
-    plug Guardian.Plug.VerifySession
-    plug Guardian.Plug.EnsureAuthenticated, handler: Argonaut.CookieToken
-    plug Guardian.Plug.LoadResource
+    plug Argonaut.Plug.CurrentUser
   end
 
   pipeline :admin do
@@ -23,6 +22,7 @@ defmodule Argonaut.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+
     plug Guardian.Plug.VerifyHeader
     plug Guardian.Plug.EnsureAuthenticated, handler: Argonaut.ApiToken
     plug Guardian.Plug.LoadResource
@@ -30,12 +30,11 @@ defmodule Argonaut.Router do
 
   scope "/", Argonaut do
     pipe_through [:browser]
+
     get "/login", LoginController, :index
     post "/login", LoginController, :authenticate
-
     get "/signup", LoginController, :signup
     post "/signup", LoginController, :handle_signup
-
     get "/logout", LoginController, :logout
   end
 
@@ -43,7 +42,6 @@ defmodule Argonaut.Router do
     pipe_through [:browser, :browser_auth]
 
     get "/", PageController, :index, as: :index
-
     get "/profile", ProfileController, :show
     get "/profile/edit", ProfileController, :edit
     put "/profile/update", ProfileController, :update
@@ -60,6 +58,7 @@ defmodule Argonaut.Router do
 
   scope "/api", Argonaut do
     pipe_through :api
+
     resources "/reservations", ReservationController, except: [:new, :edit]
     get "/applications", ApplicationController, :application_json
     get "/environments", EnvironmentController, :environment_json
