@@ -7,7 +7,9 @@
     <meta name="description" content="Reserve testing environment">
     <%= if Guardian.Plug.current_token(@conn) do %>
     <meta name='guardian_token' content="<%= Guardian.Plug.current_token(@conn) %>">
-    <meta name='time_zone' content="<%= Argonaut.User.current_user(@conn).time_zone %>">
+    <meta name='time_zone' content="<%= @conn.assigns.current_user.time_zone %>">
+    <meta name='user_id' content="<%= @conn.assigns.current_user.id %>">
+    <meta name='is_admin' content="<%= @conn.assigns.current_user.is_admin %>">
     <% end %>
     <meta name="author" content="gopal adhikari and contributors">
     <title>🛳  Argonaut</title>

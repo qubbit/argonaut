@@ -13,9 +13,11 @@
     <div class='toolbar'>
       <span class='tool-item'>
         {{ if(reservation){ }}
+        {{ if(window.isAdminUser == "true" || reservation.user.id == window.userId) { }}
         <a href='#' data-action='release'>
          <i class='fa fa-unlock fa-2x'> </i> <span class='action'>Release</span>
         </a>
+        {{ } }}
         {{ } else { }}
         <a href='#' data-action='reserve'>
          <i class='fa fa-lock fa-2x'> </i> <span class='action'>Reserve</span>

@@ -3,9 +3,11 @@ import "phoenix_html";
 import {ArgonautDatabase} from "./argonaut_database";
 
 const GITHUB_URL_BASE = 'http://git.innova-partners.com/';
-const token = $("meta[name='guardian_token']").prop('content');
-window.timeZone = $("meta[name='time_zone']").prop('content') || "America/New_York";
-const cellTemplate = $("#cell-template").html();
+const token           = $("meta[name='guardian_token']").prop('content');
+window.timeZone       = $("meta[name='time_zone']").prop('content') || "America/New_York";
+window.userId         = $("meta[name='user_id']").prop('content');
+window.isAdminUser    = $("meta[name='is_admin']").prop('content');
+const cellTemplate    = $("#cell-template").html();
 
 const database = new ArgonautDatabase();
 
