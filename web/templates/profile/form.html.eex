@@ -39,7 +39,7 @@
   </div>
 
   <div class="form-group">
-    <%= label f, :background_url, class: "control-label" %>
+    <%= label f, :background_url, "Background", class: "control-label" %>
     <%= select f, :background_url, Argonaut.UserPreferences.background_image_dropdown, class: "form-control" %>
     <%= error_tag f, :background_url %>
   </div>

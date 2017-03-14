@@ -20,10 +20,19 @@
   </li>
 
   <li>
-    <strong>Avatar url:</strong>
+    <strong>Email:</strong>
+    <%= @user.email %>
+  </li>
+
+  <li>
+    <strong>Avatar URL:</strong>
     <%= @user.avatar_url %>
   </li>
 
+  <li>
+    <strong>Time Zone:</strong>
+    <%= @user.time_zone %>
+  </li>
 </ul>
 
 <hr>
