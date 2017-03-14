@@ -124,7 +124,7 @@ function connect(database) {
       application_id: cellData.applicationId
     };
 
-    console.log('sending message', data);
+    // console.log('sending message', data);
     channel.push(`action:${action}`, data);
     e.preventDefault();
   });
@@ -146,7 +146,7 @@ function connect(database) {
       database.deleteReservation(res.application_id, res.environment_id);
       updateCell(res, true);
     }
-    console.log(`[${Date()}] ${JSON.stringify(payload)}`);
+    // console.log(`[${Date()}] ${JSON.stringify(payload)}`);
   });
 
   channel.on("action:reserve", payload => {
@@ -155,12 +155,12 @@ function connect(database) {
       database.setReservation(res);
       updateCell(res, false);
     }
-    console.log(`[${Date()}] ${JSON.stringify(payload)}`);
+    // console.log(`[${Date()}] ${JSON.stringify(payload)}`);
   });
 
   channel.join()
-         .receive("ok", resp => { console.log("Joined successfully", resp) })
-         .receive("error", resp => { console.log("Unable to join", resp) });
+         .receive("ok", resp => { console.log("Joined successfully") })
+         .receive("error", resp => { console.log("Unable to join") });
 }
 
 $(function(){
