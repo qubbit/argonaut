@@ -15,6 +15,7 @@
     <meta name="author" content="gopal adhikari and contributors">
     <title>🛳  Argonaut</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <script src="<%= static_path(@conn, "/js/global.js") %>"></script>
   </head>
   <%= if Guardian.Plug.current_token(@conn) && Argonaut.User.current_user(@conn).background_url != "" do %>
   <body style="background-image: url(<%= Argonaut.User.current_user(@conn).background_url %>)">
