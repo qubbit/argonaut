@@ -40,6 +40,5 @@
   </div>
 </script>
 
-<!-- creative commons attribution -->
-<p class='text-center credits'>Logo Credit: Viking Ship by Andrejs Kirma from the Noun Project</p>
+<p class='text-center version'>revision: <%= Application.get_env(:argonaut, :git_sha) %></p>
 <script src="<%= static_path(@conn, "/js/app.js") %>"></script>

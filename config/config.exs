@@ -15,7 +15,8 @@ config :argonaut, Argonaut.Repo,
 
 # General application configuration
 config :argonaut,
-  ecto_repos: [Argonaut.Repo]
+  ecto_repos: [Argonaut.Repo],
+  git_sha: String.trim(elem(System.cmd("git", ["rev-parse", "HEAD"]), 0))
 
 # Configures the endpoint
 config :argonaut, Argonaut.Endpoint,

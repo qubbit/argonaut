@@ -96,6 +96,8 @@ heroku config:set SECRET_KEY_BASE="`mix phoenix.gen.secret`"
 heroku config:set GUARDIAN_JWK="something_secret"
 heroku run "POOL_SIZE=2 mix Argonaut.task"
 heroku run "POOL_SIZE=2 mix ecto.migrate"
+# add environment variables for dyno metadata
+heroku labs:enable runtime-dyno-metadata
 ```
 
 Credits

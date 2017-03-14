@@ -20,6 +20,9 @@ config :argonaut, Argonaut.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :argonaut,
+  git_sha: System.get_env("HEROKU_SLUG_COMMIT")
+
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
   url: System.get_env("DATABASE_URL"),
