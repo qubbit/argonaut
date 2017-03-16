@@ -8,10 +8,9 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const extractSass = new ExtractTextPlugin("app.css");
 
 module.exports = {
-  entry: ['./web/static/js/app.js', './web/static/css/app.css'],
+  entry: ['./web/static/js/global.js', './web/static/js/app.js', './web/static/css/app.scss'],
   output: {
-    filename: 'app.js',
-    path: path.resolve(__dirname, 'priv/static/js')
+    filename: '[name].js', path: path.resolve(__dirname, 'priv/static/js')
   },
   module: {
     rules: [
@@ -27,17 +26,19 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'css-loader'
+        use: 'css-loader'
       },
       {
         test: /\.scss$/,
-        loader: extractSass.extract({
+        use: extractSass.extract({
           loader: [{ loader: "css-loader" }, { loader: "sass-loader" }],
-          fallbackLoader: "style-loader"
+          fallback: "style-loader"
         })
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg)$/,
-        use: ['url-loader'] }
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        use: ['url-loader']
+      }
     ]
   },
   resolve: {
@@ -52,7 +53,8 @@ module.exports = {
     new Webpack.ProvidePlugin({
       jQuery: 'jquery',
       $: 'jquery',
-      jquery: 'jquery'
+      underscore: 'underscore',
+      moment: 'moment'
     })
   ]
 };
