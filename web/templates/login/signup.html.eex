@@ -12,9 +12,17 @@
       <div class="form-group">
         <%= label f, :username, class: "control-label" %>
         <div>
-          <%= text_input f, :username, class: "form-control" %>
+          <%= text_input f, :username, class: "form-control", placeholder: "A unique moniker", autofocus: true %>
         </div>
         <%= error_tag f, :username %>
+      </div>
+
+      <div class="form-group">
+        <%= label f, :email, class: "control-label" %>
+        <div>
+          <%= text_input f, :email, class: "form-control", placeholder: "For resetting forgotten password" %>
+        </div>
+        <%= error_tag f, :email %>
       </div>
 
       <div class="form-group">
