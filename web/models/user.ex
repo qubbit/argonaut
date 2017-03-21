@@ -15,12 +15,17 @@ defmodule Argonaut.User do
     field :time_zone, :string
     field :is_admin, :boolean
     field :background_url, :string
+    field :password_reset_token, :string
+    field :password_reset_sent_at, Ecto.DateTime
+    field :confirmation_token, :string
+    field :confirmation_sent_at, Ecto.DateTime
+    field :confirmed_at, Ecto.DateTime
 
     timestamps()
   end
 
-  @required_fields ~w(username password)a
-  @optional_fields ~w(first_name last_name is_admin avatar_url email time_zone background_url)a
+  @required_fields ~w(username password email)a
+  @optional_fields ~w(first_name last_name is_admin avatar_url time_zone background_url)a
 
   def changeset(struct, params \\ %{}) do
     struct
@@ -29,10 +34,26 @@ defmodule Argonaut.User do
     |> common_changeset
   end
 
+  def reset_password_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:password])
+    |> validate_required([:password])
+    |> validate_length(:password, min: 5)
+    |> validate_length(:password, max: 127)
+    |> validate_confirmation(:password, message: "Password does not match")
+    |> generate_encrypted_password
+  end
+
+  def forgot_password_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:password_reset_token, :password_reset_sent_at])
+    |> validate_required([:password_reset_token, :password_reset_sent_at])
+  end
+
   def profile_changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @required_fields ++ @optional_fields)
-    |> validate_required([:username])
+    |> validate_required([:username, :email])
     |> validate_inclusion(:background_url, Argonaut.UserPreferences.background_image_urls)
     |> validate_inclusion(:time_zone, Argonaut.TimeZone.zones)
     |> common_changeset

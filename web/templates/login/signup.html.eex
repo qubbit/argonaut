@@ -12,23 +12,32 @@
       <div class="form-group">
         <%= label f, :username, class: "control-label" %>
         <div>
-          <%= text_input f, :username, class: "form-control" %>
+          <%= text_input f, :username, class: "form-control", placeholder: "A unique moniker", autofocus: true %>
         </div>
         <%= error_tag f, :username %>
       </div>
 
       <div class="form-group">
-        <%= label f, :password, class: "control-label" %>
+        <%= label f, :email, class: "control-label" %>
         <div>
-          <%= password_input f, :password, class: "form-control" %>
+          <%= text_input f, :email, class: "form-control", placeholder: "For resetting forgotten password" %>
+        </div>
+        <%= error_tag f, :email %>
+      </div>
+
+      <div class="form-group">
+        <%= label f, :password, class: "control-label" %>
+        <div class="input-group">
+          <%= password_input f, :password, class: "form-control", id: "password" %>
+          <div class="input-group-addon show-password" title="Show password"><i class="fa fa-eye"></i></div>
         </div>
         <%= error_tag f, :password %>
       </div>
 
-      <div class="form-group">
+      <div class="form-group password_confirmation_container">
         <%= label f, :password_confirmation, class: "control-label" %>
         <div>
-          <%= password_input f, :password_confirmation, class: "form-control" %>
+          <%= password_input f, :password_confirmation, class: "form-control", id: "password_confirmation" %>
         </div>
         <%= error_tag f, :password_confirmation %>
       </div>

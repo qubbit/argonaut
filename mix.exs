@@ -19,7 +19,7 @@ defmodule Argonaut.Mixfile do
   def application do
     [mod: {Argonaut, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :comeonin]]
+                    :phoenix_ecto, :postgrex, :comeonin, :calendar]]
   end
 
   # Specifies which paths to compile per environment.
@@ -39,7 +39,10 @@ defmodule Argonaut.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 3.0"},
-     {:guardian, "~> 0.14"}]
+     {:guardian, "~> 0.14"},
+     {:mustachex, "~> 0.0.1"},
+     {:calendar, "~> 0.16.1"},
+     {:mailgun, "~> 0.1.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

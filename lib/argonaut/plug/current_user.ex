@@ -1,7 +1,6 @@
 defmodule Argonaut.Plug.CurrentUser do
   import Plug.Conn
 
-  alias Argonaut.Router.Helpers, as: Routes
   alias Argonaut.User
 
   def init(opts) do

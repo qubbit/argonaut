@@ -21,6 +21,12 @@
   <% else %>
   <body>
   <% end %>
+  <%= if Guardian.Plug.current_token(@conn) && ! Argonaut.User.current_user(@conn).email do %>
+    <div class="text-center alert alert-warning alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <strong>Update your profile:</strong> Please add an email address to your profile for password recovery.
+    </div>
+    <% end %>
     <div class="info-section"></div>
     <div class="container main-container">
       <div class="logo-container text-center">
@@ -47,9 +53,36 @@
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-      <main role="main">
+      <main class="row">
         <%= render @view_module, @view_template, assigns %>
       </main>
     </div> <!-- /container -->
   </body>
+  <script>
+  window.onload = function(){
+    var showPassword = document.querySelector(".show-password");
+    var password = document.querySelector("#password");
+    var passwordConfirmation = document.querySelector("#password_confirmation");
+    var passwordConfirmationContainer = document.querySelector(".password_confirmation_container");
+
+    if(showPassword){
+      showPassword.addEventListener("click", function(e){
+        if(password.type == "text") {
+          password.type = "password";
+          if(passwordConfirmationContainer) passwordConfirmationContainer.style.display = "block";
+        } else {
+          password.type = "text";
+          if(passwordConfirmationContainer) passwordConfirmationContainer.style.display = "none";
+        }
+        password.focus();
+      });
+    }
+
+    password.addEventListener("input", function() {
+      if(password.type == "text") {
+        if(passwordConfirmation) passwordConfirmation.value = this.value;
+      }
+    });
+  }
+  </script>
 </html>

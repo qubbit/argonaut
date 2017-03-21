@@ -13,6 +13,10 @@ label {
   font-weight: 500;
 }
 
+input[type='password'] {
+  letter-spacing: 2px;
+}
+
 .logo-container {
   margin-top: 20px;
   margin-bottom: 20px;

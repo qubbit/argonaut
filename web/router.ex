@@ -36,6 +36,12 @@ defmodule Argonaut.Router do
     get "/signup", LoginController, :signup
     post "/signup", LoginController, :handle_signup
     get "/logout", LoginController, :logout
+
+    get "/forgot_password", LoginController, :show_forgot_password
+    post "/forgot_password", LoginController, :forgot_password
+
+    get "/reset_password/:token", LoginController, :show_reset_password
+    post "/reset_password", LoginController, :reset_password
   end
 
   scope "/", Argonaut do

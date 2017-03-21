@@ -43,3 +43,9 @@ config :argonaut, Argonaut.Repo,
   hostname: "localhost",
   pool_size: 10
 
+config :mailgun,
+  domain: "whatever",
+  key: "whatever",
+  mode: :test,
+  sender: "no-reply@argonaut.io",
+  test_file_path: "/tmp/mailgun.json"

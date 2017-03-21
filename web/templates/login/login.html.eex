@@ -1,35 +1,26 @@
 <div class="row">
   <div class="col-md-4 col-md-offset-4">
+    <h3 class='text-center'>Login</h3>
+    <hr>
     <form method='post' action='/login' class="form-horizontal">
       <div class="form-group">
-        <label for="username" class="col-sm-4 control-label">Username</label>
-        <div class="col-sm-8">
-          <input type="text" class="form-control" name='username' id="username">
-        </div>
+        <label for="username" class="control-label">Username</label>
+          <input type="text" class="form-control" name='username' id="username" autofocus>
       </div>
       <div class="form-group">
-        <label for="password" class="col-sm-4 control-label">Password</label>
-        <div class="col-sm-8">
+        <label for="password" class="control-label">Password</label>
+        <div class="input-group">
           <input type="password" class="form-control" id="password" name='password'>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-8">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox"> Remember me
-            </label>
-          </div>
+          <div class="input-group-addon show-password" title="Show password"><i class="fa fa-eye"></i></div>
         </div>
       </div>
       <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
       <div class="form-group">
-        <div class="col-sm-offset-4 col-sm-8">
-          <button type="submit" class="btn btn-primary">Sign in</button>
-        </div>
+        <button type="submit" class="btn btn-primary">Log In</button>
       </div>
     </form>
     <hr>
-    <p class='text-center'>Don't have an account? <a href='/signup'>Sign up!</a></p>
+    <p>Forgot password? <a href='/forgot_password'>Reset it</a></p>
+    <p>Don't have an account? <a href='/signup'>Sign up!</a></p>
   </div>
 </div>

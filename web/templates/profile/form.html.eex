@@ -13,13 +13,18 @@
 
   <div class="form-group">
     <%= label f, :password, class: "control-label" %>
-    <%= password_input f, :password, class: "form-control" %>
+    <div class="input-group">
+      <%= password_input f, :password, class: "form-control", id: "password" %>
+      <div class="input-group-addon show-password" title="Show password"><i class="fa fa-eye"></i></div>
+    </div>
     <%= error_tag f, :password %>
   </div>
 
-  <div class="form-group">
+  <div class="form-group password_confirmation_container">
     <%= label f, :password_confirmation, class: "control-label" %>
-    <%= password_input f, :password_confirmation, class: "form-control" %>
+    <div>
+      <%= password_input f, :password_confirmation, class: "form-control", id: "password_confirmation" %>
+    </div>
     <%= error_tag f, :password_confirmation %>
   </div>
 
