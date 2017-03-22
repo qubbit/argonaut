@@ -1,6 +1,8 @@
 defmodule Argonaut.Reservation do
   use Argonaut.Web, :model
 
+  @derive {Poison.Encoder, only: [:id, :user, :application, :environment, :reserved_at]}
+
   schema "reservations" do
     field :reserved_at, Ecto.DateTime
 

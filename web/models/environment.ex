@@ -1,6 +1,8 @@
 defmodule Argonaut.Environment do
   use Argonaut.Web, :model
 
+  @derive {Poison.Encoder, only: [:name, :id]}
+
   schema "environments" do
     field :name, :string
     field :description, :string
