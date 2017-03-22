@@ -14,7 +14,8 @@ defmodule Argonaut.EnvironmentController do
   end
 
   def environment_json(conn, _params) do
-    render(conn, "index.json", environments: Repo.all(Environment))
+    query = Environment |> order_by(asc: :name)
+    render(conn, "index.json", environments: Repo.all(query))
   end
 
   def create(conn, %{"environment" => environment_params}) do

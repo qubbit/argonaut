@@ -9,7 +9,8 @@ defmodule Argonaut.ApplicationController do
   end
 
   def application_json(conn, _params) do
-    render(conn, "index.json", applications: Repo.all(Application))
+    query = Application |> order_by(asc: :name)
+    render(conn, "index.json", applications: Repo.all(query))
   end
 
   def new(conn, _params) do
