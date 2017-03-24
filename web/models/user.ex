@@ -3,7 +3,7 @@ defmodule Argonaut.User do
 
   alias Argonaut.{User, Repo}
 
-  @derive {Poison.Encoder, only: [:username, :first_name, :last_name, :avatar_url, :time_zone]}
+  @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone]}
 
   schema "users" do
     field :username, :string
