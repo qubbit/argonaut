@@ -1,14 +1,12 @@
 defmodule Argonaut.User do
   use Argonaut.Web, :model
 
-  alias Argonaut.{User, Repo}
+  alias Argonaut.{User, Team, Membership, Repo}
 
   @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone]}
 
   schema "users" do
     field :username, :string
-    field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
     field :password_hash, :string
     field :first_name, :string
     field :last_name, :string
@@ -17,11 +15,19 @@ defmodule Argonaut.User do
     field :time_zone, :string
     field :is_admin, :boolean
     field :background_url, :string
+
+    field :password, :string, virtual: true
+    field :password_confirmation, :string, virtual: true
+
     field :password_reset_token, :string
     field :password_reset_sent_at, Ecto.DateTime
+
     field :confirmation_token, :string
     field :confirmation_sent_at, Ecto.DateTime
     field :confirmed_at, Ecto.DateTime
+
+    many_to_many :teams, Team, join_through: "membership"
+    has_many :owned_teams, Team, foreign_key: :owner_id
 
     timestamps()
   end
