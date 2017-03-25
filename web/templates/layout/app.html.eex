@@ -59,7 +59,7 @@
     </div> <!-- /container -->
   </body>
   <script>
-  window.onload = function(){
+  window.addEventListener("load", function(){
     var showPassword = document.querySelector(".show-password");
     var password = document.querySelector("#password");
     var passwordConfirmation = document.querySelector("#password_confirmation");
@@ -78,11 +78,11 @@
       });
     }
 
-    password.addEventListener("input", function() {
+    password && password.addEventListener("input", function() {
       if(password.type == "text") {
         if(passwordConfirmation) passwordConfirmation.value = this.value;
       }
     });
-  }
+  });
   </script>
 </html>

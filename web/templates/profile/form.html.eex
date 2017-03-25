@@ -90,7 +90,8 @@ function xhr(options, successCallback){
   }
   req.send(options.data || null);
 }
-window.onload = function(){
+
+window.addEventListener("load", function(){
 
   var btnGravatar = document.querySelector('#btn-gravatar');
   var backgroundUrlDropDown = document.querySelector('#user_background_url');
@@ -106,5 +107,5 @@ window.onload = function(){
     });
     e.preventDefault();
   });
-};
+});
 </script>
