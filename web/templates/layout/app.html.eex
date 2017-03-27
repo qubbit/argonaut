@@ -43,6 +43,7 @@
       <% end %>
         Signed in as <%= Guardian.Plug.current_resource(@conn).username %>
         <a class="btn btn-default" href="/profile"><i class="fa fa-user-circle-o"></i> Profile</a>
+        <a class="btn btn-default" href="/teams"><i class="fa fa-user-circle-o"></i> Teams</a>
         <%= if Guardian.Plug.current_resource(@conn).is_admin do %>
         <a class="btn btn-default" href="/admin"><i class="fa fa-cubes"></i> Admin</a>
         <% end %>

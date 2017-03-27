@@ -51,6 +51,10 @@ defmodule Argonaut.Router do
     get "/profile", ProfileController, :show
     get "/profile/edit", ProfileController, :edit
     put "/profile/update", ProfileController, :update
+
+    resources "/teams", TeamController
+    post "/teams/join/:id", TeamController, :join
+    resources "/membership", MembershipController
   end
 
   scope "/", Argonaut do

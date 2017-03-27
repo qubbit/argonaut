@@ -1,0 +1,37 @@
+<h2>Your teams</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Logo url</th>
+      <th>Owner</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for team <- @teams do %>
+    <tr>
+      <td><%= team.name %></td>
+      <td><%= team.description %></td>
+      <td><%= team.logo_url %></td>
+      <td><%= team.owner.username %></td>
+
+      <td class="toolbar text-right">
+      <%= if @conn.assigns.current_user.id == team.owner_id do %>
+        <%= link "Show", to: team_path(@conn, :show, team), class: "btn btn-default btn-xs" %>
+        <%= link "Edit", to: team_path(@conn, :edit, team), class: "btn btn-default btn-xs" %>
+        <%= link "Delete", to: team_path(@conn, :delete, team), method: :delete, data: [confirm: "Are you sure?"], class: "btn btn-danger btn-xs" %>
+      <% else %>
+        <%= link "Join", to: team_path(@conn, :join, team), class: "btn btn-primary btn-xs" %>
+      <% end %>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<script src="/js/teams.js"></script>
+<%= link "Create a team", to: team_path(@conn, :new) %>

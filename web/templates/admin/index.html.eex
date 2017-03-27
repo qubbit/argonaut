@@ -8,6 +8,13 @@
   </div>
 
   <div class="admin-panel-option">
+    <a href="<%= team_path(@conn, :index) %>">
+      <i class="fa fa-snowflake-o"> </i>
+      Teams
+    </a>
+  </div>
+
+  <div class="admin-panel-option">
     <a href="<%= application_path(@conn, :index) %>">
       <i class="fa fa-code"> </i>
       Applications
