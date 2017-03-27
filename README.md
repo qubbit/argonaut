@@ -5,9 +5,12 @@ Reserve testing environments effectively.
 About
 -----
 
-This application lets you to add multiple testing environments(hosts where the applications can be deployed) and applications, and allows logged in users to create a reservation for testing apps in the specified testing environment for a period of time.
+This application has a *very* specific use, to let you reserve testing environments for your apps while working with multiple apps and testing environments. It's well-suited for organizations that use the microservice architecture with separate testing, integration and production environments. It lets you add multiple testing environments and applications, and allows logged in users to create a reservation for testing apps in the specified testing environment for a period of time.
 
-Web sockets are used to facilitate real-time update when a user reserves or releases an application and app.
+Web sockets are used to facilitate real-time updates when users reserve or release an environment
+
+
+Feature in the work is to add support for multiple teams, where a team can own a set of environments and applications.
 
 Configuration
 -------------
