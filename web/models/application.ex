@@ -8,6 +8,8 @@ defmodule Argonaut.Application do
     field :ping, :string
     field :repo, :string
 
+    belongs_to :team, Argonaut.Team
+
     timestamps()
   end
 

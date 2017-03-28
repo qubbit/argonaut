@@ -6,7 +6,8 @@ defmodule Argonaut.Environment do
   schema "environments" do
     field :name, :string
     field :description, :string
-    field :owning_team, :string
+
+    belongs_to :team, Argonaut.Team
 
     timestamps()
   end
@@ -16,7 +17,7 @@ defmodule Argonaut.Environment do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:name, :description, :owning_team])
-    |> validate_required([:name, :description, :owning_team])
+    |> cast(params, [:name, :description])
+    |> validate_required([:name, :description])
   end
 end

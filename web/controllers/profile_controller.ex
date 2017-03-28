@@ -22,7 +22,7 @@ defmodule Argonaut.ProfileController do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "Profile updated successfully.")
-        |> redirect(to: profile_path(conn, :show))
+        #|> redirect(to: profile_path(conn, :show))
       {:error, changeset} ->
         render(conn, "edit.html", user: current_user, changeset: changeset)
     end

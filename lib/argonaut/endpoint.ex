@@ -29,5 +29,7 @@ defmodule Argonaut.Endpoint do
     key: "_argonaut_key",
     signing_salt: "3v$WM57q@*%5ulZ67QmbH1y*n%9vN5ai"
 
+  plug Corsica, allow_headers: ~w(Accept Content-Type Authorization Origin)
+
   plug Argonaut.Router
 end
