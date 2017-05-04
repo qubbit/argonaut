@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { css, StyleSheet } from 'aphrodite';
-import TopicForm from '../TopicForm';
+import DescriptionForm from '../DescriptionForm';
 import { Team } from '../../types';
 
 const styles = StyleSheet.create({
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     height: '24px',
   },
 
-  topicButton: {
+  descriptionButton: {
     padding: '2px 4px',
     color: 'rgb(120,120,120)',
     background: 'transparent',
@@ -32,19 +32,19 @@ const styles = StyleSheet.create({
 });
 
 type State = {
-  editingTopic: boolean,
+  editingDescription: boolean,
 }
 
 type Props = {
   team: Team,
-  onTopicUpdate: () => void,
+  onDescriptionUpdate: () => void,
 }
 
 class TeamNavbar extends Component {
   constructor(props: Props) {
     super(props);
     this.state = {
-      editingTopic: false,
+      editingDescription: false,
     };
   }
 
@@ -52,36 +52,36 @@ class TeamNavbar extends Component {
 
   componentWillReceiveProps(nextProps: Props) {
     if (nextProps.team.id !== this.props.team.id ||
-        nextProps.team.topic !== this.props.team.topic) {
-      this.setState({ editingTopic: false });
+        nextProps.team.description !== this.props.team.description) {
+      this.setState({ editingDescription: false });
     }
   }
 
   props: Props
 
-  handleTopicUpdate = (data: { topic: string }) => this.props.onTopicUpdate(data);
+  handleDescriptionUpdate = (data: { description: string }) => this.props.onDescriptionUpdate(data);
 
   render() {
     const { team } = this.props;
-    const { editingTopic } = this.state;
+    const { editingDescription } = this.state;
 
     return (
       <nav className={css(styles.navbar)}>
         <div>#{team.name}</div>
         <div className={css(styles.teamMeta)}>
-          {editingTopic
+          {editingDescription
             ?
-              <TopicForm
-                onSubmit={this.handleTopicUpdate}
-                initialValues={{ topic: team.name }}
-                onCancel={() => this.setState({ editingTopic: false })}
+              <DescriptionForm
+                onSubmit={this.handleDescriptionUpdate}
+                initialValues={{ description: team.description }}
+                onCancel={() => this.setState({ editingDescription: false })}
               />
             :
               <button
-                className={css(styles.topicButton)}
-                onClick={() => this.setState({ editingTopic: true })}
+                className={css(styles.descriptionButton)}
+                onClick={() => this.setState({ editingDescription: true })}
               >
-                {team.name ? team.name : 'General chat and discussion'}
+                {team.description ? team.description : 'Click here to edit description'}
               </button>
           }
         </div>

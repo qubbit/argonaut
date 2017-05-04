@@ -39,9 +39,9 @@ defmodule Argonaut.TeamController do
     render(conn, "show.json", team: team)
   end
 
-  def update(conn, %{"id" => id, "team" => team_params}) do
+  def update(conn, %{"id" => id, "description" => description}) do
     team = Repo.get!(Team, id)
-    changeset = Team.changeset(team, team_params)
+    changeset = Team.changeset(team, %{"description" => description})
 
     case Repo.update(changeset) do
       {:ok, team} ->

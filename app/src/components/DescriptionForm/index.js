@@ -42,7 +42,7 @@ type Props = {
   handleSubmit: () => void,
 }
 
-class TopicForm extends Component {
+class DescriptionForm extends Component {
   props: Props
 
   handleSubmit = (data) => this.props.onSubmit(data);
@@ -54,7 +54,7 @@ class TopicForm extends Component {
       <form onSubmit={handleSubmit(this.handleSubmit)}>
         <Field
           type="text"
-          name="topic"
+          name="description"
           component="input"
           className={`form-control ${css(styles.input)}`}
         />
@@ -79,5 +79,5 @@ class TopicForm extends Component {
 }
 
 export default reduxForm({
-  form: 'topic',
-})(TopicForm);
+  form: 'description',
+})(DescriptionForm);

@@ -56,13 +56,13 @@ class Team extends Component {
     this.messageList.scrollToBottom();
   }
 
-  handleTopicUpdate = (data) => this.props.updateTeam(this.props.params.id, data);
+  handleDescriptionUpdate = (data) => this.props.updateTeam(this.props.params.id, data);
 
   render() {
     return (
       <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
-          <TeamNavbar team={this.props.team} onTopicUpdate={this.handleTopicUpdate} />
+          <TeamNavbar team={this.props.team} onDescriptionUpdate={this.handleDescriptionUpdate} />
           <ReservationTable
             reservations={this.props.reservations}
             applications={this.props.applications}

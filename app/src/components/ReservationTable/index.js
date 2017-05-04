@@ -1,10 +1,11 @@
 // @flow
 import React, { Component } from 'react';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { css, StyleSheet } from 'aphrodite';
 import debounce from 'lodash/debounce';
-import Reservation from '../Reservation';
+//import Reservation from '../Reservation';
 import { Reservation as ReservationType } from '../../types';
+import { userSettings } from '../../actions/session';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,7 +30,7 @@ class ReservationTableHeaderCell extends Component {
 
 class ReservationTableHeader extends Component {
   render() {
-  var environmentNames = this.props.environments.map(env => <ReservationTableHeaderCell environment={env} />);
+  var environmentNames = this.props.environments.map(env => <ReservationTableHeaderCell key={`reservation-table-header-cell-${env.id}`} environment={env} />);
     return(
     <tr>
       <th>
@@ -40,13 +41,106 @@ class ReservationTableHeader extends Component {
   }
 }
 
+function getReservation(app, env, reservations) {
+  return reservations.find(r => r.application.id === app.id && r.environment.id === env.id)
+}
+
+
 class ReservationCell extends Component {
-  // const record = getReservation(application, environment);
+  constructor(props) {
+    super(props);
+
+    this.state = { reserved: false, hover: false }
+  }
+
+  update() {
+
+  }
+
+  reserve() {
+    console.log('reserving');
+  }
+
+  release() {
+    console.log('releasing');
+  }
+
+  onMouseOverHandler(e) {
+    this.setState({ hover: true });
+  }
+
+  onMouseOutHandler(e) {
+    this.setState({ hover: false });
+  }
 
   render() {
+    const reservation = this.props.reservation;
+    const application = this.props.application;
+    const environment = this.props.environment;
+
+    var user = { username: '', avatar_url: '' };
+    var time = '';
+    var reservationString = '';
+
+
+    let releaseButton;
+
+    var canRelease = reservation && (userSettings().is_admin || reservation.user.id === userSettings().id);
+
+    if (canRelease) {
+      releaseButton = <a href='#' className='tool-item' onClick={this.release}>
+         <i className='fa fa-2x fa-unlock'></i>
+         <span className='tool-label'>Release</span>
+       </a>;
+    }
+
+
+    let reserveButton;
+
+    var canReserve = reservation == null
+    if(canReserve) {
+      reserveButton = <a href='#' className='tool-item' onClick={this.reserve}>
+         <i className='fa fa-2x fa-lock'></i>
+         <span className='tool-label'>Reserve</span>
+       </a>;
+    }
+
+    if(reservation){
+      user = reservation.user;
+
+      time = moment(reservation.reserved_at).tz(userSettings.time_zone || 'America/New_York').format('MMMM D, h:mm a');
+      reservationString = `${user.username} since ${time}`;
+    }
+
+    let visibilityClassName = 'hidden';
+
+    if(this.state.hover) {
+      visibilityClassName = 'not-hidden';
+    }
+
+
+    let reservationMeta;
+
+    if(reservation) {
+      reservationMeta = <div className='reservation-meta'>
+        <img alt='Avatar' src={user.avatar_url} />
+        <span className='reservation-info'>
+          <strong>{reservationString}</strong>
+        </span>
+        </div>
+    }
+
     return (
-     <td className={this.props.application.name + "-" + this.props.environment.name}>
-      <h1>hello</h1>
+     <td onMouseOut={this.onMouseOutHandler.bind(this)} onMouseOver={this.onMouseOverHandler.bind(this)} className={'reservation-cell ' + application.name + "-" + environment.name}>
+       {reservationMeta}
+       <div className={'toolbar ' + visibilityClassName}>
+         {reserveButton}
+         {releaseButton}
+         <a href={`https://${application.name}.covermymeds.com/${application.ping}`} className='tool-item'>
+           <i className='fa fa-2x fa-info'></i>
+           <span className='tool-label'> Info</span>
+         </a>
+       </div>
      </td>
     );
   }
@@ -54,17 +148,29 @@ class ReservationCell extends Component {
 
 class ReservationRow extends Component {
   render() {
-    var application = this.props.application;
-    var environments = this.props.environments;
+    const application = this.props.application;
+    const environments = this.props.environments;
+    const reservations = this.props.reservations;
+
     var x = 0;
-    var cells = this.props.environments.map(env => {
+    var cells = environments.map(env => {
       var key = "reservation-cell-" + (++x);
-      return <ReservationCell key={x} application={application} environment={env} />
+      const reservation = getReservation(application, env, reservations);
+      return <ReservationCell key={key} reservation={reservation} application={application} environment={env} />
     });
 
     return (
       <tr className={application.name} key={application.name}>
-        <td>{application.name}</td>
+        <td className='application-name'>
+          <strong>{application.name}</strong>
+          <div className='toolbar'>
+            <span className='tool-item'>
+              <a href={`https://git.innova-partners.com/${application.repo}`}>
+                <i className='fa fa-github fa-2x'></i>
+              </a>
+            </span>
+          </div>
+        </td>
         {cells}
       </tr>
     );
@@ -114,14 +220,15 @@ class ReservationTable extends Component {
 
   renderReservations() {
     var x = 0;
+
     const reservationRows = this.props.applications.map((app) => {
-      return <ReservationRow key={"reservation-row-" + (++x)} application={app} environments={this.props.environments}/>
+      return <ReservationRow key={"reservation-row-" + (++x)} reservations={this.props.reservations} application={app} environments={this.props.environments}/>
     });
-    var y = 444;
+
     return(
-      <table>
+      <table className='table table-bordered'>
         <thead>
-          <ReservationTableHeader key={"weidbas" + (++y)} environments={this.props.environments}/>
+          <ReservationTableHeader key={"reservation-table-header-0"} environments={this.props.environments}/>
         </thead>
         <tbody>
           {reservationRows}

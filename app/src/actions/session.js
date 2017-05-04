@@ -17,9 +17,14 @@ function connectToSocket(dispatch) {
 
 function setCurrentUser(dispatch, response) {
   localStorage.setItem('token', JSON.stringify(response.meta.token));
+  localStorage.setItem('currentUser', JSON.stringify(response.data));
   dispatch({ type: 'AUTHENTICATION_SUCCESS', response });
   dispatch(fetchUserTeams(response.data.id));
   connectToSocket(dispatch);
+}
+
+export function userSettings() {
+  return JSON.parse(localStorage.getItem('currentUser'));
 }
 
 export function login(data, router) {
@@ -51,6 +56,7 @@ export function logout(router) {
   return (dispatch) => api.delete('/sessions')
     .then(() => {
       localStorage.removeItem('token');
+      localStorage.removeItem('currentUser');
       dispatch({ type: 'LOGOUT' });
       router.transitionTo('/login');
     });
@@ -65,6 +71,7 @@ export function authenticate() {
       })
       .catch(() => {
         localStorage.removeItem('token');
+        localStorage.removeItem('currentUser');
         window.location = '/login';
       });
   };

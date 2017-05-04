@@ -24,6 +24,8 @@ defmodule Argonaut.Router do
     delete "/sessions", SessionController, :delete
     post "/sessions/refresh", SessionController, :refresh
 
+    resources "/users", UserController, only: [:create]
+
     resources "/membership", MembershipController, except: [:new, :edit]
 
     get "/users/:id/teams", UserController, :teams
