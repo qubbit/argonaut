@@ -6,12 +6,12 @@ table {
   width: '100%';
 }
 
-tr {
+tr.application-row {
   min-height: 64px;
   height: 64px
 }
 
-strong, b, th {
+strong, b {
   font-weight: 600 !important;
 }
 
@@ -118,8 +118,6 @@ input[type='password'] {
 
 .fa-info {
   color: #0275d8;
-  width: 20.58px;
-  text-align: center;
 }
 
 #reservations {
@@ -149,12 +147,12 @@ input[type='password'] {
   cursor: pointer;
 }
 
-.tool-item a, .tool-item {
-  text-decoration: none !important;
+.tool-item:not(:last-child) {
+  margin-right: 20px;
 }
 
-.tool-item:not(:last-child) {
-  margin-right: 10px;
+.tool-item a, .tool-item {
+  text-decoration: none !important;
 }
 
 .tool-label {
@@ -228,6 +226,11 @@ ul.model-details li {
   background: #f0fdff;
 }
 
+.disappointed {
+  text-align: center;
+  padding: 10px;
+}
+
 /* main */
 main {
   background: white;
@@ -235,4 +238,10 @@ main {
   border-radius: 5px;
   box-shadow: 0px 0px 5px 0px #8d8c8c;
   margin-bottom: 40px;
+}
+
+
+/* create a new team page */
+.roomControls button:not(:last-child){
+  margin-right: 10px;
 }

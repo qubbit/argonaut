@@ -67,7 +67,7 @@ class TeamNavbar extends Component {
 
     return (
       <nav className={css(styles.navbar)}>
-        <div>#{team.name}</div>
+        <div><h4>{team.name}</h4></div>
         <div className={css(styles.teamMeta)}>
           {editingDescription
             ?

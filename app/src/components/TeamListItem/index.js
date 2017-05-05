@@ -6,22 +6,34 @@ import { Team } from '../../types';
 type Props = {
   team: Team,
   currentUserTeamIds: Array<number>,
-  onTeamJoin: () => void,
+  currentUser: User,
+  onTeamJoin: () => void
 }
 
-const TeamListItem = ({ team, currentUserTeamIds, onTeamJoin }: Props) => {
+const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoin }: Props) => {
   const isJoined = includes(currentUserTeamIds, team.id);
+
+  let adminButton;
+
+  if(team.owner_id === currentUser.id) {
+      adminButton = <button className="btn btn-sm">
+       <i className='fa fa-wrench'></i> Admin
+      </button>
+  }
 
   return (
     <div key={team.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
       <span style={{ marginRight: '8px' }}>{team.name}</span>
-      <button
-        onClick={() => onTeamJoin(team.id)}
-        className="btn btn-sm"
-        disabled={isJoined}
-      >
-        {isJoined ? 'Joined' : 'Join'}
-      </button>
+      <span className='roomControls'>
+        {adminButton}
+        <button
+          onClick={() => onTeamJoin(team.id)}
+          className="btn btn-sm"
+          disabled={isJoined}
+        >
+          {isJoined ? 'Joined' : 'Join'}
+        </button>
+      </span>
     </div>
   );
 };

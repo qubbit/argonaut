@@ -8,6 +8,7 @@ import Navbar from '../../components/Navbar';
 import TeamListItem from '../../components/TeamListItem';
 import Pager from '../../components/Pager';
 import { Team, Pagination } from '../../types';
+import { userSettings } from '../../actions/session';
 
 const styles = StyleSheet.create({
   card: {
@@ -84,6 +85,7 @@ class Home extends Component {
         team={team}
         onTeamJoin={this.handleTeamJoin}
         currentUserTeamIds={currentUserTeamIds}
+        currentUser={userSettings()}
       />
     );
   }

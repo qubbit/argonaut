@@ -7,6 +7,7 @@ import {
   connectToChannel,
   leaveChannel,
   createReservation,
+  deleteReservation,
   updateTeam,
 } from '../../actions/team';
 import { Application, Environment, Reservation, Pagination } from '../../types';
@@ -21,6 +22,7 @@ type Props = {
   connectToChannel: () => void,
   leaveChannel: () => void,
   createReservation: () => void,
+  deleteReservation: () => void,
   reservations: Array<Reservation>,
   applications: Array<Application>,
   environments: Array<Environment>,
@@ -49,16 +51,22 @@ class Team extends Component {
   }
 
   props: Props
-  messageList: () => void
+  reservationList: () => void
 
-  handleMessageCreate = (data) => {
-    this.props.createMessage(this.props.channel, data);
-    this.messageList.scrollToBottom();
+  handleReservation = (data) => {
+    console.log('handleReservation');
+    this.props.createReservation(this.props.channel, data);
+  }
+
+  handleRelease = (data) => {
+    console.log('handleRelease');
+    this.props.deleteReservation(this.props.channel, data);
   }
 
   handleDescriptionUpdate = (data) => this.props.updateTeam(this.props.params.id, data);
 
   render() {
+    const eventHandlers = { onReserveClick: this.handleReservation, onReleaseClick: this.handleRelease }
     return (
       <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
@@ -67,7 +75,8 @@ class Team extends Component {
             reservations={this.props.reservations}
             applications={this.props.applications}
             environments={this.props.environments}
-            ref={(c) => { this.messageList = c; }}
+            eventHandlers={eventHandlers}
+            ref={(c) => { this.reservationList = c; }}
           />
         </div>
       </div>
@@ -88,5 +97,5 @@ export default connect(
     pagination: state.team.pagination,
     loadingReservations: state.team.loadingReservations,
   }),
-  { connectToChannel, leaveChannel, createReservation, updateTeam }
+  { connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam }
 )(Team);

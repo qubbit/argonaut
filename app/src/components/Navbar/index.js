@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 
 const Navbar = () =>
   <nav className={css(styles.navbar)}>
-    <Link to="/" className={css(styles.link)}>Argonaut</Link>
+    <Link to="/" className={css(styles.link)}><img height='40' alt='Argonaut' src='/images/ArgonautLogo.png'/></Link>
   </nav>;
 
 export default Navbar;

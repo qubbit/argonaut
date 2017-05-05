@@ -1,11 +1,12 @@
 defmodule Argonaut.TeamChannel do
   use Argonaut.Web, :channel
+  alias Argonaut.Reservation
 
   def join("teams:" <> team_id, _params, socket) do
     team = Repo.get!(Argonaut.Team, team_id)
 
     page =
-      Argonaut.Reservation
+      Reservation
       |> where([r], r.team_id == ^team.id)
       |> order_by([desc: :inserted_at, desc: :id])
       |> preload(:user)
@@ -43,16 +44,29 @@ defmodule Argonaut.TeamChannel do
     {:noreply, socket}
   end
 
-  def handle_in("new_message", params, socket) do
+  def handle_in("delete_reservation", %{"reservation_id" => id} = payload, socket) do
+    reservation = Repo.get!(Reservation, id)
+
+    case Repo.delete(reservation) do
+      {:ok, res} ->
+        broadcast_reservation(socket, res)
+        {:reply, res, socket}
+      {:error, changeset} ->
+        {:reply, {:error, Phoenix.View.render(Argonaut.ChangesetView, "error.json", changeset: changeset)}, socket}
+    end
+  end
+
+  def handle_in("new_reservation", payload, socket) do
     changeset =
       socket.assigns.team
       |> build_assoc(:reservations, user_id: socket.assigns.current_user.id)
-      |> Argonaut.Reservation.changeset(params)
+      |> Reservation.changeset(payload)
+      |> Ecto.Changeset.put_change(:reserved_at, Ecto.DateTime.utc)
 
     case Repo.insert(changeset) do
-      {:ok, message} ->
-        broadcast_message(socket, message)
-        {:reply, :ok, socket}
+      {:ok, reservation} ->
+        broadcast_reservation(socket, reservation)
+        {:reply, reservation, socket}
       {:error, changeset} ->
         {:reply, {:error, Phoenix.View.render(Argonaut.ChangesetView, "error.json", changeset: changeset)}, socket}
     end
@@ -62,9 +76,9 @@ defmodule Argonaut.TeamChannel do
     {:ok, socket}
   end
 
-  defp broadcast_message(socket, message) do
-    message = Repo.preload(message, :user)
-    rendered_message = Phoenix.View.render_one(message, Argonaut.MessageView, "message.json")
-    broadcast!(socket, "message_created", rendered_message)
+  defp broadcast_reservation(socket, reservation) do
+    reservation = Repo.preload(reservation, :user)
+    rendered_reservation = Phoenix.View.render_one(reservation, Argonaut.ReservationView, "reservation.json")
+    broadcast!(socket, "reservation_created", rendered_reservation)
   end
 end

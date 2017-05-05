@@ -2,8 +2,6 @@
 import React, { Component } from 'react';
 import moment from 'moment-timezone';
 import { css, StyleSheet } from 'aphrodite';
-import debounce from 'lodash/debounce';
-//import Reservation from '../Reservation';
 import { Reservation as ReservationType } from '../../types';
 import { userSettings } from '../../actions/session';
 
@@ -20,17 +18,9 @@ type Props = {
   reservations: Array<ReservationType>
 }
 
-class ReservationTableHeaderCell extends Component {
-  render() {
-    return (
-      <th>{this.props.environment.name}</th>
-    )
-  }
-}
-
 class ReservationTableHeader extends Component {
   render() {
-  var environmentNames = this.props.environments.map(env => <ReservationTableHeaderCell key={`reservation-table-header-cell-${env.id}`} environment={env} />);
+  var environmentNames = this.props.environments.map(env => <th key={`environment-${env.name}-${env.id}`}>{env.name}</th>);
     return(
     <tr>
       <th>
@@ -57,20 +47,24 @@ class ReservationCell extends Component {
 
   }
 
-  reserve() {
-    console.log('reserving');
-  }
-
-  release() {
-    console.log('releasing');
-  }
-
   onMouseOverHandler(e) {
     this.setState({ hover: true });
   }
 
   onMouseOutHandler(e) {
     this.setState({ hover: false });
+  }
+
+  doReserve = (e) => {
+    const d = e.currentTarget.dataset;
+    const data = {application_id: d.applicationId, environment_id: d.environmentId};
+    this.props.eventHandlers.onReserveClick(data);
+  }
+
+  doRelease = (e) => {
+    const d = e.currentTarget.dataset;
+    const data = {reservation_id: d.reservationId};
+    this.props.eventHandlers.onReleaseClick(data);
   }
 
   render() {
@@ -88,10 +82,14 @@ class ReservationCell extends Component {
     var canRelease = reservation && (userSettings().is_admin || reservation.user.id === userSettings().id);
 
     if (canRelease) {
-      releaseButton = <a href='#' className='tool-item' onClick={this.release}>
-         <i className='fa fa-2x fa-unlock'></i>
-         <span className='tool-label'>Release</span>
-       </a>;
+      releaseButton = <a href='#' className='tool-item'
+                      data-application-id={application.id}
+                      data-environment-id={environment.id}
+                      data-reservation-id={reservation.id}
+                      onClick={this.doRelease.bind(this)}>
+                       <i className='fa fa-2x fa-unlock'></i>
+                       <span className='tool-label'>Release</span>
+                      </a>;
     }
 
 
@@ -99,7 +97,7 @@ class ReservationCell extends Component {
 
     var canReserve = reservation == null
     if(canReserve) {
-      reserveButton = <a href='#' className='tool-item' onClick={this.reserve}>
+      reserveButton = <a href='#' className='tool-item' data-application-id={application.id} data-environment-id={environment.id} onClick={this.doReserve.bind(this)}>
          <i className='fa fa-2x fa-lock'></i>
          <span className='tool-label'>Reserve</span>
        </a>;
@@ -125,7 +123,7 @@ class ReservationCell extends Component {
       reservationMeta = <div className='reservation-meta'>
         <img alt='Avatar' src={user.avatar_url} />
         <span className='reservation-info'>
-          <strong>{reservationString}</strong>
+          {reservationString}
         </span>
         </div>
     }
@@ -136,7 +134,7 @@ class ReservationCell extends Component {
        <div className={'toolbar ' + visibilityClassName}>
          {reserveButton}
          {releaseButton}
-         <a href={`https://${application.name}.covermymeds.com/${application.ping}`} className='tool-item'>
+         <a href={`https://${environment.name}-${application.name}.testing.covermymeds.com/${application.ping}`} className='tool-item'>
            <i className='fa fa-2x fa-info'></i>
            <span className='tool-label'> Info</span>
          </a>
@@ -156,11 +154,11 @@ class ReservationRow extends Component {
     var cells = environments.map(env => {
       var key = "reservation-cell-" + (++x);
       const reservation = getReservation(application, env, reservations);
-      return <ReservationCell key={key} reservation={reservation} application={application} environment={env} />
+      return <ReservationCell key={key} reservation={reservation} application={application} environment={env} eventHandlers={this.props.eventHandlers}/>
     });
 
     return (
-      <tr className={application.name} key={application.name}>
+      <tr className={'application-row ' + application.name} key={application.name}>
         <td className='application-name'>
           <strong>{application.name}</strong>
           <div className='toolbar'>
@@ -178,55 +176,18 @@ class ReservationRow extends Component {
 }
 
 class ReservationTable extends Component {
-  constructor(props: Props) {
-    super(props);
-    this.handleScroll = debounce(this.handleScroll, 200);
-  }
-
-  componentDidMount() {
-    this.container.addEventListener('scroll', this.handleScroll);
-  }
-
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.reservations.length !== this.props.reservations.length) {
-      this.maybeScrollToBottom();
-    }
-  }
-
-  componentWillUnmount() {
-    this.container.removeEventListener('scroll', this.handleScroll);
-  }
-
   props: Props
   container: () => void
-
-  maybeScrollToBottom = () => {
-    if (this.container.scrollHeight - this.container.scrollTop <
-        this.container.clientHeight + 50) {
-      this.scrollToBottom();
-    }
-  }
-
-  scrollToBottom = () => {
-    setTimeout(() => { this.container.scrollTop = this.container.scrollHeight; });
-  }
-
-  handleScroll = () => {
-    if (this.props.moreMessages && this.container.scrollTop < 20) {
-      this.props.onLoadMore();
-    }
-  }
-
 
   renderReservations() {
     var x = 0;
 
     const reservationRows = this.props.applications.map((app) => {
-      return <ReservationRow key={"reservation-row-" + (++x)} reservations={this.props.reservations} application={app} environments={this.props.environments}/>
+      return <ReservationRow key={"reservation-row-" + (++x)} reservations={this.props.reservations} application={app} environments={this.props.environments} eventHandlers={this.props.eventHandlers}/>
     });
 
     return(
-      <table className='table table-bordered'>
+      <table key='table' className='table table-bordered'>
         <thead>
           <ReservationTableHeader key={"reservation-table-header-0"} environments={this.props.environments}/>
         </thead>
@@ -238,11 +199,25 @@ class ReservationTable extends Component {
   }
 
   render() {
-    return (
-      <div className={css(styles.container)} ref={(c) => { this.container = c; }}>
-        {this.renderReservations()}
-      </div>
-    );
+    let nodes = [];
+    let hasApplications = true;
+    let hasEnvironments = true;
+
+    if(this.props.applications.length === 0) {
+      hasApplications = false;
+      nodes.push(<div key="whatever" className='disappointed'><h3>No applications to show 😞</h3></div>);
+    }
+
+    if(this.props.environments.length === 0) {
+      hasEnvironments = false;
+      nodes.push(<div key="whatever2" className='disappointed'><h3>No environments to show 😢</h3></div>);
+    }
+
+    if(hasApplications && hasEnvironments) {
+      nodes.push(this.renderReservations());
+    }
+
+    return <div className={css(styles.container)} ref={(c) => { this.container = c; }}>{nodes}</div>;
   }
 }
 
