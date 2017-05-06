@@ -64,6 +64,7 @@ type TeamLinkProps = {
 }
 
 const TeamLink = ({ team }: TeamLinkProps) =>
+  // TODO: use slug in URL
   <Link to={"/t/" + team.id} className={css(styles.link)} activeClassName={css(styles.activeLink)}>
     <div className={css(styles.badge)}>
       <span>{team.name.charAt(0)}</span>

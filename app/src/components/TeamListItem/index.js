@@ -2,6 +2,7 @@
 import React from 'react';
 import includes from 'lodash/includes';
 import { Team } from '../../types';
+import { Link } from 'react-router';
 
 type Props = {
   team: Team,
@@ -16,9 +17,9 @@ const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoin }: Pro
   let adminButton;
 
   if(team.owner_id === currentUser.id) {
-      adminButton = <button className="btn btn-sm">
-       <i className='fa fa-wrench'></i> Admin
-      </button>
+      adminButton = <Link to={`/t/${team.id}/admin`} className="btn btn-sm">
+        <i className='fa fa-wrench'></i> Admin
+      </Link>
   }
 
   return (

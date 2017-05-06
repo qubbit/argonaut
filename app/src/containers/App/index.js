@@ -11,6 +11,7 @@ import MatchAuthenticated from '../../components/MatchAuthenticated';
 import RedirectAuthenticated from '../../components/RedirectAuthenticated';
 import Sidebar from '../../components/Sidebar';
 import Team from '../Team';
+import TeamAdmin from '../TeamAdmin';
 import Alert from '../Alert';
 import { Team as TeamType } from '../../types';
 
@@ -58,6 +59,7 @@ class App extends Component {
             <RedirectAuthenticated pattern="/login" component={Login} {...authProps} />
             <RedirectAuthenticated pattern="/signup" component={Signup} {...authProps} />
             <MatchAuthenticated pattern="/t/:id" component={Team} {...authProps} />
+            <MatchAuthenticated pattern="/t/:id/admin" component={TeamAdmin} {...authProps} />
             <Miss component={NotFound} />
           </div>
         )}
