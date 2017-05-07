@@ -98,7 +98,7 @@ const Sidebar = ({ teams, router, onLogoutClick }: Props) =>
       activeClassName={css(styles.activeLink)}
     >
       <div className={css(styles.badge)}>
-        <span className="fa fa-user" />
+        <span className="fa fa-user-circle-o" />
       </div>
     </Link>
     <button
