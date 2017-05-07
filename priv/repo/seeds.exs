@@ -32,50 +32,62 @@ perf3  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "perf3", des
 # apps
 admin = Repo.insert!(%Application{name: "admin",
                                   repo: "pbm/autobahn",
+                                  team_id: epa_team.id,
                                   ping: "_ping"})
 
 Repo.insert!(%Application{name: "dashboard",
-                                      repo: "pbm/dashboard",
-                                      ping: "_ping"})
+                          repo: "pbm/dashboard",
+                          team_id: epa_team.id,
+                          ping: "_ping"})
 
 epamotron = Repo.insert!(%Application{name: "epamotron",
-                                      repo: "pbm/epamotron",
-                                      ping: "_ping"})
+                          repo: "pbm/epamotron",
+                          team_id: epa_team.id,
+                          ping: "_ping"})
 
 Repo.insert!(%Application{name: "eligibility",
-                                        repo: "pbm/eligibility_gateway",
-                                        ping: "_ping"})
+                          repo: "pbm/eligibility_gateway",
+                          team_id: epa_team.id,
+                          ping: "_ping"})
 
 epa_gateway = Repo.insert!(%Application{name: "epa_gateway",
                                         repo: "pbm/epa_gateway",
+                                        team_id: epa_team.id,
                                         ping: "_ping"})
 
 Repo.insert!(%Application{name: "pbmproxy",
-                                     repo: "pbm/pbmproxy",
-                                     ping: "_ping"})
+                           repo: "pbm/pbmproxy",
+                           ping: "_ping",
+                           team_id: epa_team.id})
 
 Repo.insert!(%Application{name: "fake-plan-payer",
                                             repo: "pbm/fake-plan-payer",
+                                            team_id: epa_team.id,
                                             ping: "_ping"})
 
 Repo.insert!(%Application{name: "formbuilder",
                                         repo: "pbm/formbuilder",
+                                        team_id: epa_team.id,
                                         ping: "_ping"})
 
 Repo.insert!(%Application{name: "pa-starter",
                                        repo: "pbm/pa-starter",
+                                       team_id: epa_team.id,
                                        ping: "_ping"})
 
 Repo.insert!(%Application{name: "pdfmotron",
                                       repo: "pbm/pdfmotron",
+                                      team_id: epa_team.id,
                                       ping: "_ping"})
 
 Repo.insert!(%Application{name: "renewals-api",
                                          repo: "pbm/renewals-api",
+                                         team_id: epa_team.id,
                                          ping: "_ping"})
 
 Repo.insert!(%Application{name: "request-updater",
                                             repo: "pbm/request-updater",
+                                            team_id: epa_team.id,
                                             ping: "_ping"})
 
 # reservations

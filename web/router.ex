@@ -35,6 +35,12 @@ defmodule Argonaut.Router do
     end
     post "/teams/:id/join", TeamController, :join
     get "/teams/:id/table", TeamController, :table
+
+    post "/teams/:id/applications", TeamController, :new_team_application
+    get "/teams/:id/applications", TeamController, :show_team_applications
+
+    post "/teams/:id/environments", TeamController, :new_team_environment
+    get "/teams/:id/environments", TeamController, :show_team_environments
   end
 
 

@@ -56,10 +56,10 @@ class App extends Component {
               />
             }
             <MatchAuthenticated exactly pattern="/" component={Home} {...authProps} />
-            <RedirectAuthenticated pattern="/login" component={Login} {...authProps} />
-            <RedirectAuthenticated pattern="/signup" component={Signup} {...authProps} />
-            <MatchAuthenticated pattern="/t/:id" component={Team} {...authProps} />
-            <MatchAuthenticated pattern="/t/:id/admin" component={TeamAdmin} {...authProps} />
+            <RedirectAuthenticated exactly pattern="/login" component={Login} {...authProps} />
+            <RedirectAuthenticated exactly pattern="/signup" component={Signup} {...authProps} />
+            <MatchAuthenticated exactly pattern="/t/:id" component={Team} {...authProps} />
+            <MatchAuthenticated exactly pattern="/t/:id/admin" component={TeamAdmin} {...authProps} />
             <Miss component={NotFound} />
           </div>
         )}

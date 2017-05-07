@@ -1,7 +1,7 @@
 defmodule Argonaut.TeamController do
   use Argonaut.Web, :controller
 
-  alias Argonaut.{Reservation, User, Team, Repo}
+  alias Argonaut.{Reservation, User, Team, Repo, Application, Environment}
 
   def index(conn, params) do
     page = Team
@@ -37,6 +37,46 @@ defmodule Argonaut.TeamController do
   def show(conn, %{"id" => id}) do
     team = Repo.get!(Team, id)
     render(conn, "show.json", team: team)
+  end
+
+  def new_team_environment(conn, params) do
+    changeset = Environment.changeset(%Environment{}, params)
+
+    case Repo.insert(changeset) do
+      {:ok, environment} ->
+        conn
+        |> put_status(:created)
+        |> json(environment)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def show_team_environments(conn, %{"id" => id}) do
+    environments = Environment |> where(team_id: ^id) |> Repo.all
+    conn |> json(environments)
+  end
+
+  def new_team_application(conn, application_params) do
+    changeset = Application.changeset(%Application{}, application_params)
+
+    case Repo.insert(changeset) do
+      {:ok, application} ->
+        conn
+        |> put_status(:created)
+        |> json(application)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
+  def show_team_applications(conn, %{"id" => id}) do
+    applications = Application |> where(team_id: ^id) |> Repo.all
+    conn |> json(applications)
   end
 
   def update(conn, %{"id" => id, "description" => description}) do
