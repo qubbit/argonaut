@@ -5,26 +5,21 @@ defmodule Argonaut.ProfileController do
 
   def show(conn, _params) do
     current_user = User.current_user(conn)
-    render(conn, "show.html", user: current_user)
+    current_user
   end
 
-  def edit(conn, _params) do
-    current_user = User.current_user(conn)
-    changeset = User.profile_changeset(current_user)
-    render(conn, "edit.html", user: current_user, changeset: changeset)
-  end
-
-  def update(conn, %{"user" => user_params}) do
+  def update(conn, user_params) do
     current_user = User.current_user(conn)
     changeset = User.profile_changeset(current_user, user_params)
 
     case Repo.update(changeset) do
-      {:ok, _user} ->
+      {:ok, user} ->
         conn
-        |> put_flash(:info, "Profile updated successfully.")
-        #|> redirect(to: profile_path(conn, :show))
+        |> json(user)
       {:error, changeset} ->
-        render(conn, "edit.html", user: current_user, changeset: changeset)
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
     end
   end
 end

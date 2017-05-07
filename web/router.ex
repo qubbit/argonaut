@@ -41,6 +41,8 @@ defmodule Argonaut.Router do
 
     post "/teams/:id/environments", TeamController, :new_team_environment
     get "/teams/:id/environments", TeamController, :show_team_environments
+
+    patch "/profile", ProfileController, :update
   end
 
 

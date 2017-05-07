@@ -4,6 +4,9 @@ import session from './session';
 import teams from './teams';
 import team from './team';
 import alert from './alert';
+import applications from './applications';
+import environments from './environments';
+import user from './user';
 
 const appReducer = combineReducers({
   form,
@@ -11,6 +14,9 @@ const appReducer = combineReducers({
   teams,
   team,
   alert,
+  applications,
+  environments,
+  user
 });
 
 export default function (state, action) {

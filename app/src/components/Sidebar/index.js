@@ -91,6 +91,16 @@ const Sidebar = ({ teams, router, onLogoutClick }: Props) =>
       </div>
     </Link>
     <div style={{ flex: '1' }} />
+    <Link
+      to="/profile"
+      activeOnlyWhenExact
+      className={css(styles.link)}
+      activeClassName={css(styles.activeLink)}
+    >
+      <div className={css(styles.badge)}>
+        <span className="fa fa-user" />
+      </div>
+    </Link>
     <button
       onClick={() => onLogoutClick(router)}
       className={css(styles.link, styles.logoutButton)}

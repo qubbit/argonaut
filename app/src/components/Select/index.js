@@ -4,32 +4,31 @@ import React from 'react';
 type Props = {
   input: Object,
   label?: string,
-  type?: string,
-  text: string,
+  options: Array<Object>,
   meta: Object,
-  placeholder?: string,
   style?: Object,
   inputStyle?: Object,
   className?: string,
 }
 
-const Input = ({ input, label, type, text, placeholder, meta, style, inputStyle, className }: Props) => {
-  text = text || ''
+const Select = ({ input, label, options, meta, style, inputStyle, className }: Props) => {
+  options = options || []
+
+  const optionTags = options.map(o => <option key={o.value} value={o.value}>{o.text}</option>);
 
   return <div style={{ ...style }}>
     {label && <label htmlFor={input.name}>{label}</label>}
-    <input
+    <select
       {...input}
-      type={type}
-      placeholder={placeholder}
       style={{ ...inputStyle }}
       className={className || 'form-control'}
-      value={text}
-    />
+    >
+    { optionTags }
+    </select>
     {meta.touched && meta.error &&
       <div style={{ fontSize: '85%', color: '#cc5454' }}>{meta.error}</div>
     }
-  </div>;
+  </div>
 }
 
-export default Input;
+export default Select;
