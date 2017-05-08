@@ -13,7 +13,7 @@ type Props = {
   pagination: Pagination
 }
 
-class UserProfileContainer extends Component {
+class UserSettingsContainer extends Component {
 
   props: Props
 
@@ -39,4 +39,4 @@ export default connect( (state) => ({
     pagination: state.team.pagination
   }),
   { updateUserProfile }
-)(UserProfileContainer);
+)(UserSettingsContainer);

@@ -92,13 +92,13 @@ const Sidebar = ({ teams, router, onLogoutClick }: Props) =>
     </Link>
     <div style={{ flex: '1' }} />
     <Link
-      to="/profile"
+      to="/settings"
       activeOnlyWhenExact
       className={css(styles.link)}
       activeClassName={css(styles.activeLink)}
     >
       <div className={css(styles.badge)}>
-        <span className="fa fa-user-circle-o" />
+        <span className="fa fa-cog" />
       </div>
     </Link>
     <button
