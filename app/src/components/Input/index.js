@@ -24,7 +24,6 @@ const Input = ({ input, label, type, text, placeholder, meta, style, inputStyle,
       placeholder={placeholder}
       style={{ ...inputStyle }}
       className={className || 'form-control'}
-      value={text}
     />
     {meta.touched && meta.error &&
       <div style={{ fontSize: '85%', color: '#cc5454' }}>{meta.error}</div>

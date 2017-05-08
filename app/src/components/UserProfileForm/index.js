@@ -1,10 +1,12 @@
 // @flow
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { css, StyleSheet } from 'aphrodite';
 import Input from '../Input';
 import Select from '../Select';
 import Errors from '../Errors';
+import { fetchUserProfile } from '../../actions/user';
 
 const styles = StyleSheet.create({
   card: {
@@ -24,6 +26,13 @@ type Props = {
 class UserProfileForm extends Component {
   props: Props
 
+  componentWillMount() {
+    if (this.props.pristine) this.props.initialize(this.props.user);
+  }
+
+  componentWillUnmount() {
+    if (this.props.pristine) this.props.destroyForm();
+  }
   constructor(props) {
     super(props)
 
@@ -52,42 +61,41 @@ class UserProfileForm extends Component {
         <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Profile</h3>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Username</label>
           <Field
             name="username"
             type="text"
             component={Input}
-            placeholder="Username"
-            text={this.state.user.username}
           />
           <Errors name="username" errors={errors} />
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Password</label>
           <Field
             name="password"
             type="password"
             component={Input}
-            placeholder="Password"
           />
           <Errors name="password" errors={errors} />
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Password confirmation</label>
           <Field
             name="password_confirmation"
             type="password"
             component={Input}
-            placeholder="Password Confirmation"
           />
           <Errors name="password_confirmation" errors={errors} />
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Email</label>
           <Field
             name="email"
             type="email"
             component={Input}
-            placeholder="Email"
             text={this.state.user.email}
           />
           <Errors name="email" errors={errors} />
@@ -96,39 +104,40 @@ class UserProfileForm extends Component {
         <hr style={{ margin: '2rem 0' }} />
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Avatar URL</label>
           <Field
             name="avatar_url"
             type="text"
             component={Input}
-            placeholder="Avatar URL"
             text={this.state.user.avatar_url}
           />
           <Errors name="avatar_url" errors={errors} />
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>First name</label>
           <Field
             name="first_name"
             type="text"
             component={Input}
-            placeholder="First name"
             text={this.state.user.first_name}
           />
           <Errors name="first_name" errors={errors} />
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Last name</label>
           <Field
             name="last_name"
             type="text"
             component={Input}
-            placeholder="Last name"
             text={this.state.user.last_name}
           />
           <Errors name="last_name" errors={errors} />
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
+          <label>Time zone</label>
           <Field
             name="time_zone"
             type="select"
@@ -170,7 +179,14 @@ const validate = (values) => {
   return errors;
 };
 
-export default reduxForm({
+let userProfileForm = reduxForm({
   form: 'userProfile',
   validate,
 })(UserProfileForm);
+
+userProfileForm = connect(
+  state => ({initialValues: state.user }),
+  { load: fetchUserProfile }
+)(userProfileForm);
+
+export default userProfileForm;
