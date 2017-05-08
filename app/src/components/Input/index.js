@@ -13,9 +13,7 @@ type Props = {
   className?: string,
 }
 
-const Input = ({ input, label, type, text, placeholder, meta, style, inputStyle, className }: Props) => {
-  text = text || ''
-
+const Input = ({ input, label, type, placeholder, meta, style, inputStyle, className }: Props) => {
   return <div style={{ ...style }}>
     {label && <label htmlFor={input.name}>{label}</label>}
     <input

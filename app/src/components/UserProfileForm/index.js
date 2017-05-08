@@ -1,12 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { css, StyleSheet } from 'aphrodite';
 import Input from '../Input';
 import Select from '../Select';
 import Errors from '../Errors';
-import { fetchUserProfile } from '../../actions/user';
 
 const styles = StyleSheet.create({
   card: {
@@ -31,7 +29,7 @@ class UserProfileForm extends Component {
   }
 
   componentWillUnmount() {
-    if (this.props.pristine) this.props.destroyForm();
+    if (this.props.pristine) this.props.destroy();
   }
   constructor(props) {
     super(props)
@@ -183,10 +181,5 @@ let userProfileForm = reduxForm({
   form: 'userProfile',
   validate,
 })(UserProfileForm);
-
-userProfileForm = connect(
-  state => ({initialValues: state.user }),
-  { load: fetchUserProfile }
-)(userProfileForm);
 
 export default userProfileForm;

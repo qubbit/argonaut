@@ -121,7 +121,7 @@ class ReservationCell extends Component {
 
     if(reservation) {
       reservationMeta = <div className='reservation-meta'>
-        <img alt='Avatar' src={user.avatar_url} />
+        <img alt='Avatar' src={user.avatar_url} height="64"/>
         <span className='reservation-info'>
           {reservationString}
         </span>
