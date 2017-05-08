@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import { css, StyleSheet } from 'aphrodite';
 import { Reservation as ReservationType } from '../../types';
 import { userSettings } from '../../actions/session';
+import { Link } from 'react-router';
 
 const styles = StyleSheet.create({
   container: {
@@ -179,6 +180,11 @@ class ReservationTable extends Component {
   props: Props
   container: () => void
 
+  constructor(props) {
+    super(props)
+    this.state = { user: userSettings() }
+  }
+
   renderReservations() {
     var x = 0;
 
@@ -215,6 +221,14 @@ class ReservationTable extends Component {
 
     if(hasApplications && hasEnvironments) {
       nodes.push(this.renderReservations());
+    } else if(this.props.team.owner_id === this.state.user.id) {
+      nodes.push(<div className='disappointed'>
+        <Link to={`/t/${this.props.team.id}/admin`} className="btn btn-sm">
+          <h3>
+            <i className='fa fa-wrench'></i> Go on and add them!
+          </h3>
+        </Link>
+      </div>);
     }
 
     return <div className={css(styles.container)} ref={(c) => { this.container = c; }}>{nodes}</div>;

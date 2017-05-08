@@ -75,6 +75,7 @@ class Team extends Component {
             reservations={this.props.reservations}
             applications={this.props.applications}
             environments={this.props.environments}
+            team={this.props.team}
             eventHandlers={eventHandlers}
             ref={(c) => { this.reservationList = c; }}
           />
