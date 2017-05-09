@@ -97,13 +97,18 @@ class Home extends Component {
   }
 
   render() {
-    return (
-      <div style={{ flex: '1', overflowY: 'auto' }}>
-        <Navbar />
-        <div className={`card ${css(styles.card)}`}>
+    const allowNewTeamCreation = true;
+    let newTeamFormContainer;
+    if(allowNewTeamCreation) {
+        newTeamFormContainer = <div className={`card ${css(styles.card)}`}>
           <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Create a new team</h3>
           <NewTeamForm onSubmit={this.handleNewTeamSubmit} errors={this.props.newTeamErrors} />
         </div>
+    }
+    return (
+      <div style={{ flex: '1', overflowY: 'auto' }}>
+        <Navbar />
+        { newTeamFormContainer }
         <div className={`card ${css(styles.card)}`}>
           <h3 style={{ marginBottom: '2rem', textAlign: 'center' }}>Join a team</h3>
           <div style={{ marginBottom: '1rem' }}>

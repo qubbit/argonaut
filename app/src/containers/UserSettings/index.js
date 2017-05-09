@@ -42,7 +42,7 @@ class UserSettingsContainer extends Component {
           <div className={`card ${css(styles.card)}`} style={{ display: 'flex', margin: '2em auto' }}>
             <div style={{ padding: '32px' }}>
               <Tabs>
-                <TabList>
+                <TabList style={{ marginBottom: '32px' }}>
                   <Tab>
                     <i className="fa fa-user-circle-o" /> Profile
                   </Tab>
@@ -61,7 +61,7 @@ class UserSettingsContainer extends Component {
                   <UserPreferences user={this.props.currentUser} onSubmit={this.handleUserProfileUpdate} />
                 </TabPanel>
                 <TabPanel>
-                  <UserTeamSettings teams={this.props.teams.currentUserTeams} user={this.props.currentUser} teamEventHandlers={this.handleUserProfileUpdate} />
+                  <UserTeamSettings user={this.props.currentUser} teamEventHandlers={this.handleUserProfileUpdate} />
                 </TabPanel>
               </Tabs>
             </div>
