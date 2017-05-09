@@ -33,7 +33,9 @@ defmodule Argonaut.Router do
     resources "/teams", TeamController, only: [:index, :create, :update] do
       resources "/reservations", ReservationController, only: [:index]
     end
+
     post "/teams/:id/join", TeamController, :join
+    delete "/teams/:id/leave", TeamController, :leave
     get "/teams/:id/table", TeamController, :table
 
     post "/teams/:id/applications", TeamController, :new_team_application

@@ -49,6 +49,16 @@ export default function (state = initialState, action) {
           action.response.data,
         ],
       };
+    case 'TEAM_LEFT':
+      const team = action.response.data;
+      const filtered = state.currentUserTeams.filter(t => t.id !== team.id)
+
+      return {
+        ...state,
+        currentUserTeams: [
+          ...filtered
+        ]
+      };
     default:
       return state;
   }

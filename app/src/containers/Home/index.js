@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { css, StyleSheet } from 'aphrodite';
-import { fetchTeams, createTeam, joinTeam } from '../../actions/teams';
+import { fetchTeams, createTeam, joinTeam, leaveTeam } from '../../actions/teams';
 import NewTeamForm from '../../components/NewTeamForm';
 import Navbar from '../../components/Navbar';
 import TeamListItem from '../../components/TeamListItem';
@@ -24,6 +24,7 @@ type Props = {
   fetchTeams: () => void,
   createTeam: () => void,
   joinTeam: () => void,
+  leaveTeam: () => void,
   newTeamErrors: Array<string>,
   pagination: Pagination,
 }
@@ -73,7 +74,12 @@ class Home extends Component {
 
   handleNewTeamSubmit = (data) => this.props.createTeam(data, this.context.router);
 
-  handleTeamJoin = (teamId) => this.props.joinTeam(teamId, this.context.router);
+  handleTeamJoinOrLeave = (text, teamId) => {
+    if(text === 'Leave') {
+      return this.props.leaveTeam(teamId);
+    }
+    return this.props.joinTeam(teamId, this.context.router);
+  }
 
   renderTeams() {
     const currentUserTeamIds = [];
@@ -83,7 +89,7 @@ class Home extends Component {
       <TeamListItem
         key={team.id}
         team={team}
-        onTeamJoin={this.handleTeamJoin}
+        onTeamJoinOrLeave={this.handleTeamJoinOrLeave}
         currentUserTeamIds={currentUserTeamIds}
         currentUser={userSettings()}
       />
@@ -119,5 +125,5 @@ export default connect(
     newTeamErrors: state.teams.newTeamErrors,
     pagination: state.teams.pagination,
   }),
-  { fetchTeams, createTeam, joinTeam }
+  { fetchTeams, createTeam, joinTeam, leaveTeam }
 )(Home);

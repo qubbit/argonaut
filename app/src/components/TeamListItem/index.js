@@ -8,10 +8,10 @@ type Props = {
   team: Team,
   currentUserTeamIds: Array<number>,
   currentUser: User,
-  onTeamJoin: () => void
+  onTeamJoinOrLeave: () => void
 }
 
-const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoin }: Props) => {
+const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoinOrLeave }: Props) => {
   const isJoined = includes(currentUserTeamIds, team.id);
 
   let adminButton;
@@ -28,11 +28,10 @@ const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoin }: Pro
       <span className='roomControls'>
         {adminButton}
         <button
-          onClick={() => onTeamJoin(team.id)}
+          onClick={(e) => onTeamJoinOrLeave(e.currentTarget.innerText, team.id)}
           className="btn btn-sm"
-          disabled={isJoined}
         >
-          {isJoined ? 'Joined' : 'Join'}
+          {isJoined ? 'Leave' : 'Join'}
         </button>
       </span>
     </div>

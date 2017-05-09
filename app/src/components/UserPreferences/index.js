@@ -22,20 +22,6 @@ class UserPreferences extends Component {
   componentWillUnmount() {
     if (this.props.pristine) this.props.destroy();
   }
-  constructor(props) {
-    super(props)
-
-    this.state = { timeZones: [
-      {value: 'America/Anchorage', text: 'Anchorage'},
-      {value: 'America/Chicago', text: 'Chicago'},
-      {value: 'America/Denver', text: 'Denver'},
-      {value: 'America/Indianapolis', text: 'Indianapolis'},
-      {value: 'America/Los_Angeles', text: 'Los Angeles'},
-      {value: 'America/New_York', text: 'New York'},
-      {value: 'America/Phoenix', text: 'Phoenix'},
-      {value: 'America/Puerto_Rico', text: 'Puerto Rico'}
-    ], user: this.props.user };
-  }
 
   handleSubmit = (data) => this.props.onSubmit(data);
 

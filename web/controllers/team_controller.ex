@@ -138,4 +138,20 @@ defmodule Argonaut.TeamController do
         |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
     end
   end
+
+  def leave(conn, %{"id" => team_id}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    team = Repo.get(Team, team_id)
+    membership = Repo.get_by(Argonaut.Membership, team_id: team.id, user_id: current_user.id)
+
+    case Repo.delete(membership) do
+      {:ok, _} ->
+        conn
+        |> render("show.json", %{team: team})
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
 end

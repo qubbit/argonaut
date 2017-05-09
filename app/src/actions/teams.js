@@ -32,3 +32,10 @@ export function joinTeam(teamId, router) {
       router.transitionTo(`/t/${response.data.id}`);
     });
 }
+
+export function leaveTeam(teamId) {
+  return (dispatch) => api.delete(`/teams/${teamId}/leave`)
+    .then((response) => {
+      dispatch({ type: 'TEAM_LEFT', response });
+    });
+}

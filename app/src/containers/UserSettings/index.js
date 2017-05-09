@@ -61,7 +61,7 @@ class UserSettingsContainer extends Component {
                   <UserPreferences user={this.props.currentUser} onSubmit={this.handleUserProfileUpdate} />
                 </TabPanel>
                 <TabPanel>
-                  <UserTeamSettings user={this.props.currentUser} onSubmit={this.handleUserProfileUpdate} />
+                  <UserTeamSettings teams={this.props.teams.currentUserTeams} user={this.props.currentUser} teamEventHandlers={this.handleUserProfileUpdate} />
                 </TabPanel>
               </Tabs>
             </div>
@@ -74,7 +74,8 @@ class UserSettingsContainer extends Component {
 
 export default connect( (state) => ({
     currentUser: state.session.currentUser,
-    pagination: state.team.pagination
+    pagination: state.team.pagination,
+    teams: state.teams
   }),
   { updateUserProfile }
 )(UserSettingsContainer);
