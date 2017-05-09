@@ -12,7 +12,7 @@ type Props = {
   errors: any,
 }
 
-class UserProfileForm extends Component {
+class UserPreferences extends Component {
   props: Props
 
   componentWillMount() {
@@ -163,9 +163,9 @@ const validate = (values) => {
   return errors;
 };
 
-let userProfileForm = reduxForm({
+let userPreferences = reduxForm({
   form: 'userProfile',
   validate,
-})(UserProfileForm);
+})(UserPreferences);
 
-export default userProfileForm;
+export default userPreferences;
