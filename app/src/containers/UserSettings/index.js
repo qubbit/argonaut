@@ -40,7 +40,7 @@ class UserSettingsContainer extends Component {
 
   render() {
     return (
-      <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
+      <div style={{ display: 'flex', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
           <Navbar/>
           <div className={`card ${css(styles.card)}`} style={{ display: 'flex', margin: '2em auto' }}>

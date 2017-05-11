@@ -68,7 +68,7 @@ class Team extends Component {
   render() {
     const eventHandlers = { onReserveClick: this.handleReservation, onReleaseClick: this.handleRelease }
     return (
-      <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
+      <div style={{ display: 'flex', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
           <TeamNavbar team={this.props.team} onDescriptionUpdate={this.handleDescriptionUpdate} />
           <ReservationTable

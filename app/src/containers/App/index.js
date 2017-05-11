@@ -49,6 +49,7 @@ class App extends Component {
   render() {
     const { isAuthenticated, willAuthenticate, currentUserTeams } = this.props;
     const authProps = { isAuthenticated, willAuthenticate };
+    const authStyles = {  width: '100%', marginLeft: '64px' };
 
     return (
       <BrowserRouter>
@@ -62,13 +63,15 @@ class App extends Component {
                 onLogoutClick={this.handleLogout}
               />
             }
-            <MatchAuthenticated exactly pattern="/" component={Home} {...authProps} />
+            <div style={ isAuthenticated ? authStyles : {} }>
+              <MatchAuthenticated exactly pattern="/" component={Home} {...authProps} />
+              <MatchAuthenticated exactly pattern="/t/:id" component={Team} {...authProps} />
+              <MatchAuthenticated exactly pattern="/t/:id/admin" component={TeamAdmin} {...authProps} />
+              <MatchAuthenticated exactly pattern="/settings" component={UserSettingsContainer} {...authProps} />
+              <MatchAuthenticated exactly pattern="/settings/profile" component={UserProfileForm} {...authProps} />
+            </div>
             <RedirectAuthenticated exactly pattern="/login" component={Login} {...authProps} />
             <RedirectAuthenticated exactly pattern="/signup" component={Signup} {...authProps} />
-            <MatchAuthenticated exactly pattern="/t/:id" component={Team} {...authProps} />
-            <MatchAuthenticated exactly pattern="/t/:id/admin" component={TeamAdmin} {...authProps} />
-            <MatchAuthenticated exactly pattern="/settings" component={UserSettingsContainer} {...authProps} />
-            <MatchAuthenticated exactly pattern="/settings/profile" component={UserProfileForm} {...authProps} />
             <Miss component={NotFound} />
           </div>
         )}

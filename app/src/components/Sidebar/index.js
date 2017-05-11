@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     background: '#2E3C56',
+    position: 'fixed',
+    height: '100%'
+
   },
 
   link: {

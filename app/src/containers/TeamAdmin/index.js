@@ -39,7 +39,7 @@ class TeamAdmin extends Component {
 
   render() {
     return (
-      <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
+      <div style={{ display: 'flex', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
           <TeamNavbar team={this.props.team} onDescriptionUpdate={this.handleDescriptionUpdate} />
           <ApplicationForm onSubmit={this.handleApplicationFormSubmit} />
