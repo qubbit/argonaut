@@ -2,7 +2,7 @@ defmodule Argonaut.ErrorView do
   use Argonaut.Web, :view
 
   def render("404.html", _assigns) do
-    "Page not found"
+    "I dunno what you're looking for, but I don't have it."
   end
 
   def render("500.html", _assigns) do

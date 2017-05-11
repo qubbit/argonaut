@@ -51,7 +51,7 @@ defmodule Argonaut.Router do
 
 
   scope "/", Argonaut do
-    get "/*path", ApplicationController, :not_found
+    get "/*path", BaseController, :not_found
   end
 
 end
