@@ -39,3 +39,10 @@ export function leaveTeam(teamId) {
       dispatch({ type: 'TEAM_LEFT', response });
     });
 }
+
+export function deleteTeam(teamId) {
+  return (dispatch) => api.delete(`/teams/${teamId}`)
+    .then((response) => {
+      dispatch({ type: 'TEAM_DELETED', response });
+    });
+}

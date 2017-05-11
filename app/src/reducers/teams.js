@@ -59,6 +59,20 @@ export default function (state = initialState, action) {
           ...filtered
         ]
       };
+    case 'TEAM_DELETED':
+      const team_id = action.response.id;
+      const filteredUserTeams = state.currentUserTeams.filter(t => t.id !== team_id)
+      const filteredAllTeams = state.all.filter(t => t.id !== team_id)
+
+      return {
+        ...state,
+        all: [
+          ...filteredAllTeams
+        ],
+        currentUserTeams: [
+          ...filteredUserTeams
+        ]
+      };
     default:
       return state;
   }

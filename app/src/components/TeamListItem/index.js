@@ -8,10 +8,11 @@ type Props = {
   team: Team,
   currentUserTeamIds: Array<number>,
   currentUser: User,
-  onTeamJoinOrLeave: () => void
+  onTeamJoinOrLeave: () => void,
+  onTeamDelete: () => void
 }
 
-const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoinOrLeave }: Props) => {
+const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoinOrLeave, onTeamDelete }: Props) => {
   const isJoined = includes(currentUserTeamIds, team.id);
 
   let adminButton;
@@ -21,9 +22,9 @@ const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoinOrLeave
       adminButton = <Link to={`/t/${team.id}/admin`} className="btn btn-sm">
         <i className='fa fa-wrench'></i> Admin
       </Link>
-      deleteButton = <Link to={`/t/${team.id}/admin`} className="btn btn-sm">
+      deleteButton = <button onClick={() => onTeamDelete(team.id)} className="btn btn-sm">
         <i className='fa fa-trash'></i> Delete
-      </Link>
+      </button>
   }
 
   return (

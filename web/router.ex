@@ -36,6 +36,7 @@ defmodule Argonaut.Router do
     end
 
     post "/teams/:id/join", TeamController, :join
+    delete "/teams/:id", TeamController, :delete
     delete "/teams/:id/leave", TeamController, :leave
     get "/teams/:id/table", TeamController, :table
 

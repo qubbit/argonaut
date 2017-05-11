@@ -21,13 +21,13 @@ Repo.insert!(%Membership{user_id: wade.id, team_id: epa_team.id, join_date: Ecto
 Repo.insert!(%Membership{user_id: chris.id, team_id: epa_team.id, join_date: Ecto.DateTime.utc})
 
 # testing environments
-pbm1  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "pbm1", description: "PBM1"}) |> Ecto.Changeset.put_assoc(:team, epa_team))
+pbm1  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "pbm1", description: "PBM1", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
 
-epa1  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "epa1", description: "EPA1"}) |> Ecto.Changeset.put_assoc(:team, epa_team))
+epa1  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "epa1", description: "EPA1", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
 
-epa2  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "epa2", description: "EPA2"}) |> Ecto.Changeset.put_assoc(:team, epa_team))
+epa2  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "epa2", description: "EPA2", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
 
-perf3  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "perf3", description: "EPA performance testing environment"}) |> Ecto.Changeset.put_assoc(:team, epa_team))
+perf3  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "perf3", description: "EPA performance testing environment", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
 
 # apps
 admin = Repo.insert!(%Application{name: "admin",

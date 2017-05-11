@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { css, StyleSheet } from 'aphrodite';
-import { fetchTeams, createTeam, joinTeam, leaveTeam } from '../../actions/teams';
+import { fetchTeams, createTeam, joinTeam, leaveTeam, deleteTeam } from '../../actions/teams';
 import NewTeamForm from '../../components/NewTeamForm';
 import Navbar from '../../components/Navbar';
 import TeamListItem from '../../components/TeamListItem';
@@ -81,6 +81,10 @@ class Home extends Component {
     return this.props.joinTeam(teamId, this.context.router);
   }
 
+  handleTeamDelete = (teamId) => {
+    return this.props.deleteTeam(teamId);
+  }
+
   renderTeams() {
     const currentUserTeamIds = [];
     this.props.currentUserTeams.map((team) => currentUserTeamIds.push(team.id));
@@ -90,6 +94,7 @@ class Home extends Component {
         key={team.id}
         team={team}
         onTeamJoinOrLeave={this.handleTeamJoinOrLeave}
+        onTeamDelete={this.handleTeamDelete}
         currentUserTeamIds={currentUserTeamIds}
         currentUser={userSettings()}
       />
@@ -130,5 +135,5 @@ export default connect(
     newTeamErrors: state.teams.newTeamErrors,
     pagination: state.teams.pagination,
   }),
-  { fetchTeams, createTeam, joinTeam, leaveTeam }
+  { fetchTeams, createTeam, joinTeam, leaveTeam, deleteTeam }
 )(Home);

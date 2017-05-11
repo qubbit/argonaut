@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TeamListItem from '../TeamListItem';
-import { joinTeam, leaveTeam } from '../../actions/teams';
+import { joinTeam, leaveTeam, deleteTeam } from '../../actions/teams';
 
 class UserTeamSettings extends Component {
 
@@ -11,6 +11,10 @@ class UserTeamSettings extends Component {
       return this.props.leaveTeam(teamId);
     }
     return this.props.joinTeam(teamId, this.context.router);
+  }
+
+  handleTeamDelete = (teamId) => {
+    return this.props.deleteTeam(teamId);
   }
 
   noTeamsMessage = () => {
@@ -25,9 +29,10 @@ class UserTeamSettings extends Component {
       <TeamListItem
         key={team.id}
         team={team}
+        onTeamJoinOrLeave={this.handleTeamJoinOrLeave}
+        onTeamDelete={this.handleTeamDelete}
         currentUserTeamIds={currentUserTeamIds}
         currentUser={this.props.user}
-        onTeamJoinOrLeave={this.handleTeamJoinOrLeave}
       />
     );
     return <div style={{ width: '640px' }}>
@@ -46,5 +51,5 @@ export default connect(
     teams: state.teams.all,
     currentUserTeams: state.teams.currentUserTeams,
   }),
-  { joinTeam, leaveTeam }
+  { joinTeam, leaveTeam, deleteTeam }
 )(UserTeamSettings);

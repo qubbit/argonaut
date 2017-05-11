@@ -96,7 +96,7 @@ defmodule Argonaut.TeamController do
   def delete(conn, %{"id" => id}) do
     team = Repo.get!(Team, id)
     Repo.delete!(team)
-    send_resp(conn, :no_content, "")
+    conn |> json(%{ id: team.id })
   end
 
   # trying to prevent the N+1 query problem here
