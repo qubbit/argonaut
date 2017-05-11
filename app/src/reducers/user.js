@@ -20,6 +20,11 @@ export default function (state = initialState, action) {
         ...state,
         updateProfileErrors: action.error.errors
       };
+    case 'USER_VACATION_MODE_SUCCESS':
+      return {
+        ...state,
+        submitting: false
+      };
     default:
       return state;
   }

@@ -23,6 +23,16 @@
      end
    end
 
+   def delete_all_user_reservations(conn, params) do
+     current_user = Guardian.Plug.current_resource(conn)
+
+     query = from(p in Argonaut.Reservation, where: p.user_id == ^current_user.id)
+     reservation_ids = query |> Repo.all |> Enum.map(fn r -> r.id end)
+     query |> Repo.delete_all
+
+     conn |> json(reservation_ids)
+   end
+
    def teams(conn, params) do
      current_user = Guardian.Plug.current_resource(conn)
 

@@ -17,3 +17,10 @@ export function updateUserProfile(data, router) {
     });
 }
 
+export function vacationMode(userId) {
+  return (dispatch) => api.post(`/users/${userId}/vacation`, {})
+    .then((response) => {
+      dispatch({ type: 'USER_VACATION_MODE_SUCCESS', response });
+    });
+}
+

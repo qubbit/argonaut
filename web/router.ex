@@ -29,6 +29,7 @@ defmodule Argonaut.Router do
     resources "/membership", MembershipController, except: [:new, :edit]
 
     get "/users/:id/teams", UserController, :teams
+    post "/users/:id/vacation", UserController, :delete_all_user_reservations
 
     resources "/teams", TeamController, only: [:index, :create, :update] do
       resources "/reservations", ReservationController, only: [:index]

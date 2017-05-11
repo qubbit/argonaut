@@ -6,7 +6,7 @@ import Navbar from '../../components/Navbar';
 import UserProfileForm from '../../components/UserProfileForm';
 import UserTeamSettings from '../../components/UserTeamSettings';
 import UserPreferences from '../../components/UserPreferences';
-import { updateUserProfile } from '../../actions/user';
+import { updateUserProfile, vacationMode } from '../../actions/user';
 import { css, StyleSheet } from 'aphrodite';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -34,6 +34,10 @@ class UserSettingsContainer extends Component {
     this.props.updateUserProfile(data);
   }
 
+  handleVacationMode = (user) => {
+    this.props.vacationMode(this.props.currentUser.id);
+  }
+
   render() {
     return (
       <div style={{ display: 'flex', height: '100vh', flex: '1' }}>
@@ -58,7 +62,7 @@ class UserSettingsContainer extends Component {
                   <UserProfileForm user={this.props.currentUser} onSubmit={this.handleUserProfileUpdate} />
                 </TabPanel>
                 <TabPanel>
-                  <UserPreferences user={this.props.currentUser} onSubmit={this.handleUserProfileUpdate} />
+                  <UserPreferences user={this.props.currentUser} onVacationMode={this.handleVacationMode} />
                 </TabPanel>
                 <TabPanel>
                   <UserTeamSettings user={this.props.currentUser} teamEventHandlers={this.handleUserProfileUpdate} />
@@ -77,5 +81,5 @@ export default connect( (state) => ({
     pagination: state.team.pagination,
     teams: state.teams
   }),
-  { updateUserProfile }
+  { updateUserProfile, vacationMode }
 )(UserSettingsContainer);

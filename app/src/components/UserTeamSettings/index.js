@@ -13,6 +13,12 @@ class UserTeamSettings extends Component {
     return this.props.joinTeam(teamId, this.context.router);
   }
 
+  noTeamsMessage = () => {
+    return <div className='alert alert-info'>
+      You are not a member of any team. Click on the + button to the left to join one.
+    </div>
+  }
+
   render() {
     const currentUserTeamIds = this.props.currentUserTeams.map(t => t.id);
     const teamListNode = this.props.currentUserTeams.map((team) =>
@@ -29,7 +35,7 @@ class UserTeamSettings extends Component {
         The act of leaving a team is a destructive operation. When you leave a team, all your app:env reservations in the team will be cleared.
       </div>
         <div>
-        {teamListNode}
+        {teamListNode.length > 0 ? teamListNode : this.noTeamsMessage()}
         </div>
       </div>;
   }
