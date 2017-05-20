@@ -245,3 +245,7 @@ main {
 .teamControls button:not(:last-child){
   margin-right: 10px;
 }
+
+.adminSectionHeader {
+  margin: 20px 0;
+}

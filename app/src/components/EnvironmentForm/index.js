@@ -6,9 +6,9 @@ import Input from '../Input';
 
 const styles = StyleSheet.create({
   card: {
-    maxWidth: '500px',
-    padding: '1rem 1rem',
-    margin: '2rem auto',
+    maxWidth: '400px',
+    padding: '20px',
+    margin: '20px',
   },
 });
 

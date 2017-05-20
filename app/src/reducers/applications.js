@@ -24,14 +24,15 @@ export default function (state = initialState, action) {
         pagination: action.response.pagination
       };
     case 'CREATE_TEAM_APPLICATION_SUCCESS':
+      debugger;
       return {
         ...state,
         all: [
-          action.response.data,
+          action.response,
           ...state.all
         ],
         currentTeamApplications: [
-          action.response.data,
+          action.response,
           ...state.currentTeamApplications
         ],
         newApplicationErrors: []

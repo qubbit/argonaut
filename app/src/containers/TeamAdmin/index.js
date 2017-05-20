@@ -2,11 +2,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TeamNavbar from '../../components/TeamNavbar';
+import ApplicationListItem from '../../components/ApplicationListItem';
+import EnvironmentListItem from '../../components/EnvironmentListItem';
 import ApplicationForm from '../../components/ApplicationForm';
 import EnvironmentForm from '../../components/EnvironmentForm';
-import { updateTeam } from '../../actions/team';
-import { fetchEnvironments, fetchTeamEnvironments, createTeamEnvironment } from '../../actions/environments';
-import { fetchApplications, fetchTeamApplications, createTeamApplication } from '../../actions/applications';
+import {
+  connectToChannel,
+  leaveChannel,
+  createReservation,
+  deleteReservation,
+  updateTeam,
+} from '../../actions/team';
+import {
+  fetchEnvironments,
+  fetchTeamEnvironments,
+  createTeamEnvironment
+} from '../../actions/environments';
+import {
+  fetchApplications,
+  fetchTeamApplications,
+  createTeamApplication
+} from '../../actions/applications';
 import { Application, Environment, Pagination } from '../../types';
 
 type Props = {
@@ -22,10 +38,34 @@ type Props = {
 }
 
 class TeamAdmin extends Component {
+  componentDidMount() {
+    this.props.connectToChannel(this.props.socket, this.props.params.id);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.params.id !== this.props.params.id) {
+      this.props.leaveChannel(this.props.channel);
+      this.props.connectToChannel(nextProps.socket, nextProps.params.id);
+    }
+    if (!this.props.socket && nextProps.socket) {
+      this.props.connectToChannel(nextProps.socket, nextProps.params.id);
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.leaveChannel(this.props.channel);
+  }
+
+  constructor(props) {
+    super(props);
+    debugger;
+  }
 
   props: Props
 
-  handleDescriptionUpdate = (data) => this.props.updateTeam(this.props.params.id, data);
+  handleDescriptionUpdate = (data) => {
+    this.props.updateTeam(this.props.params.id, data);
+  }
 
   handleApplicationFormSubmit = (data) => {
     Object.assign(data, {team_id: this.props.params.id});
@@ -37,13 +77,33 @@ class TeamAdmin extends Component {
     this.props.createTeamEnvironment(this.props.params.id, data);
   }
 
+  applicationList = () => {
+    return this.props.applications.map(a => <ApplicationListItem application={a} onApplcationDelete=""/>);
+  }
+
+  environmentList = () => {
+    return this.props.environments.map(e => <EnvironmentListItem environment={e} onEnvironmentDelete=""/>);
+  }
+
   render() {
     return (
       <div style={{ display: 'flex', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
           <TeamNavbar team={this.props.team} onDescriptionUpdate={this.handleDescriptionUpdate} />
-          <ApplicationForm onSubmit={this.handleApplicationFormSubmit} />
-          <EnvironmentForm onSubmit={this.handleEnvironmentFormSubmit} />
+          <div className='teamAdminSection' style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <section className='newAppEnvForms'>
+              <ApplicationForm onSubmit={this.handleApplicationFormSubmit} />
+              <EnvironmentForm onSubmit={this.handleEnvironmentFormSubmit} />
+            </section>
+            <section className='adminApplicationList'>
+              <h3 className='adminSectionHeader'>Applications</h3>
+              {this.applicationList()}
+            </section>
+            <section className='adminEnvironmentList'>
+              <h3 className='adminSectionHeader'>Environments</h3>
+              {this.environmentList()}
+            </section>
+          </div>
         </div>
       </div>
     );
@@ -53,10 +113,14 @@ class TeamAdmin extends Component {
 export default connect(
   (state) => ({
     team: state.team.currentTeam,
+    socket: state.session.socket,
+    channel: state.team.channel,
+    reservations: state.team.reservations,
     applications: state.team.applications,
     environments: state.team.environments,
+    presentUsers: state.team.presentUsers,
     currentUser: state.session.currentUser,
     pagination: state.team.pagination
   }),
-  { updateTeam, fetchTeamApplications, fetchTeamEnvironments, createTeamApplication, createTeamEnvironment }
+  { connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam, fetchTeamApplications, fetchTeamEnvironments, createTeamApplication, createTeamEnvironment }
 )(TeamAdmin);

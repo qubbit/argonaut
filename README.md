@@ -5,6 +5,9 @@ Reserve testing environments effectively.
 About
 -----
 
+*See caveats below*
+
+
 This application has a *very* specific use, to let you reserve testing environments for your apps while working with multiple apps and testing environments. It's well-suited for organizations that use the microservice architecture with separate testing, integration and production environments. It lets you add multiple testing environments and applications, and allows logged in users to create a reservation for testing apps in the specified testing environment for a period of time.
 
 Web sockets are used to facilitate real-time updates when users reserve or release an environment
@@ -102,6 +105,22 @@ heroku run "POOL_SIZE=2 mix ecto.migrate"
 # add environment variables for dyno metadata
 heroku labs:enable runtime-dyno-metadata
 ```
+
+Caveats
+-------
+This application is under heavy development so expect to see a lot of bugs. These will mostly manifest in the front-end react.js code. Most notably, the mix of AJAX and websockets needs to be straightened out as well as few obvious refactorings and performance optimizations.
+
+TODO
+----
+- [x] Render reservations
+- [x] Allow users to reserve and release environments
+- [x] Allow team creation
+- [x] Allow team admins to delete owned teams
+- [ ] Allow team admins to delete owned applications
+- [ ] Allow team admins to delete owned environments
+- [x] Allow user login
+- [x] Allow user signup
+- [ ] Allow user password resets
 
 Credits
 -------

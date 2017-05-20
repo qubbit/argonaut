@@ -7,6 +7,10 @@ import { authenticate, unauthenticate, logout } from '../../actions/session';
 import Home from '../Home';
 import Login from '../Login';
 import Signup from '../Signup';
+import Alert from '../Alert';
+import Team from '../Team';
+import TeamAdmin from '../TeamAdmin';
+import UserSettingsContainer from '../UserSettings';
 
 import NotFound from '../../components/NotFound';
 import MatchAuthenticated from '../../components/MatchAuthenticated';
@@ -14,11 +18,6 @@ import RedirectAuthenticated from '../../components/RedirectAuthenticated';
 import Sidebar from '../../components/Sidebar';
 import UserProfileForm from '../../components/UserProfileForm';
 
-import Alert from '../Alert';
-import Team from '../Team';
-import TeamAdmin from '../TeamAdmin';
-
-import UserSettingsContainer from '../UserSettings';
 
 import { Team as TeamType } from '../../types';
 
