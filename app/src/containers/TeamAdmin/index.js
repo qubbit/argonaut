@@ -12,17 +12,15 @@ import {
   createReservation,
   deleteReservation,
   updateTeam,
-} from '../../actions/team';
-import {
   fetchEnvironments,
   fetchTeamEnvironments,
-  createTeamEnvironment
-} from '../../actions/environments';
-import {
+  createTeamEnvironment,
+  deleteTeamEnvironment,
   fetchApplications,
   fetchTeamApplications,
-  createTeamApplication
-} from '../../actions/applications';
+  createTeamApplication,
+  deleteTeamApplication
+} from '../../actions/team';
 import { Application, Environment, Pagination } from '../../types';
 
 type Props = {
@@ -58,7 +56,6 @@ class TeamAdmin extends Component {
 
   constructor(props) {
     super(props);
-    debugger;
   }
 
   props: Props
@@ -77,12 +74,20 @@ class TeamAdmin extends Component {
     this.props.createTeamEnvironment(this.props.params.id, data);
   }
 
+  handleApplicationDelete = (applicationId) => {
+    this.props.deleteTeamApplication(this.props.params.id, applicationId);
+  }
+
+  handleEnvironmentDelete = (environmentId) => {
+    this.props.deleteTeamEnvironment(this.props.params.id, environmentId);
+  }
+
   applicationList = () => {
-    return this.props.applications.map(a => <ApplicationListItem application={a} onApplcationDelete=""/>);
+    return this.props.applications.map(a => <ApplicationListItem key={`application-${a.id}`} application={a} onApplicationDelete={this.handleApplicationDelete}/>);
   }
 
   environmentList = () => {
-    return this.props.environments.map(e => <EnvironmentListItem environment={e} onEnvironmentDelete=""/>);
+    return this.props.environments.map(e => <EnvironmentListItem key={`environment-${e.id}`} environment={e} onEnvironmentDelete={this.handleEnvironmentDelete}/>);
   }
 
   render() {
@@ -122,5 +127,5 @@ export default connect(
     currentUser: state.session.currentUser,
     pagination: state.team.pagination
   }),
-  { connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam, fetchTeamApplications, fetchTeamEnvironments, createTeamApplication, createTeamEnvironment }
+  { connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam, fetchTeamApplications, fetchTeamEnvironments, createTeamApplication, deleteTeamApplication, createTeamEnvironment, deleteTeamEnvironment }
 )(TeamAdmin);

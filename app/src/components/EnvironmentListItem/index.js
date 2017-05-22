@@ -10,10 +10,10 @@ type Props = {
 const EnvironmentListItem = ({ environment, onEnvironmentDelete }: Props) => {
 
   return (
-    <div key={environment.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
       <span style={{ marginRight: '8px' }}>{environment.name}</span>
       <span className='environmentControls'>
-        <button onClick={() => onEnvironmentDelete(environment.id)} className="btn btn-sm">
+        <button onClick={() => onEnvironmentDelete(environment.id)} className="btn btn-sm btn-danger">
           <i className='fa fa-trash'></i> Delete
         </button>
       </span>

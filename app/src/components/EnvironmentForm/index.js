@@ -21,7 +21,10 @@ type Props = {
 class EnvironmentForm extends Component {
   props: Props
 
-  handleSubmit = (data) => this.props.onSubmit(data);
+  handleSubmit = (data) => {
+    this.props.onSubmit(data);
+    this.props.reset();
+  }
 
   render() {
     const { handleSubmit, submitting } = this.props;

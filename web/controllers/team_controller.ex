@@ -154,4 +154,38 @@ defmodule Argonaut.TeamController do
         |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
     end
   end
+
+  def delete_team_application(conn, %{"id" => team_id, "application_id" => application_id}) do
+    # TODO: make sure the app team is owned by the current user
+    deleted = false
+    current_user = Guardian.Plug.current_resource(conn)
+    team = Repo.get(Team, team_id)
+
+    if team.owner_id == current_user.id do
+      application = Repo.get(Application, application_id)
+      if to_string(application.id) == application_id do
+        Repo.delete!(application)
+        deleted = true
+      end
+    end
+
+    conn |> json(%{"success" => deleted, "application_id" => application_id})
+  end
+
+  def delete_team_environment(conn, %{"id" => team_id, "environment_id" => environment_id}) do
+    # TODO: make sure the app team is owned by the current user
+    deleted = false
+    current_user = Guardian.Plug.current_resource(conn)
+    team = Repo.get(Team, team_id)
+
+    if team.owner_id == current_user.id do
+      environment = Repo.get(Environment, environment_id)
+      if to_string(environment.id) == environment_id do
+        Repo.delete!(environment)
+        deleted = true
+      end
+    end
+
+    conn |> json(%{"success" => deleted, "environment_id" => environment_id})
+  end
 end

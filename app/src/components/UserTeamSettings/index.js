@@ -19,7 +19,7 @@ class UserTeamSettings extends Component {
 
   noTeamsMessage = () => {
     return <div className='alert alert-info'>
-      You are not a member of any team. Click on the + button to the left to join one.
+      You are not a member of any team. Click on the + button on the sidebar to join one.
     </div>
   }
 

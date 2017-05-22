@@ -75,7 +75,7 @@ class Home extends Component {
   handleNewTeamSubmit = (data) => this.props.createTeam(data, this.context.router);
 
   handleTeamJoinOrLeave = (text, teamId) => {
-    if(text === 'Leave') {
+    if(text.trim() === 'Leave') {
       return this.props.leaveTeam(teamId);
     }
     return this.props.joinTeam(teamId, this.context.router);

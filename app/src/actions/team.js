@@ -53,3 +53,68 @@ export function updateTeam(teamId, data) {
       dispatch({ type: 'UPDATE_TEAM_SUCCESS', response });
     });
 }
+
+// fetch all applications for all teams
+export function fetchApplications(params) {
+  return (dispatch) => api.fetch('/applications', params)
+    .then((response) => {
+      dispatch({ type: 'FETCH_APPLICATIONS_SUCCESS', response });
+    });
+}
+
+export function fetchTeamApplications(teamId) {
+  return (dispatch) => api.fetch(`/teams/${teamId}/applications`)
+    .then((response) => {
+      dispatch({ type: 'FETCH_TEAM_APPLICATIONS_SUCCESS', response });
+    });
+}
+
+export function createTeamApplication(teamId, data) {
+  return (dispatch) => api.post(`/teams/${teamId}/applications`, data)
+    .then((response) => {
+      dispatch({ type: 'CREATE_TEAM_APPLICATION_SUCCESS', response });
+    })
+    .catch((error) => {
+      dispatch({ type: 'CREATE_TEAM_APPLICATION_FAILURE', error });
+    });
+}
+
+// fetch all environments for all teams
+export function fetchEnvironments(params) {
+  return (dispatch) => api.fetch('/environments', params)
+    .then((response) => {
+      dispatch({ type: 'FETCH_ENVIRONMENTS_SUCCESS', response });
+    });
+}
+
+export function fetchTeamEnvironments(teamId) {
+  return (dispatch) => api.fetch(`/teams/${teamId}/environments`)
+    .then((response) => {
+      dispatch({ type: 'FETCH_TEAM_ENVIRONMENTS_SUCCESS', response });
+    });
+}
+
+export function createTeamEnvironment(teamId, data) {
+  return (dispatch) => api.post(`/teams/${teamId}/environments`, data)
+    .then((response) => {
+      dispatch({ type: 'CREATE_TEAM_ENVIRONMENT_SUCCESS', response });
+    })
+    .catch((error) => {
+      dispatch({ type: 'CREATE_TEAM_ENVIRONMENT_FAILURE', error });
+    });
+}
+
+export function deleteTeamApplication(teamId, applicationId) {
+  return (dispatch) => api.delete(`/teams/${teamId}/applications/${applicationId}`)
+    .then((response) => {
+      if(response.success) dispatch({ type: 'DELETE_TEAM_APPLICATION_SUCCESS', response });
+    });
+}
+
+export function deleteTeamEnvironment(teamId, environmentId) {
+  return (dispatch) => api.delete(`/teams/${teamId}/environments/${environmentId}`)
+    .then((response) => {
+      if(response.success) dispatch({ type: 'DELETE_TEAM_ENVIRONMENT_SUCCESS', response });
+    });
+}
+

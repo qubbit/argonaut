@@ -249,3 +249,7 @@ main {
 .adminSectionHeader {
   margin: 20px 0;
 }
+
+button a {
+  color: #000;
+}

@@ -211,18 +211,18 @@ class ReservationTable extends Component {
 
     if(this.props.applications.length === 0) {
       hasApplications = false;
-      nodes.push(<div key="whatever" className='disappointed'><h3>No applications to show 😞</h3></div>);
+      nodes.push(<div key="noApplicationsMessage" className='disappointed'><h3>No applications to show 😞</h3></div>);
     }
 
     if(this.props.environments.length === 0) {
       hasEnvironments = false;
-      nodes.push(<div key="whatever2" className='disappointed'><h3>No environments to show 😢</h3></div>);
+      nodes.push(<div key="noEnvironmentsMessage" className='disappointed'><h3>No environments to show 😢</h3></div>);
     }
 
     if(hasApplications && hasEnvironments) {
       nodes.push(this.renderReservations());
     } else if(this.props.team.owner_id === this.state.user.id) {
-      nodes.push(<div className='disappointed'>
+      nodes.push(<div key="add-stuff-link-container" className='disappointed'>
         <Link to={`/t/${this.props.team.id}/admin`} className="btn btn-sm">
           <h3>
             <i className='fa fa-wrench'></i> Go on and add them!

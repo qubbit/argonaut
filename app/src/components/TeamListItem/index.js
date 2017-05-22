@@ -19,10 +19,12 @@ const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoinOrLeave
   let deleteButton;
 
   if(team.owner_id === currentUser.id) {
-      adminButton = <Link to={`/t/${team.id}/admin`} className="btn btn-sm">
-        <i className='fa fa-wrench'></i> Admin
-      </Link>
-      deleteButton = <button onClick={() => onTeamDelete(team.id)} className="btn btn-sm">
+      adminButton = <button className="btn btn-sm">
+          <Link to={`/t/${team.id}/admin`}>
+          <i className='fa fa-wrench'></i> Admin
+        </Link>
+      </button>
+      deleteButton = <button onClick={() => onTeamDelete(team.id)} className="btn btn-sm btn-danger">
         <i className='fa fa-trash'></i> Delete
       </button>
   }
@@ -37,7 +39,7 @@ const TeamListItem = ({ team, currentUserTeamIds, currentUser, onTeamJoinOrLeave
           onClick={(e) => onTeamJoinOrLeave(e.currentTarget.innerText, team.id)}
           className="btn btn-sm"
         >
-          {isJoined ? 'Leave' : 'Join'}
+          {isJoined ? <span><i className='fa fa-sign-out'></i> Leave</span> : <span><i className='fa fa-sign-in'></i> Join</span>}
         </button>
       </span>
     </div>
