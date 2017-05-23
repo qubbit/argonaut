@@ -20,7 +20,18 @@ export default function (state = initialState, action) {
         ...state,
         reservations: action.response.reservations,
         applications: action.response.applications,
-        environments: action.response.environments
+        environments: action.response.environments,
+        loadingReservations: false
+      };
+    case 'FETCH_TEAM_RESERVATIONS_REQUEST':
+      return {
+        ...state,
+        loadingReservations: true
+      };
+    case 'FETCH_TEAM_RESERVATIONS_FAILURE':
+      return {
+        ...state,
+        loadingReservations: false,
       };
     case 'TEAM_CONNECTED_TO_CHANNEL':
       return {
@@ -46,25 +57,6 @@ export default function (state = initialState, action) {
         reservations: [
           ...filteredReservations
         ]
-      };
-    case 'FETCH_RESERVATIONS_REQUEST':
-      return {
-        ...state,
-        loadingReservations: true,
-      };
-    case 'FETCH_RESERVATIONS_SUCCESS':
-      return {
-        ...state,
-        reservations: [
-          ...action.response.data.reverse(),
-          ...state.reservations,
-        ],
-        loadingReservations: false,
-      };
-    case 'FETCH_RESERVATIONS_FAILURE':
-      return {
-        ...state,
-        loadingReservations: false,
       };
     case 'UPDATE_TEAM_SUCCESS':
       return {

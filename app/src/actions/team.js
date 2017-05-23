@@ -1,10 +1,16 @@
 import api from '../api';
 
 export function fetchTeamTable(teamId) {
-  return (dispatch) => api.fetch(`/teams/${teamId}/table`, {})
+  return (dispatch) => {
+    dispatch({type: 'FETCH_TEAM_RESERVATIONS_REQUEST' });
+    return api.fetch(`/teams/${teamId}/table`, {})
     .then((response) => {
       dispatch({ type: 'FETCH_TEAM_RESERVATIONS_SUCCESS', response });
+    })
+    .catch(() => {
+      dispatch({ type: 'FETCH_TEAM_RESERVATIONS_FAILURE' });
     });
+  }
 }
 
 export function connectToChannel(socket, teamId) {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReservationTable from '../../components/ReservationTable';
 import TeamNavbar from '../../components/TeamNavbar';
+import Loading from '../../components/Loading';
 import {
   fetchTeamTable,
   connectToChannel,
@@ -76,14 +77,14 @@ class Team extends Component {
       <div style={{ display: 'flex', flex: '1' }}>
         <div style={{ display: 'flex', flexDirection: 'column', flex: '1' }}>
           <TeamNavbar team={this.props.team} onDescriptionUpdate={this.handleDescriptionUpdate} />
-          <ReservationTable
+          { this.props.loadingReservations ? <Loading/> : <ReservationTable
             reservations={this.props.reservations}
             applications={this.props.applications}
             environments={this.props.environments}
             team={this.props.team}
             eventHandlers={eventHandlers}
             ref={(c) => { this.reservationList = c; }}
-          />
+          /> }
         </div>
       </div>
     );
