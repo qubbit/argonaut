@@ -1,5 +1,11 @@
-import { reset } from 'redux-form';
 import api from '../api';
+
+export function fetchTeamTable(teamId) {
+  return (dispatch) => api.fetch(`/teams/${teamId}/table`, {})
+    .then((response) => {
+      dispatch({ type: 'FETCH_TEAM_RESERVATIONS_SUCCESS', response });
+    });
+}
 
 export function connectToChannel(socket, teamId) {
   return (dispatch) => {
@@ -8,6 +14,10 @@ export function connectToChannel(socket, teamId) {
 
     channel.on('reservation_created', (message) => {
       dispatch({ type: 'RESERVATION_CREATED', message });
+    });
+
+    channel.on('reservation_deleted', (message) => {
+      dispatch({ type: 'RESERVATION_DELETED', message });
     });
 
     channel.join().receive('ok', (response) => {
@@ -30,9 +40,6 @@ export function leaveChannel(channel) {
 export function deleteReservation(channel, data) {
   return (dispatch) => new Promise((resolve, reject) => {
     channel.push('delete_reservation', data)
-      .receive('ok', () => resolve(
-        dispatch(reset('deletedReservation'))
-      ))
       .receive('error', () => reject());
   });
 }
@@ -40,9 +47,6 @@ export function deleteReservation(channel, data) {
 export function createReservation(channel, data) {
   return (dispatch) => new Promise((resolve, reject) => {
     channel.push('new_reservation', data)
-      .receive('ok', () => resolve(
-        dispatch(reset('newReservation'))
-      ))
       .receive('error', () => reject());
   });
 }

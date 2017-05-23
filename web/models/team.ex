@@ -3,7 +3,7 @@ defmodule Argonaut.Team do
 
   alias Argonaut.{Reservation, Membership, User, Environment, Application}
 
-  @derive {Poison.Encoder, only: [:name, :id, :reservations, :environments, :applications]}
+  @derive {Poison.Encoder, only: [:name, :id, :description, :owner_id, :logo_url, :reservations, :environments, :applications]}
 
   schema "teams" do
     field :name, :string

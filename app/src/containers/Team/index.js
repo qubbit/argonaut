@@ -4,13 +4,14 @@ import { connect } from 'react-redux';
 import ReservationTable from '../../components/ReservationTable';
 import TeamNavbar from '../../components/TeamNavbar';
 import {
+  fetchTeamTable,
   connectToChannel,
   leaveChannel,
   createReservation,
   deleteReservation,
   updateTeam,
 } from '../../actions/team';
-import { Application, Environment, Reservation, Pagination } from '../../types';
+import { Application, Environment, Reservation } from '../../types';
 
 type Props = {
   socket: any,
@@ -27,11 +28,13 @@ type Props = {
   applications: Array<Application>,
   environments: Array<Environment>,
   currentUser: Object,
-  pagination: Pagination,
   updateTeam: () => void,
 }
 
 class Team extends Component {
+  componentWillMount() {
+    this.props.fetchTeamTable(this.props.params.id);
+  }
   componentDidMount() {
     this.props.connectToChannel(this.props.socket, this.props.params.id);
   }
@@ -40,9 +43,11 @@ class Team extends Component {
     if (nextProps.params.id !== this.props.params.id) {
       this.props.leaveChannel(this.props.channel);
       this.props.connectToChannel(nextProps.socket, nextProps.params.id);
+      this.props.fetchTeamTable(nextProps.params.id);
     }
     if (!this.props.socket && nextProps.socket) {
       this.props.connectToChannel(nextProps.socket, nextProps.params.id);
+      this.props.fetchTeamTable(nextProps.params.id);
     }
   }
 
@@ -95,8 +100,7 @@ export default connect(
     environments: state.team.environments,
     presentUsers: state.team.presentUsers,
     currentUser: state.session.currentUser,
-    pagination: state.team.pagination,
     loadingReservations: state.team.loadingReservations,
   }),
-  { connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam }
+  { fetchTeamTable, connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam }
 )(Team);

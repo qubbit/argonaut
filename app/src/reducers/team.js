@@ -15,15 +15,18 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case 'FETCH_TEAM_RESERVATIONS_SUCCESS':
+      return {
+        ...state,
+        reservations: action.response.reservations,
+        applications: action.response.applications,
+        environments: action.response.environments
+      };
     case 'TEAM_CONNECTED_TO_CHANNEL':
       return {
         ...state,
         channel: action.channel,
-        currentTeam: action.response.team,
-        reservations: action.response.reservations,
-        applications: action.response.applications,
-        environments: action.response.environments,
-        pagination: action.response.pagination,
+        currentTeam: action.response.team
       };
     case 'USER_LEFT_TEAM':
       return initialState;
@@ -32,8 +35,17 @@ export default function (state = initialState, action) {
         ...state,
         reservations: [
           ...state.reservations,
-          action.reservation,
+          action.message,
         ],
+      };
+    case 'RESERVATION_DELETED':
+      const reservation_id = action.message.reservation_id;
+      const filteredReservations = state.reservations.filter(r => r.id != reservation_id);
+      return {
+        ...state,
+        reservations: [
+          ...filteredReservations
+        ]
       };
     case 'FETCH_RESERVATIONS_REQUEST':
       return {
@@ -47,7 +59,6 @@ export default function (state = initialState, action) {
           ...action.response.data.reverse(),
           ...state.reservations,
         ],
-        pagination: action.response.pagination,
         loadingReservations: false,
       };
     case 'FETCH_RESERVATIONS_FAILURE':

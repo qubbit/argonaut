@@ -7,16 +7,15 @@ import EnvironmentListItem from '../../components/EnvironmentListItem';
 import ApplicationForm from '../../components/ApplicationForm';
 import EnvironmentForm from '../../components/EnvironmentForm';
 import {
+  fetchTeamTable,
   connectToChannel,
   leaveChannel,
   createReservation,
   deleteReservation,
   updateTeam,
-  fetchEnvironments,
   fetchTeamEnvironments,
   createTeamEnvironment,
   deleteTeamEnvironment,
-  fetchApplications,
   fetchTeamApplications,
   createTeamApplication,
   deleteTeamApplication
@@ -36,6 +35,9 @@ type Props = {
 }
 
 class TeamAdmin extends Component {
+  componentWillMount() {
+    this.props.fetchTeamTable(this.props.params.id);
+  }
   componentDidMount() {
     this.props.connectToChannel(this.props.socket, this.props.params.id);
   }
@@ -44,18 +46,16 @@ class TeamAdmin extends Component {
     if (nextProps.params.id !== this.props.params.id) {
       this.props.leaveChannel(this.props.channel);
       this.props.connectToChannel(nextProps.socket, nextProps.params.id);
+      this.props.fetchTeamTable(nextProps.params.id);
     }
     if (!this.props.socket && nextProps.socket) {
       this.props.connectToChannel(nextProps.socket, nextProps.params.id);
+      this.props.fetchTeamTable(nextProps.params.id);
     }
   }
 
   componentWillUnmount() {
     this.props.leaveChannel(this.props.channel);
-  }
-
-  constructor(props) {
-    super(props);
   }
 
   props: Props
@@ -127,5 +127,5 @@ export default connect(
     currentUser: state.session.currentUser,
     pagination: state.team.pagination
   }),
-  { connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam, fetchTeamApplications, fetchTeamEnvironments, createTeamApplication, deleteTeamApplication, createTeamEnvironment, deleteTeamEnvironment }
+  { fetchTeamTable, connectToChannel, leaveChannel, createReservation, deleteReservation, updateTeam, fetchTeamApplications, fetchTeamEnvironments, createTeamApplication, deleteTeamApplication, createTeamEnvironment, deleteTeamEnvironment }
 )(TeamAdmin);

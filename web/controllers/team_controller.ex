@@ -99,22 +99,33 @@ defmodule Argonaut.TeamController do
     conn |> json(%{ id: team.id })
   end
 
-  # trying to prevent the N+1 query problem here
-  # not sure if this is good
+  defp reservations_with_users(team_id) do
+    from reservation in Reservation,
+    where: reservation.team_id == ^team_id,
+    left_join: user in assoc(reservation, :user),
+    left_join: environment in assoc(reservation, :environment),
+    left_join: application in assoc(reservation, :application),
+    preload: [user: user, application: application, environment: environment]
+  end
+
   def team_table(team_id) do
-    from t in Team,
-    where: t.id == ^team_id,
-    join: r in assoc(t, :reservations),
-    join: u in assoc(t, :members),
-    join: e in assoc(t, :environments),
-    join: a in assoc(t, :applications),
-    preload: [reservations: {r, application: a, environment: a, user: u}, applications: a, environments: e]
+    applications = Application |> where([a], a.team_id == ^team_id)
+                                |> order_by(asc: :name)
+                                |> Repo.all
+    environments = Environment |> where([e], e.team_id == ^team_id)
+                                |> order_by(asc: :name)
+                                |> Repo.all
+
+    %{reservations: reservations_with_users(team_id) |> Repo.all,
+      applications: applications,
+      environments: environments
+    }
   end
 
   # returns all the apps, environments and reservations for a team
   def table(conn, %{"id" => team_id}) do
     current_user = Guardian.Plug.current_resource(conn)
-    data = team_table(team_id) |> Repo.all
+    data = team_table(team_id)
     conn |> json(data)
   end
 

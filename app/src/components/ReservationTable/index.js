@@ -33,7 +33,7 @@ class ReservationTableHeader extends Component {
 }
 
 function getReservation(app, env, reservations) {
-  return reservations.find(r => r.application.id === app.id && r.environment.id === env.id)
+  return reservations.find(r => r.application.id == app.id && r.environment.id == env.id)
 }
 
 
