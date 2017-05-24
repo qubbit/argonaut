@@ -56,6 +56,9 @@ class UserSettingsContainer extends Component {
                   <Tab>
                     <i className="fa fa-users" /> Teams
                   </Tab>
+                  <Tab>
+                    <i className="fa fa-info-circle" /> About
+                  </Tab>
                 </TabList>
 
                 <TabPanel>
@@ -66,6 +69,23 @@ class UserSettingsContainer extends Component {
                 </TabPanel>
                 <TabPanel>
                   <UserTeamSettings user={this.props.currentUser} teamEventHandlers={this.handleUserProfileUpdate} />
+                </TabPanel>
+                <TabPanel>
+                  <div className='alert alert-info'>
+                    <p>Shipping of Argonaut was made possible by <strong>Gopal Adhikari</strong>, and the following contributors.</p>
+                    <ul>
+                      <li>Matt Bramson </li>
+                    </ul>
+                    <ul>
+                      <li>Your name here </li>
+                    </ul>
+                    <ul>
+                      <li>Your name here</li>
+                    </ul>
+                    <ul>
+                      <li>Your name here</li>
+                    </ul>
+                  </div>
                 </TabPanel>
               </Tabs>
             </div>

@@ -6,7 +6,7 @@ function renderErrors(errors, name) {
 
   return errors[name].map((error, i) =>
     <div key={i} style={{ fontSize: '85%', color: '#cc5454' }}>
-      {`${name.charAt(0).toUpperCase()}${name.substring(1)} ${error}`}
+      {`${name.charAt(0).toUpperCase()}${name.substring(1)}: ${error.toLowerCase()}`}
     </div>
   );
 }

@@ -5,8 +5,7 @@ defmodule Argonaut.UserSocket do
   #channel "reservations:lobby", Argonaut.ReservationsChannel
   channel "teams:*", Argonaut.TeamChannel
 
-  transport :websocket, Phoenix.Transports.WebSocket,
-    timeout: 45_000
+  transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000
 
   def connect(%{"guardian_token" => token}, socket) do
     case Guardian.decode_and_verify(token) do
