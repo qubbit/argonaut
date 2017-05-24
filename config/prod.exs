@@ -16,7 +16,10 @@ config :argonaut, Argonaut.Endpoint,
   url: [host: ~s(#{System.get_env("HEROKU_APP_NAME")}.herokuapp.com), port: 80],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
   cache_static_manifest: "priv/static/manifest.json",
-  secret_key_base: System.get_env("SECRET_KEY_BASE")
+  secret_key_base: System.get_env("SECRET_KEY_BASE"),
+  # super important for making websockets work in production
+  # your config should have comma separated list of origins
+  check_origin: ~w(#{System.get_env("WS_ALLOWED_ORIGINS")})
 
 config :logger, level: :info
 
