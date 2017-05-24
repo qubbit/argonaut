@@ -1,0 +1,256 @@
+html {
+  font-size: 62.5%;
+}
+
+table {
+  width: '100%';
+}
+
+tr.application-row {
+  min-height: 64px;
+  height: 64px
+}
+
+strong, b {
+  font-weight: 600 !important;
+}
+
+body {
+  font-family: Avenir Next,Avenir,Helvetica Neue,sans-serif;
+  line-height: 1.5;
+  color: #4b555a;
+  font-size: 1.8rem;
+  background: url(https://www.toptal.com/designers/subtlepatterns/patterns/seigaiha.png) !important;
+}
+
+label {
+  font-weight: 500;
+}
+
+input[type='password'] {
+  letter-spacing: 2px;
+}
+
+.logo-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.logo-container a {
+  text-decoration: none;
+}
+
+.logo-image {
+  width: 48px;
+}
+
+.reservation-info {
+  margin-left: 20px;
+}
+
+.logo-text {
+  font-size: 4.0rem;
+  color: #000;
+  margin-left: 13px;
+  margin-top: 0;
+  display: inline-block;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.alert:empty { display: none; }
+
+.info-section {
+  display: none;
+  padding: 10px;
+  color: white;
+  border-left: 6px solid #444;
+}
+
+.connection-success {
+  background: #52ca47;
+  border-left-color: #0f6f3f;
+}
+
+.connection-error {
+  background: #ca4747;
+  border-left-color: #a53535;
+}
+
+.navbar-right {
+  margin-right: 10px;
+}
+
+#avatar-display {
+  height: 32px;
+}
+
+.profile-picture {
+  height: 48px;
+  margin-right: 10px;
+}
+
+.application-name {
+  padding: 20px !important;
+}
+
+.server {
+  display: inline-block;
+  width: 100px;
+}
+
+.environment {
+  display: inline-block;
+  width: 100%;
+  height: 100px;
+}
+
+.fa-github {
+  color: #333;
+}
+
+.fa-lock {
+  color: #ca2121;
+}
+
+.fa-unlock {
+  color: #ff8f1c;
+}
+
+.fa-info {
+  color: #0275d8;
+}
+
+#reservations {
+  background: #ffffff;
+}
+
+#reservations td:not(.application-name):hover{
+  background: #f0fdff;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.not-hidden {
+  visibility: visible !important;
+}
+
+#reservations td:not(.application-name) .toolbar {
+  visibility: hidden;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.tool-item {
+  cursor: pointer;
+}
+
+.tool-item:not(:last-child) {
+  margin-right: 20px;
+}
+
+.tool-item a, .tool-item {
+  text-decoration: none !important;
+}
+
+.tool-label {
+  display: inline-block;
+  vertical-align: super;
+  margin-left: 7px;
+}
+
+.action {
+  vertical-align: super;
+}
+
+.version {
+  color: #a99d9d;
+}
+
+.reservation-cell {
+  position: relative;
+}
+
+.reservation-cell:hover {
+  background: #e2f4ff;
+}
+
+.reservation-cell .toolbar {
+  visibility: hidden;
+  text-align: center;
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+}
+
+.toolbar form {
+  display: inline-block;
+}
+
+/* admin page styles */
+
+ul.model-details {
+  padding: 0;
+  list-style-type: none;
+}
+
+ul.model-details li {
+  margin-bottom: 10px;
+}
+
+.admin-tool-button:not(:last-child) {
+  margin-right: 20px;
+}
+
+.admin-panel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-panel-option {
+}
+
+.admin-panel-option:not(:last-child) {
+  margin-right: 40px;
+}
+
+.admin-panel-option a {
+  text-decoration: none;
+  font-size: 2rem;
+}
+
+.admin-page table tr:hover{
+  background: #f0fdff;
+}
+
+.disappointed {
+  text-align: center;
+  padding: 10px;
+}
+
+/* main */
+main {
+  background: white;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px #8d8c8c;
+  margin-bottom: 40px;
+}
+
+
+/* create a new team page */
+.teamControls button:not(:last-child){
+  margin-right: 10px;
+}
+
+.adminSectionHeader {
+  margin: 20px 0;
+}
+
+button a {
+  color: #000;
+}

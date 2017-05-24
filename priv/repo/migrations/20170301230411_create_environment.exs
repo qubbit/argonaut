@@ -5,7 +5,6 @@ defmodule Argonaut.Repo.Migrations.CreateEnvironment do
     create table(:environments) do
       add :name, :string
       add :description, :string
-      add :owning_team, :string
 
       timestamps()
     end
