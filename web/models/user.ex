@@ -3,7 +3,7 @@ defmodule Argonaut.User do
 
   alias Argonaut.{User, Team, Membership, Repo}
 
-  @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone, :is_admin, :background_url, :email]}
+  @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone, :is_admin, :background_url, :email, :api_token]}
 
   schema "users" do
     field :username, :string
@@ -26,6 +26,8 @@ defmodule Argonaut.User do
     field :confirmation_sent_at, Ecto.DateTime
     field :confirmed_at, Ecto.DateTime
 
+    field :api_token, :string
+
     many_to_many :teams, Team, join_through: "membership"
     has_many :owned_teams, Team, foreign_key: :owner_id
 
@@ -33,7 +35,7 @@ defmodule Argonaut.User do
   end
 
   @required_fields ~w(username password email)a
-  @optional_fields ~w(first_name last_name is_admin avatar_url time_zone background_url)a
+  @optional_fields ~w(first_name last_name is_admin avatar_url time_zone background_url api_token)a
 
   def changeset(struct, params \\ %{}) do
     struct

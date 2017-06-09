@@ -35,6 +35,7 @@ defmodule Argonaut.SessionController do
       {:ok, new_jwt, _new_claims} ->
         conn
         |> put_status(:ok)
+        #|> render("show.json", user: Argonaut.UserView.render("all.json", user), jwt: new_jwt)
         |> render("show.json", user: user, jwt: new_jwt)
       {:error, _reason} ->
         conn
