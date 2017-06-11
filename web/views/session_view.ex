@@ -3,7 +3,7 @@ defmodule Argonaut.SessionView do
 
   def render("show.json", %{user: user, jwt: jwt}) do
     %{
-      data: render_one(user, Argonaut.UserView, "user.json"),
+      data: render_one(user, Argonaut.UserView, "all.json"),
       meta: %{token: jwt}
     }
   end

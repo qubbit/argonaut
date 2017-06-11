@@ -3,7 +3,9 @@ defmodule Argonaut.User do
 
   alias Argonaut.{User, Team, Membership, Repo}
 
-  @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone, :is_admin, :background_url, :email, :api_token]}
+  # Don't show stuff like API access token, email, is_admin, background_url
+  # TODO: check where not sending these fields breaks compatibility
+  @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone ]}
 
   schema "users" do
     field :username, :string
