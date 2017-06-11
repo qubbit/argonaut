@@ -21,6 +21,7 @@ defmodule Argonaut.Router do
 
     # id of the team to fetch
     get "/reservations/:id", TeamController, :table
+    resources "/teams", TeamController, only: [:index]
   end
 
   scope "/api", Argonaut do

@@ -7,11 +7,7 @@ defmodule Argonaut.Plug.ReadOnlyToken do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    # If there is a user with a matching token, given them the
-    # data they asked for. Probably don't need to check for team
-    # membership for read-only access.
-
-    %{ "id" => team_id, "token" => token } = conn.params
+    %{ "token" => token } = conn.params
 
     current_user = Repo.get_by(User, api_token: token)
 
