@@ -5,11 +5,22 @@ defmodule Argonaut.Router do
     plug Argonaut.Plug.RequireAdmin
   end
 
+  pipeline :readonly do
+   plug Argonaut.Plug.ReadOnlyToken
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
 
     plug Guardian.Plug.VerifyHeader
     plug Guardian.Plug.LoadResource
+  end
+
+  scope "/api", Argonaut do
+    pipe_through :readonly
+
+    # id of the team to fetch
+    get "/reservations/:id", TeamController, :table
   end
 
   scope "/api", Argonaut do
