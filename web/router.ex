@@ -16,12 +16,12 @@ defmodule Argonaut.Router do
     plug Guardian.Plug.LoadResource
   end
 
-  scope "/api", Argonaut do
+  scope "/api/readonly", Argonaut do
     pipe_through :readonly
 
     # id of the team to fetch
-    get "/reservations/:id", TeamController, :table
-    resources "/teams", TeamController, only: [:index]
+    get "/teams/:id/reservations", TeamController, :table
+    get "/teams", TeamController, :index
   end
 
   scope "/api", Argonaut do

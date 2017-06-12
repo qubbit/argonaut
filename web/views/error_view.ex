@@ -4,7 +4,11 @@ defmodule Argonaut.ErrorView do
   # TODO: refactor
 
   def render("403.json", _assigns) do
-    %Argonaut.ApiError{message: "Forbidden. This probably means you supplied an incorrect token.", success: false}
+    %Argonaut.ApiError{message: "Forbidden. This probably means you supplied an incorrect token."}
+  end
+
+  def render("404.json", _assigns) do
+    %Argonaut.ApiError{message: "It could be you, or it could be us, but there's no page here."}
   end
 
   def render("404.html", _assigns) do
