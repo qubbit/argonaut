@@ -1,8 +1,6 @@
 defmodule Argonaut.UserSocket do
   use Phoenix.Socket
-  import Guardian.Phoenix.Socket
 
-  #channel "reservations:lobby", Argonaut.ReservationsChannel
   channel "teams:*", Argonaut.TeamChannel
 
   transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000

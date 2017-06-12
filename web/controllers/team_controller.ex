@@ -1,7 +1,7 @@
 defmodule Argonaut.TeamController do
   use Argonaut.Web, :controller
 
-  alias Argonaut.{Reservation, User, Team, Repo, Application, Environment}
+  alias Argonaut.{Reservation, Team, Repo, Application, Environment}
 
   def index(conn, params) do
     page = Team
@@ -124,7 +124,7 @@ defmodule Argonaut.TeamController do
 
   # returns all the apps, environments and reservations for a team
   def table(conn, %{"id" => team_id}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    # current_user = Guardian.Plug.current_resource(conn)
     data = team_table(team_id)
     conn |> json(data)
   end
@@ -167,36 +167,32 @@ defmodule Argonaut.TeamController do
   end
 
   def delete_team_application(conn, %{"id" => team_id, "application_id" => application_id}) do
-    # TODO: make sure the app team is owned by the current user
-    deleted = false
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    if team.owner_id == current_user.id do
+    if team.owner_id != current_user.id do
+      conn |> json(%{"success" => false})
+    else
       application = Repo.get(Application, application_id)
-      if to_string(application.id) == application_id do
-        Repo.delete!(application)
-        deleted = true
-      end
+      Repo.delete!(application)
+      conn |> json(%{"success" => true, "application_id" => application_id})
     end
 
-    conn |> json(%{"success" => deleted, "application_id" => application_id})
+    conn
   end
 
   def delete_team_environment(conn, %{"id" => team_id, "environment_id" => environment_id}) do
-    # TODO: make sure the app team is owned by the current user
-    deleted = false
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    if team.owner_id == current_user.id do
+    if team.owner_id != current_user.id do
+      conn |> json(%{"success" => false})
+    else
       environment = Repo.get(Environment, environment_id)
-      if to_string(environment.id) == environment_id do
-        Repo.delete!(environment)
-        deleted = true
-      end
+      Repo.delete!(environment)
+      conn |> json(%{"success" => true, "environment_id" => environment_id})
     end
 
-    conn |> json(%{"success" => deleted, "environment_id" => environment_id})
+    conn
   end
 end

@@ -23,7 +23,7 @@
      end
    end
 
-   def delete_all_user_reservations(conn, params) do
+   def delete_all_user_reservations(conn, _params) do
      current_user = Guardian.Plug.current_resource(conn)
 
      query = from(p in Argonaut.Reservation, where: p.user_id == ^current_user.id)

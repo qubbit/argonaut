@@ -1,7 +1,7 @@
 defmodule Argonaut.User do
   use Argonaut.Web, :model
 
-  alias Argonaut.{User, Team, Membership, Repo}
+  alias Argonaut.{User, Team, Repo}
 
   # Don't show stuff like API access token, email, is_admin, background_url
   # TODO: check where not sending these fields breaks compatibility
@@ -95,6 +95,7 @@ defmodule Argonaut.User do
     |> changeset
   end
 
+  # TODO: clean up potential code smell
   def find_and_confirm_password(params) do
     changeset = changeset(%User{}, params)
     user = Repo.get_by(User, username: String.downcase(params["username"]))

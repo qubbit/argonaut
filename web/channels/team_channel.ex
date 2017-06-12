@@ -9,7 +9,7 @@ defmodule Argonaut.TeamChannel do
       team: Phoenix.View.render_one(team, Argonaut.TeamView, "team.json")
     }
 
-    send(self, :after_join)
+    send(self(), :after_join)
     {:ok, response, assign(socket, :team, team)}
   end
 
@@ -21,11 +21,11 @@ defmodule Argonaut.TeamChannel do
     {:noreply, socket}
   end
 
-  def handle_in("delete_reservation", %{"reservation_id" => id} = payload, socket) do
+  def handle_in("delete_reservation", %{"reservation_id" => id} = _payload, socket) do
     reservation = reservation_with_associations(id)
 
     case Repo.delete(reservation) do
-      {:ok, res} ->
+      {:ok, _res} ->
         broadcast_reservation_deletion(socket, id)
         {:reply, {:ok, reservation}, socket}
       {:error, changeset} ->
