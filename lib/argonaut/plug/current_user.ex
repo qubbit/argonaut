@@ -1,5 +1,6 @@
 defmodule Argonaut.Plug.CurrentUser do
   import Plug.Conn
+  import Phoenix.Controller
 
   alias Argonaut.User
 
@@ -20,8 +21,13 @@ defmodule Argonaut.Plug.CurrentUser do
     assign(conn, :current_user, user)
   end
 
-  defp assign_current_user(conn, _), do: redirect_to_sign_in(conn)
+  defp assign_current_user(conn, _), do: render_error(conn)
 
-  defp redirect_to_sign_in(conn), do: Argonaut.CookieToken.unauthenticated(conn, %{})
+  defp render_error(conn) do
+    conn
+    |> put_status(:unauthorized)
+    |> render(Argonaut.ErrorView, "401.json")
+    |> halt
+  end
 
 end
