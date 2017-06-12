@@ -1,7 +1,7 @@
 defmodule Argonaut.Plug.RequireAdmin do
   import Plug.Conn
+  import Phoenix.Controller
 
-  alias Argonaut.Router.Helpers, as: Routes
   alias Argonaut.User
 
   def init(opts), do: opts
@@ -14,7 +14,8 @@ defmodule Argonaut.Plug.RequireAdmin do
   def require_admin(%{is_admin: true}, conn), do: conn
   def require_admin(_, conn) do
     conn
-    |> Phoenix.Controller.redirect(to: Routes.login_path(conn, :index))
+    |> put_status(:unauthorized)
+    |> render(Argonaut.ErrorView, "401.json")
     |> halt
   end
 end
