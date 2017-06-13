@@ -7,12 +7,9 @@ defmodule Argonaut.ErrorView do
     "500" => "Something's broken and it's my fault. I will look at it later."
   }
 
-  def render(<<status::bytes-size(3)>> <> ".json", _assigns) do
-    %Argonaut.ApiError{message: @status_message_map[status]}
-  end
-
-  def render(<<status::bytes-size(3)>> <> ".html", _assigns) do
-    @status_message_map[status]
+  for {status, message} <- @status_message_map do
+    def render(unquote(status) <> ".json", _assigns), do: %Argonaut.ApiError{ message: unquote(message) }
+    def render(unquote(status) <> ".html", _assigns), do: unquote(message)
   end
 
   # In case no render clause matches or no
