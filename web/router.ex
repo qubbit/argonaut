@@ -55,6 +55,11 @@ defmodule Argonaut.Router do
     post "/teams/:id/applications", TeamController, :new_team_application
     get "/teams/:id/applications", TeamController, :show_team_applications
     delete "/teams/:id/applications/:application_id", TeamController, :delete_team_application
+
+    # TODO: revisit this later
+    patch "/teams/:team_id/applications/:id", TeamController, :update_team_application
+    patch "/teams/:team_id/environments/:id", TeamController, :update_team_environment
+
     delete "/teams/:id/environments/:environment_id", TeamController, :delete_team_environment
 
     post "/teams/:id/environments", TeamController, :new_team_environment

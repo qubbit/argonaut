@@ -181,6 +181,20 @@ defmodule Argonaut.TeamController do
     conn
   end
 
+  def update_team_application(conn, params) do
+    application = Repo.get!(Application, params["id"])
+    changeset = Application.changeset(application, params)
+
+    case Repo.update(changeset) do
+      {:ok, _application} ->
+        conn
+        |> json(_application)
+      {:error, changeset} ->
+        conn
+        |> json(%{})
+    end
+  end
+
   def delete_team_environment(conn, %{"id" => team_id, "environment_id" => environment_id}) do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
@@ -194,5 +208,19 @@ defmodule Argonaut.TeamController do
     end
 
     conn
+  end
+
+  def update_team_environment(conn, params) do
+    environment = Repo.get!(Environment, params["id"])
+    changeset = Environment.changeset(environment, params)
+
+    case Repo.update(changeset) do
+      {:ok, _environment} ->
+        conn
+        |> json(_environment)
+      {:error, changeset} ->
+        conn
+        |> json(%{})
+    end
   end
 end

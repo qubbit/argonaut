@@ -1,6 +1,11 @@
 defmodule Argonaut.Team do
   use Argonaut.Web, :model
 
+  # These aliases are absolutely necessary even if the compiler complains them
+  # as being unused. They are used in line 18-20
+  # removing these aliases will result in failure at Ecto's level
+  alias Argonaut.{Reservation, Membership, User, Environment, Application}
+
   @derive {Poison.Encoder, only: [:name, :id, :description, :owner_id, :logo_url, :reservations, :environments, :applications]}
 
   schema "teams" do
