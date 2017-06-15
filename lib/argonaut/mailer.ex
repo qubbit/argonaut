@@ -10,11 +10,17 @@ defmodule Argonaut.Mailer do
 
   @from Application.get_env(:mailgun, :sender)
 
-  @app_root_url Application.get_env(:argonaut, Argonaut.Endpoint)[:url][:host] || "localhost:4000"
+  defp app_root_url do
+    if Mix.env == :prod do
+      "theargonaut.herokuapp.com"
+    else
+      "localhost:3000"
+    end
+  end
 
   def send_password_reset_email(user) do
     data = %{username: user.username,
-              password_reset_url: "http://#{@app_root_url}/reset_password/#{user.password_reset_token}"}
+              password_reset_url: "https://#{app_root_url}/reset_password/#{user.password_reset_token}"}
     html = Mustachex.render_file("mails/reset_password.html", data)
 
     send_email to: user.email, from: @from, subject: "Reset your Argonaut password",
