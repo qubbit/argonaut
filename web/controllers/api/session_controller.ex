@@ -1,6 +1,8 @@
 defmodule Argonaut.SessionController do
   use Argonaut.Web, :controller
 
+  alias Argonaut.{User, Mailer}
+
   def create(conn, params) do
     case authenticate(params) do
       {:ok, user} ->
@@ -50,6 +52,22 @@ defmodule Argonaut.SessionController do
     |> render(Argonaut.SessionView, "forbidden.json", error: "Not Authenticated")
   end
 
+  def forgot_password(conn, %{"email" => email } = params) do
+      user = Repo.get_by(User, email: email)
+
+      if user do
+        changeset = User.forgot_password_changeset(user, %{password_reset_token: gen_token(), password_reset_sent_at: DateTime.utc_now })
+        user = Repo.update!(changeset)
+        Mailer.send_password_reset_email(user)
+
+        conn |> json(%Argonaut.ApiError{success: true, message: "Password reset instructions sent to #{user.email}"})
+      else
+        conn
+        |> put_status(:not_found)
+        |> json(%Argonaut.ApiError{success: false, message: "There is no user with that email address"})
+      end
+    end
+
   defp authenticate(%{"email" => email, "password" => password}) do
     user = Repo.get_by(Argonaut.User, email: String.downcase(email))
 
@@ -64,5 +82,13 @@ defmodule Argonaut.SessionController do
       nil -> Comeonin.Bcrypt.dummy_checkpw()
       _ -> Comeonin.Bcrypt.checkpw(password, user.password_hash)
     end
+  end
+
+  # TODO: Move this to utils module
+  defp gen_token(length \\ 64) do
+    :crypto.strong_rand_bytes(length)
+      |> Base.encode16
+      |> binary_part(0, length)
+      |> String.downcase
   end
 end

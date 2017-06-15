@@ -27,6 +27,9 @@ defmodule Argonaut.Router do
   scope "/api", Argonaut do
     pipe_through :api
 
+    post "/forgot_password", SessionController, :forgot_password
+    post "/reset_password", SessionController, :reset_password
+
     resources "/reservations", ReservationController, except: [:new, :edit]
     get "/applications", ApplicationController, :application_json
     get "/environments", EnvironmentController, :environment_json
