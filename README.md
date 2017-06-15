@@ -116,11 +116,15 @@ TODO
 - [x] Allow users to reserve and release environments
 - [x] Allow team creation
 - [x] Allow team admins to delete owned teams
-- [ ] Allow team admins to delete owned applications
-- [ ] Allow team admins to delete owned environments
+- [x] Allow team admins to create new applications
+- [x] Allow team admins to delete owned applications
+- [x] Allow team admins to edit owned applications
+- [x] Allow team admins to create new environments
+- [x] Allow team admins to delete owned environments
+- [x] Allow team admins to edit owned environments
 - [x] Allow user login
 - [x] Allow user signup
-- [ ] Allow user password resets
+- [x] Allow user password resets
 
 Credits
 -------
