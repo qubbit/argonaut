@@ -52,7 +52,9 @@ defmodule Argonaut.User do
     |> validate_required([:password])
     |> validate_length(:password, min: 5)
     |> validate_length(:password, max: 127)
-    |> validate_confirmation(:password, message: "Password does not match")
+    |> validate_confirmation(:password, message: "Password does not match confirmation")
+    |> put_change(:password_reset_token, nil)
+    |> put_change(:password_reset_sent_at, nil)
     |> generate_encrypted_password
   end
 

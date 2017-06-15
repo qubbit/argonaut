@@ -1,7 +1,7 @@
 defmodule Argonaut.SessionController do
   use Argonaut.Web, :controller
 
-  alias Argonaut.{User, Mailer}
+  alias Argonaut.{ApiError, User, Mailer}
 
   def create(conn, params) do
     case authenticate(params) do
@@ -52,24 +52,50 @@ defmodule Argonaut.SessionController do
     |> render(Argonaut.SessionView, "forbidden.json", error: "Not Authenticated")
   end
 
-  def forgot_password(conn, %{"email" => email } = params) do
-      user = Repo.get_by(User, email: email)
+  def forgot_password(conn, %{"email" => email } = _params) do
+    user = Repo.get_by(User, email: email)
 
-      if user do
-        changeset = User.forgot_password_changeset(user, %{password_reset_token: gen_token(), password_reset_sent_at: DateTime.utc_now })
-        user = Repo.update!(changeset)
-        Mailer.send_password_reset_email(user)
+    if user do
+      changeset = User.forgot_password_changeset(user, %{password_reset_token: gen_token(), password_reset_sent_at: DateTime.utc_now })
+      user = Repo.update!(changeset)
+      Mailer.send_password_reset_email(user)
 
-        conn |> json(%Argonaut.ApiError{success: true, message: "Password reset instructions sent to #{user.email}"})
+      conn |> json(%ApiError{success: true, message: "Password reset instructions sent to #{user.email}"})
+    else
+      conn
+      |> put_status(:not_found)
+      |> json(%ApiError{success: false, message: "There is no user with that email address"})
+    end
+  end
+
+  def reset_password(conn, %{"token" => token, "password" => password, "password_confirmation" =>  password_confirmation}) do
+    user = Repo.get_by(User, password_reset_token: token)
+
+    conn = if user && token_valid?(user) do
+      password = %{password: password, password_confirmation: password_confirmation}
+
+      changeset = User.reset_password_changeset(user, password)
+
+      if changeset.valid? do
+        changeset |> Repo.update!
+        conn |> json(%ApiError{message: "Successfully created new password", success: true})
       else
+        # TODO: use changeset in the form to show accurate errors
         conn
-        |> put_status(:not_found)
-        |> json(%Argonaut.ApiError{success: false, message: "There is no user with that email address"})
+        |> put_status(:unprocessable_entity)
+        |> json(%ApiError{message: "Could not create new password"})
       end
+    else
+      conn
+      |> put_status(:unprocessable_entity)
+      |> json(%ApiError{message: "Password reset token expired or invalid"})
     end
 
+    conn
+  end
+
   defp authenticate(%{"email" => email, "password" => password}) do
-    user = Repo.get_by(Argonaut.User, email: String.downcase(email))
+    user = Repo.get_by(User, email: String.downcase(email))
 
     case check_password(user, password) do
       true -> {:ok, user}
@@ -90,5 +116,13 @@ defmodule Argonaut.SessionController do
       |> Base.encode16
       |> binary_part(0, length)
       |> String.downcase
+  end
+
+  defp token_valid?(user) do
+    {:ok, sent_at } = Calendar.DateTime.from_erl(Ecto.DateTime.to_erl(user.password_reset_sent_at), "Etc/UTC")
+    now = Calendar.DateTime.now_utc
+
+    {:ok, seconds, _, _} = Calendar.DateTime.diff(now, sent_at)
+    (seconds / 86400) <= 1
   end
 end
