@@ -12,6 +12,8 @@ defmodule Argonaut.ErrorView do
     def render(unquote(status) <> ".html", _assigns), do: unquote(message)
   end
 
+  def render(_, _assigns), do: "Hmm...🤔"
+
   # In case no render clause matches or no
   # template is found, let's render it as 500
   def template_not_found(_template, assigns) do

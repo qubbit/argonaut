@@ -34,12 +34,15 @@ defmodule Argonaut.TeamChannel do
   end
 
   def handle_in("new_reservation", payload, socket) do
+    payload = Map.put(payload, "reserved_at", Ecto.DateTime.utc)
+
     changeset =
       socket.assigns.team
       |> build_assoc(:reservations, user_id: socket.assigns.current_user.id)
       |> Reservation.changeset(payload)
-      |> Ecto.Changeset.put_change(:reserved_at, Ecto.DateTime.utc)
 
+    require IEx
+    IEx.pry
     case Repo.insert(changeset) do
       {:ok, reservation} ->
         reservation_tree = reservation_with_associations(reservation.id)

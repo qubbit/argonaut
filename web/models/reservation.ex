@@ -11,14 +11,14 @@ defmodule Argonaut.Reservation do
     belongs_to :application, Argonaut.Application
     belongs_to :team, Argonaut.Team
 
-    @required_fields ~w(user_id environment_id application_id team_id reserved_at)
-
     timestamps()
   end
+
+  @required_fields ~w(user_id environment_id application_id team_id reserved_at)a
 
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, @required_fields)
-    #|> validate_required(@required_fields)
+    |> validate_required(@required_fields)
   end
 end

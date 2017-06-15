@@ -3,7 +3,10 @@ defmodule Argonaut.UserTest do
 
   alias Argonaut.User
 
-  @valid_attrs %{avatar_url: "some content", first_name: "some content", last_name: "some content", password_hash: "some content", username: "some content"}
+  @valid_attrs %{avatar_url: "https://example.com/image.jpg",
+    email: "bob@example.com",
+    username: "bob",
+    password: "supersecret"}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

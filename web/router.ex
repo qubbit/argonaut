@@ -6,14 +6,19 @@ defmodule Argonaut.Router do
   end
 
   pipeline :readonly do
-   plug Argonaut.Plug.ReadOnlyToken
+    plug Argonaut.Plug.ReadOnlyToken
   end
 
   pipeline :api do
     plug :accepts, ["json"]
 
     plug Guardian.Plug.VerifyHeader
+    plug Guardian.Plug.EnsureAuthenticated, handler: Argonaut.ApiToken
     plug Guardian.Plug.LoadResource
+  end
+
+  pipeline :anonymous do
+    plug :accepts, ["json"]
   end
 
   scope "/api/readonly", Argonaut do
@@ -24,22 +29,26 @@ defmodule Argonaut.Router do
     get "/teams", TeamController, :index
   end
 
-  scope "/api", Argonaut do
-    pipe_through :api
+  # these are paths that do not require authentication
+  scope "/api/anonymous", Argonaut do
+    pipe_through :anonymous
 
     post "/forgot_password", SessionController, :forgot_password
     post "/reset_password", SessionController, :reset_password
+    post "/sessions", SessionController, :create
+    resources "/users", UserController, only: [:create]
+  end
+
+  scope "/api", Argonaut do
+    pipe_through :api
 
     resources "/reservations", ReservationController, except: [:new, :edit]
     get "/applications", ApplicationController, :application_json
     get "/environments", EnvironmentController, :environment_json
     get "/gravatar", GravatarController, :get_url
 
-    post "/sessions", SessionController, :create
     delete "/sessions", SessionController, :delete
     post "/sessions/refresh", SessionController, :refresh
-
-    resources "/users", UserController, only: [:create]
 
     resources "/membership", MembershipController, except: [:new, :edit]
 
@@ -59,7 +68,7 @@ defmodule Argonaut.Router do
     get "/teams/:id/applications", TeamController, :show_team_applications
     delete "/teams/:id/applications/:application_id", TeamController, :delete_team_application
 
-    # TODO: revisit this later
+    # TODO: revisit this later, might want to use nested resources
     patch "/teams/:team_id/applications/:id", TeamController, :update_team_application
     patch "/teams/:team_id/environments/:id", TeamController, :update_team_environment
 
@@ -71,9 +80,7 @@ defmodule Argonaut.Router do
     patch "/profile", ProfileController, :update
   end
 
-
   scope "/", Argonaut do
     get "/*path", BaseController, :not_found
   end
-
 end

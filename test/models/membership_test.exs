@@ -3,7 +3,7 @@ defmodule Argonaut.MembershipTest do
 
   alias Argonaut.Membership
 
-  @valid_attrs %{is_admin: true, join_date: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}}
+  @valid_attrs %{is_admin: true, join_date: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, user_id: 1, team_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

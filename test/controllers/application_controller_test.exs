@@ -2,7 +2,7 @@ defmodule Argonaut.ApplicationControllerTest do
   use Argonaut.ConnCase
 
   alias Argonaut.Application
-  @valid_attrs %{name: "some content", ping: "some content", repo: "some content"}
+  @valid_attrs %{team_id: 1, name: "some content", ping: "some content", repo: "some content"}
   @invalid_attrs %{}
 
   test "lists all entries on index", %{conn: conn} do
@@ -11,6 +11,8 @@ defmodule Argonaut.ApplicationControllerTest do
   end
 
   test "renders form for new resources", %{conn: conn} do
+    require IEx
+    IEx.pry
     conn = get conn, application_path(conn, :new)
     assert html_response(conn, 200) =~ "New application"
   end
