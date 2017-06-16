@@ -41,8 +41,6 @@ defmodule Argonaut.TeamChannel do
       |> build_assoc(:reservations, user_id: socket.assigns.current_user.id)
       |> Reservation.changeset(payload)
 
-    require IEx
-    IEx.pry
     case Repo.insert(changeset) do
       {:ok, reservation} ->
         reservation_tree = reservation_with_associations(reservation.id)

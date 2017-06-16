@@ -5,24 +5,27 @@ defmodule Argonaut.Router do
     plug Argonaut.Plug.RequireAdmin
   end
 
-  pipeline :readonly do
-    plug Argonaut.Plug.ReadOnlyToken
+  pipeline :anonymous do
+    plug :accepts, ["json"]
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
-
     plug Guardian.Plug.VerifyHeader
     plug Guardian.Plug.EnsureAuthenticated, handler: Argonaut.ApiToken
     plug Guardian.Plug.LoadResource
   end
 
-  pipeline :anonymous do
-    plug :accepts, ["json"]
+  pipeline :readonly do
+    plug Argonaut.Plug.ReadOnlyToken
+  end
+
+  scope "/api/admin", Argonaut do
+    pipe_through [:anonymous, :api, :admin]
+    resources "/mails", MailController
   end
 
   scope "/api/readonly", Argonaut do
-    pipe_through :readonly
+    pipe_through [:anonymous, :readonly]
 
     # id of the team to fetch
     get "/teams/:id/reservations", TeamController, :table
@@ -40,7 +43,7 @@ defmodule Argonaut.Router do
   end
 
   scope "/api", Argonaut do
-    pipe_through :api
+    pipe_through [:anonymous, :api]
 
     resources "/reservations", ReservationController, except: [:new, :edit]
     get "/applications", ApplicationController, :application_json
