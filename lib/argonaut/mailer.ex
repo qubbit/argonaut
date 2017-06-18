@@ -14,7 +14,7 @@ defmodule Argonaut.Mailer do
 
   def send_password_reset_email(user) do
     params = %{ username: user.username,
-      password_reset_url: "https://#{app_root_url()}/reset_password/#{user.password_reset_token}"
+      password_reset_url: "#{app_root_url()}/reset_password/#{user.password_reset_token}"
     }
     message = Mustachex.render_file("mails/reset_password.mustache", params)
     template_data = %EmailData{ subject: "Reset your Argonaut Password", message: message }
@@ -36,7 +36,11 @@ defmodule Argonaut.Mailer do
       is_html: true
     }
 
-    send_email to: to, from: from, subject: subject, html: final_message
+    # NASTY HACK: final message needs to be unescaped because
+    # passing an HTML string to Mustachex escapes < and >
+    # TODO: figure out how to prevent auto-escaping
+    # or use partials instead
+    send_email to: to, from: from, subject: subject, html: unescape_html(final_message)
 
     changeset = Mail.changeset(%Mail{}, mail_params)
 
@@ -50,6 +54,10 @@ defmodule Argonaut.Mailer do
 
   # utilities
 
+  defp unescape_html(message) do
+    message |> String.replace("&gt;", ">") |> String.replace("&lt;", "<");
+  end
+
   defp normalize_username(user) do
     if user.first_name do
       user.first_name <> user.last_name
@@ -60,9 +68,9 @@ defmodule Argonaut.Mailer do
 
   defp app_root_url do
     if Mix.env == :prod do
-      "theargonaut.herokuapp.com"
+      "https://theargonaut.herokuapp.com"
     else
-      "localhost:3000"
+      "http://localhost:3000"
     end
   end
 end
