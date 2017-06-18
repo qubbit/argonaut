@@ -1,6 +1,8 @@
 defmodule Argonaut.MailController do
   use Argonaut.Web, :controller
 
+  require Logger
+
   alias Argonaut.{User, Mail, Mailer, EmailData}
 
   def index(conn, _params) do
@@ -9,13 +11,14 @@ defmodule Argonaut.MailController do
   end
 
   def create(conn, %{"mail" => %{"to" => to, "subject" => subject, "message" => message} = mail_params}) do
-    send_to_all = mail_params["extra"]["send_to_all"]
-
     template_data = %EmailData{ subject: subject, message: message }
 
-    if(send_to_all) do
+    # TODO: perhaps we want to use a queue here
+    if(to == "*") do
+      Logger.warn("Sending email to all users!")
       users = Repo.all(User)
       for user <- users do
+        Logger.debug(user.email)
         Mailer.send_general_email(user.email, template_data)
       end
     else
