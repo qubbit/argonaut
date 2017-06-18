@@ -8,7 +8,7 @@ defmodule Argonaut.ErrorView do
   }
 
   for {status, message} <- @status_message_map do
-    def render(unquote(status) <> ".json", _assigns), do: %Argonaut.ApiError{ message: unquote(message) }
+    def render(unquote(status) <> ".json", _assigns), do: %Argonaut.ApiMessage{ message: unquote(message) }
     def render(unquote(status) <> ".html", _assigns), do: unquote(message)
   end
 

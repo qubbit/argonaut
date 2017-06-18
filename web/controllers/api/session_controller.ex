@@ -1,7 +1,7 @@
 defmodule Argonaut.SessionController do
   use Argonaut.Web, :controller
 
-  alias Argonaut.{ApiError, User, Mailer}
+  alias Argonaut.{ApiMessage, User, Mailer}
 
   def create(conn, params) do
     case authenticate(params) do
@@ -60,11 +60,11 @@ defmodule Argonaut.SessionController do
       user = Repo.update!(changeset)
       Mailer.send_password_reset_email(user)
 
-      conn |> json(%ApiError{success: true, message: "Password reset instructions sent to #{user.email}"})
+      conn |> json(%ApiMessage{success: true, message: "Password reset instructions sent to #{user.email}"})
     else
       conn
       |> put_status(:not_found)
-      |> json(%ApiError{success: false, message: "There is no user with that email address"})
+      |> json(%ApiMessage{success: false, message: "There is no user with that email address"})
     end
   end
 
@@ -78,17 +78,17 @@ defmodule Argonaut.SessionController do
 
       if changeset.valid? do
         changeset |> Repo.update!
-        conn |> json(%ApiError{message: "Successfully created new password", success: true})
+        conn |> json(%ApiMessage{message: "Successfully created new password", success: true})
       else
         # TODO: use changeset in the form to show accurate errors
         conn
         |> put_status(:unprocessable_entity)
-        |> json(%ApiError{message: "Could not create new password"})
+        |> json(%ApiMessage{message: "Could not create new password"})
       end
     else
       conn
       |> put_status(:unprocessable_entity)
-      |> json(%ApiError{message: "Password reset token expired or invalid"})
+      |> json(%ApiMessage{message: "Password reset token expired or invalid"})
     end
 
     conn

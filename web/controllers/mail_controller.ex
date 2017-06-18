@@ -22,7 +22,7 @@ defmodule Argonaut.MailController do
       Mailer.send_general_email(to, template_data)
     end
 
-    conn |> json(%Argonaut.ApiError{message: "Mail sent", success: true})
+    conn |> json(%Argonaut.ApiMessage{message: "Mail sent", success: true})
   end
 
   def show(conn, %{"id" => id}) do
