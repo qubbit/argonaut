@@ -1,4 +1,4 @@
-<img src="web/static/assets/images/ArgonautLogo.png" height="64" alt="Logo"/>
+<img src="artifacts/ArgonautLogo.png" height="64" alt="Logo"/>
 
 Reserve testing environments effectively.
 
