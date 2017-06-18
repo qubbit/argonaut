@@ -3,7 +3,7 @@ defmodule Argonaut.ApplicationTest do
 
   alias Argonaut.Application
 
-  @valid_attrs %{name: "some content", ping: "some content", repo: "some content"}
+  @valid_attrs %{name: "some content", ping: "some content", repo: "some content", team_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

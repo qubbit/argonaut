@@ -1,63 +1,44 @@
-defmodule Argonaut.UserController do
-  use Argonaut.Web, :controller
+ defmodule Argonaut.UserController do
+   use Argonaut.Web, :controller
 
-  alias Argonaut.User
+   alias Argonaut.User
 
-  def index(conn, _params) do
-    users = Repo.all(User)
-    render(conn, "index.html", users: users)
-  end
+   plug Guardian.Plug.EnsureAuthenticated, [handler: Argonaut.SessionController] when action in [:teams]
 
-  def new(conn, _params) do
-    changeset = User.changeset(%User{})
-    render(conn, "new.html", changeset: changeset)
-  end
+   def create(conn, params) do
+     changeset = User.registration_changeset(%User{}, params)
 
-  def create(conn, %{"user" => user_params}) do
-    changeset = User.changeset(%User{}, user_params)
+     case Repo.insert(changeset) do
+       {:ok, user} ->
+         new_conn = Guardian.Plug.api_sign_in(conn, user, :access)
+         jwt = Guardian.Plug.current_token(new_conn)
 
-    case Repo.insert(changeset) do
-      {:ok, _user} ->
-        conn
-        |> put_flash(:info, "User created successfully.")
-        |> redirect(to: user_path(conn, :index))
-      {:error, changeset} ->
-        render(conn, "new.html", changeset: changeset)
-    end
-  end
+         new_conn
+         |> put_status(:created)
+         |> render(Argonaut.SessionView, "show.json", user: user, jwt: jwt)
+       {:error, changeset} ->
+         conn
+         |> put_status(:unprocessable_entity)
+         |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+     end
+   end
 
-  def show(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    render(conn, "show.html", user: user)
-  end
+   def delete_all_user_reservations(conn, _params) do
+     current_user = Guardian.Plug.current_resource(conn)
 
-  def edit(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-    changeset = User.profile_changeset(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
-  end
+     query = from(p in Argonaut.Reservation, where: p.user_id == ^current_user.id)
+     reservation_ids = query |> Repo.all |> Enum.map(fn r -> r.id end)
+     query |> Repo.delete_all
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Repo.get!(User, id)
-    changeset = User.profile_changeset(user, user_params)
+     conn |> json(reservation_ids)
+   end
 
-    case Repo.update(changeset) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User updated successfully.")
-        |> redirect(to: user_path(conn, :show, user))
-      {:error, changeset} ->
-        render(conn, "edit.html", user: user, changeset: changeset)
-    end
-  end
+   def teams(conn, params) do
+     current_user = Guardian.Plug.current_resource(conn)
 
-  def delete(conn, %{"id" => id}) do
-    user = Repo.get!(User, id)
-
-    Repo.delete!(user)
-
-    conn
-    |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: user_path(conn, :index))
-  end
-end
+     page =
+       assoc(current_user, :teams)
+       |> Repo.paginate(params)
+     render(conn, Argonaut.TeamView, "index.json", teams: page)
+   end
+ end

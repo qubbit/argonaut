@@ -2,7 +2,7 @@ defmodule Argonaut.ApplicationControllerTest do
   use Argonaut.ConnCase
 
   alias Argonaut.Application
-  @valid_attrs %{name: "some content", ping: "some content", repo: "some content"}
+  @valid_attrs %{team_id: 1, name: "some content", ping: "some content", repo: "some content"}
   @invalid_attrs %{}
 
   test "lists all entries on index", %{conn: conn} do

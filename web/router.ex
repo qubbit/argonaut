@@ -1,73 +1,89 @@
 defmodule Argonaut.Router do
   use Argonaut.Web, :router
 
-  pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-
-    plug Guardian.Plug.VerifySession
-    plug Guardian.Plug.LoadResource
-  end
-
-  pipeline :browser_auth do
-    plug Argonaut.Plug.CurrentUser
-  end
-
   pipeline :admin do
     plug Argonaut.Plug.RequireAdmin
   end
 
-  pipeline :api do
+  pipeline :anonymous do
     plug :accepts, ["json"]
+  end
 
+  pipeline :api do
     plug Guardian.Plug.VerifyHeader
     plug Guardian.Plug.EnsureAuthenticated, handler: Argonaut.ApiToken
     plug Guardian.Plug.LoadResource
   end
 
-  scope "/", Argonaut do
-    pipe_through [:browser]
-
-    get "/login", LoginController, :index
-    post "/login", LoginController, :authenticate
-    get "/signup", LoginController, :signup
-    post "/signup", LoginController, :handle_signup
-    get "/logout", LoginController, :logout
-
-    get "/forgot_password", LoginController, :show_forgot_password
-    post "/forgot_password", LoginController, :forgot_password
-
-    get "/reset_password/:token", LoginController, :show_reset_password
-    post "/reset_password", LoginController, :reset_password
+  pipeline :readonly do
+    plug Argonaut.Plug.ReadOnlyToken
   end
 
-  scope "/", Argonaut do
-    pipe_through [:browser, :browser_auth]
-
-    get "/", PageController, :index, as: :index
-    get "/profile", ProfileController, :show
-    get "/profile/edit", ProfileController, :edit
-    put "/profile/update", ProfileController, :update
+  scope "/api/admin", Argonaut do
+    pipe_through [:anonymous, :api, :admin]
+    resources "/mails", MailController
   end
 
-  scope "/", Argonaut do
-    pipe_through [:browser, :browser_auth, :admin]
+  scope "/api/readonly", Argonaut do
+    pipe_through [:anonymous, :readonly]
 
-    get "/admin", AdminController, :index, as: :index
-    resources "/admin/users", UserController
-    resources "/admin/applications", ApplicationController
-    resources "/admin/environments", EnvironmentController
+    # id of the team to fetch
+    get "/teams/:id/reservations", TeamController, :table
+    get "/teams", TeamController, :index
+  end
+
+  # these are paths that do not require authentication
+  scope "/api/anonymous", Argonaut do
+    pipe_through :anonymous
+
+    post "/forgot_password", SessionController, :forgot_password
+    post "/reset_password", SessionController, :reset_password
+    post "/sessions", SessionController, :create
+    resources "/users", UserController, only: [:create]
   end
 
   scope "/api", Argonaut do
-    pipe_through :api
+    pipe_through [:anonymous, :api]
 
     resources "/reservations", ReservationController, except: [:new, :edit]
     get "/applications", ApplicationController, :application_json
     get "/environments", EnvironmentController, :environment_json
     get "/gravatar", GravatarController, :get_url
+
+    delete "/sessions", SessionController, :delete
+    post "/sessions/refresh", SessionController, :refresh
+
+    resources "/membership", MembershipController, except: [:new, :edit]
+
+    get "/users/:id/teams", UserController, :teams
+    post "/users/:id/vacation", UserController, :delete_all_user_reservations
+
+    resources "/teams", TeamController, only: [:index, :create, :update] do
+      resources "/reservations", ReservationController, only: [:index]
+    end
+
+    post "/teams/:id/join", TeamController, :join
+    delete "/teams/:id", TeamController, :delete
+    delete "/teams/:id/leave", TeamController, :leave
+    get "/teams/:id/table", TeamController, :table
+
+    post "/teams/:id/applications", TeamController, :new_team_application
+    get "/teams/:id/applications", TeamController, :show_team_applications
+    delete "/teams/:id/applications/:application_id", TeamController, :delete_team_application
+
+    # TODO: revisit this later, might want to use nested resources
+    patch "/teams/:team_id/applications/:id", TeamController, :update_team_application
+    patch "/teams/:team_id/environments/:id", TeamController, :update_team_environment
+
+    delete "/teams/:id/environments/:environment_id", TeamController, :delete_team_environment
+
+    post "/teams/:id/environments", TeamController, :new_team_environment
+    get "/teams/:id/environments", TeamController, :show_team_environments
+
+    patch "/profile", ProfileController, :update
+  end
+
+  scope "/", Argonaut do
+    get "/*path", BaseController, :not_found
   end
 end

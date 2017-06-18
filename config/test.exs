@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "developer",
+  password: "banana2017!",
   database: "argonaut_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

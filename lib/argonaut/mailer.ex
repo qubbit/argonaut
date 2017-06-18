@@ -1,5 +1,7 @@
 defmodule Argonaut.Mailer do
 
+  alias Argonaut.{Repo, Mail, EmailData}
+
   # TODO find a better way to read prod vs non-prod config
   @config domain: Application.get_env(:mailgun, :domain),
           key: Application.get_env(:mailgun, :key),
@@ -10,29 +12,57 @@ defmodule Argonaut.Mailer do
 
   @from Application.get_env(:mailgun, :sender)
 
-  @app_root_url Application.get_env(:argonaut, Argonaut.Endpoint)[:url][:host] || "localhost:4000"
-
   def send_password_reset_email(user) do
-    data = %{username: user.username,
-              password_reset_url: "http://#{@app_root_url}/reset_password/#{user.password_reset_token}"}
-    html = Mustachex.render_file("mails/reset_password.html", data)
+    params = %{ username: user.username,
+      password_reset_url: "https://#{app_root_url()}/reset_password/#{user.password_reset_token}"
+    }
+    message = Mustachex.render_file("mails/reset_password.mustache", params)
+    template_data = %EmailData{ subject: "Reset your Argonaut Password", message: message }
 
-    send_email to: user.email, from: @from, subject: "Reset your Argonaut password",
-                html: html
+    finalize_and_send_email(user.email, @from, template_data)
   end
 
-  def send_welcome_email(user) do
-    send_email to: user.email,
-               from: @from,
-               subject: "Hello!",
-               html: "<strong>Welcome!</strong>"
+  def send_general_email(email, %EmailData{} = template_data) do
+    finalize_and_send_email(email, @from, template_data)
   end
 
-  def send_greetings(user, file_path) do
-    send_email to: user.email,
-               from: @from,
-               subject: "Happy b'day",
-               html: "<strong>Cheers!</strong>",
-               attachments: [%{path: file_path, filename: "greetings.png"}]
+  def finalize_and_send_email(to, from, %EmailData{ subject: subject } = template_data) do
+    final_message = Mustachex.render_file("mails/email.mustache", Map.from_struct(template_data))
+
+    mail_params = %{to: to,
+      from: from,
+      subject: subject,
+      message: final_message,
+      is_html: true
+    }
+
+    send_email to: to, from: from, subject: subject, html: final_message
+
+    changeset = Mail.changeset(%Mail{}, mail_params)
+
+    case Repo.insert(changeset) do
+      {:ok, mail} ->
+        mail
+      {:error, changeset} ->
+        changeset.errors
+    end
+  end
+
+  # utilities
+
+  defp normalize_username(user) do
+    if user.first_name do
+      user.first_name <> user.last_name
+    else
+      user.username
+    end
+  end
+
+  defp app_root_url do
+    if Mix.env == :prod do
+      "theargonaut.herokuapp.com"
+    else
+      "localhost:3000"
+    end
   end
 end

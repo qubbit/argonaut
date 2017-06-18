@@ -3,7 +3,13 @@ defmodule Argonaut.ReservationTest do
 
   alias Argonaut.Reservation
 
-  @valid_attrs %{application_id: 42, environment_id: 42, reserved_at: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}, username: "some content"}
+  @valid_attrs %{application_id: 42,
+    environment_id: 42,
+    team_id: 1,
+    user_id: 1,
+    reserved_at: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}
+  }
+
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

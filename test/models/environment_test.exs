@@ -3,7 +3,7 @@ defmodule Argonaut.EnvironmentTest do
 
   alias Argonaut.Environment
 
-  @valid_attrs %{description: "some content", name: "some content", owning_team: "some content"}
+  @valid_attrs %{description: "some content", name: "some content", team_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
