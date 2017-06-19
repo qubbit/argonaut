@@ -1,6 +1,6 @@
 defmodule Argonaut.TeamChannel do
   use Argonaut.Web, :channel
-  alias Argonaut.Reservation
+  alias Argonaut.{Membership, Reservation}
 
   # returns a team after the team channel is joined
   def join("teams:" <> team_id, _params, socket) do
@@ -33,21 +33,30 @@ defmodule Argonaut.TeamChannel do
     end
   end
 
+  def check_membership(user, team) do
+    Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one
+  end
+
   def handle_in("new_reservation", payload, socket) do
-    payload = Map.put(payload, "reserved_at", Ecto.DateTime.utc)
 
-    changeset =
-      socket.assigns.team
-      |> build_assoc(:reservations, user_id: socket.assigns.current_user.id)
-      |> Reservation.changeset(payload)
+    if check_membership(socket.assigns.current_user, socket.assigns.team) do
+      payload = Map.put(payload, "reserved_at", Ecto.DateTime.utc)
 
-    case Repo.insert(changeset) do
-      {:ok, reservation} ->
-        reservation_tree = reservation_with_associations(reservation.id)
-        broadcast_reservation_creation(socket, reservation_tree)
-        {:reply, {:ok, reservation_tree}, socket}
-      {:error, changeset} ->
-        {:reply, {:error, Phoenix.View.render(Argonaut.ChangesetView, "error.json", changeset: changeset)}, socket}
+      changeset =
+        socket.assigns.team
+        |> build_assoc(:reservations, user_id: socket.assigns.current_user.id)
+        |> Reservation.changeset(payload)
+
+      case Repo.insert(changeset) do
+        {:ok, reservation} ->
+          reservation_tree = reservation_with_associations(reservation.id)
+          broadcast_reservation_creation(socket, reservation_tree)
+          {:reply, {:ok, reservation_tree}, socket}
+        {:error, changeset} ->
+          {:reply, {:error, Phoenix.View.render(Argonaut.ChangesetView, "error.json", changeset: changeset)}, socket}
+      end
+    else
+      {:noreply, socket}
     end
   end
 
