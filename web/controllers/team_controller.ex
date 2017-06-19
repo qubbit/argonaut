@@ -79,17 +79,29 @@ defmodule Argonaut.TeamController do
     conn |> json(applications)
   end
 
-  def update(conn, %{"id" => id, "description" => description}) do
-    team = Repo.get!(Team, id)
-    changeset = Team.changeset(team, %{"description" => description})
+  def check_membership(user, team) do
+    Argonaut.Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one
+  end
 
-    case Repo.update(changeset) do
-      {:ok, team} ->
-        render(conn, "show.json", team: team)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+  def update(conn, %{"id" => id, "description" => description}) do
+    current_user = Guardian.Plug.current_resource(conn)
+    team = Repo.get!(Team, id)
+
+    if check_membership(current_user, team) do
+      changeset = Team.changeset(team, %{"description" => description})
+
+      case Repo.update(changeset) do
+        {:ok, team} ->
+          render(conn, "show.json", team: team)
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+      end
+    else
+      conn
+      |> put_status(:forbidden)
+      |> json(%ApiMessage{ message: "Permission denied" })
     end
   end
 
