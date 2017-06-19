@@ -1,7 +1,7 @@
 defmodule Argonaut.TeamController do
   use Argonaut.Web, :controller
 
-  alias Argonaut.{Reservation, Team, Repo, Application, Environment}
+  alias Argonaut.{Reservation, Team, Repo, Application, Environment, ApiMessage}
 
   def index(conn, params) do
     page = Team
@@ -94,9 +94,17 @@ defmodule Argonaut.TeamController do
   end
 
   def delete(conn, %{"id" => id}) do
+    current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get!(Team, id)
-    Repo.delete!(team)
-    conn |> json(%{ id: team.id })
+
+    if team.owner_id == current_user.id do
+      Repo.delete!(team)
+      conn |> json(%{ id: team.id })
+    else
+      conn
+      |> put_status(:forbidden)
+      |> json(%ApiMessage{ message: "Permission denied" })
+    end
   end
 
   defp reservations_with_users(team_id) do
