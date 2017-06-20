@@ -36,11 +36,7 @@ defmodule Argonaut.Mailer do
       is_html: true
     }
 
-    # NASTY HACK: final message needs to be unescaped because
-    # passing an HTML string to Mustachex escapes < and >
-    # TODO: figure out how to prevent auto-escaping
-    # or use partials instead
-    send_email to: to, from: from, subject: subject, html: unescape_html(final_message)
+    send_email to: to, from: from, subject: subject, html: final_message
 
     changeset = Mail.changeset(%Mail{}, mail_params)
 
@@ -53,10 +49,6 @@ defmodule Argonaut.Mailer do
   end
 
   # utilities
-
-  defp unescape_html(message) do
-    message |> String.replace("&gt;", ">") |> String.replace("&lt;", "<");
-  end
 
   defp normalize_username(user) do
     if user.first_name do

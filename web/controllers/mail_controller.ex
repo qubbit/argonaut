@@ -10,17 +10,18 @@ defmodule Argonaut.MailController do
     render(conn, "index.json", mails: mails)
   end
 
-  def create(conn, %{"mail" => %{"to" => to, "subject" => subject, "message" => message} = mail_params}) do
+  def create(conn, %{"mail" => %{"to" => to, "subject" => subject, "message" => message} = _mail_params}) do
     template_data = %EmailData{ subject: subject, message: message }
 
-    # TODO: perhaps we want to use a queue here
     if(to == "*") do
       Logger.warn("Sending email to all users!")
-      users = Repo.all(User)
-      for user <- users do
-        Logger.debug(user.email)
-        Mailer.send_general_email(user.email, template_data)
-      end
+
+      Repo.all(User)
+      |> Enum.map(&Task.async(fn ->
+          Logger.debug(&1.email)
+          Mailer.send_general_email(&1.email, template_data)
+      end))
+      |> Enum.map(&Task.await/1)
     else
       Mailer.send_general_email(to, template_data)
     end
