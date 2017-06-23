@@ -190,12 +190,16 @@ defmodule Argonaut.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    if team.owner_id != current_user.id do
-      conn |> json(%{"success" => false})
-    else
+    # if team.owner_id != current_user.id do
+    #   conn |> json(%{"success" => false})
+    # else
+
+    if check_membership(current_user, team) do
       application = Repo.get(Application, application_id)
       Repo.delete!(application)
-      conn |> json(%{"success" => true, "application_id" => application_id})
+      conn |> json(%{success: true, application_id: application_id})
+    else
+      conn |> json(%{success: false, message: "Permission denied"})
     end
 
     conn
@@ -219,12 +223,18 @@ defmodule Argonaut.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    if team.owner_id != current_user.id do
-      conn |> json(%{"success" => false})
-    else
+    # only team owners can delete an environment
+    # if team.owner_id != current_user.id do
+    #   conn |> json(%{"success" => false})
+    # else
+
+    # only allow team members to delete a team's environment
+    if check_membership(current_user, team) do
       environment = Repo.get(Environment, environment_id)
       Repo.delete!(environment)
-      conn |> json(%{"success" => true, "environment_id" => environment_id})
+      conn |> json(%{success: true, environment_id: environment_id})
+    else
+      conn |> json(%{success: false, message: "Permission denied"})
     end
 
     conn
