@@ -39,6 +39,29 @@ defmodule Argonaut.TeamController do
     render(conn, "show.json", team: team)
   end
 
+  def new_reservation(conn, %{"team_id" => id, "application_id" => application_id, "environment_id" => environment_id} = params) do
+    team = Repo.get!(Team, id)
+    current_user = Guardian.Plug.current_resource(conn)
+
+    if check_membership(current_user, team) do
+      params = Map.put(params, "reserved_at", Ecto.DateTime.utc)
+
+      changeset =
+        team
+        |> build_assoc(:reservations, user_id: current_user.id)
+        |> Reservation.changeset(params)
+
+      case Repo.insert(changeset) do
+        {:ok, reservation} ->
+          conn |> json(reservation)
+        {:error, changeset} ->
+          conn |> json(%{message: "Nope"})
+      end
+    else
+      conn |> json(%{message: "Nayyy!"})
+    end
+  end
+
   def new_team_environment(conn, params) do
     changeset = Environment.changeset(%Environment{}, params)
 
