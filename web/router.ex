@@ -30,6 +30,8 @@ defmodule Argonaut.Router do
     # id of the team to fetch
     get "/teams/:id/reservations", TeamController, :table
     get "/teams", TeamController, :index
+
+    post "/teams/:id/reservations", TeamController, :table
   end
 
   # these are paths that do not require authentication
