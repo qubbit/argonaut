@@ -124,7 +124,7 @@ defmodule Argonaut.TeamController do
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{ message: "Permission denied" })
+      |> json(%ApiMessage{ status: 403, message: "Permission denied" })
     end
   end
 
@@ -138,7 +138,7 @@ defmodule Argonaut.TeamController do
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{ message: "Permission denied" })
+      |> json(%ApiMessage{ status: 403, message: "Permission denied" })
     end
   end
 
@@ -257,7 +257,9 @@ defmodule Argonaut.TeamController do
       Repo.delete!(environment)
       conn |> json(%{success: true, environment_id: environment_id})
     else
-      conn |> json(%{success: false, message: "Permission denied"})
+      conn
+      |> put_status(:forbidden)
+      |> json(%ApiMessage{status: 403, message: "Permission denied"})
     end
 
     conn
