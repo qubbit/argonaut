@@ -25,13 +25,26 @@ defmodule Argonaut.Router do
   end
 
   scope "/api/readonly", Argonaut do
+    # the verb_noun routes are all RPC style
+    # they have their RESTful analogues
+
     pipe_through [:anonymous, :readonly]
 
-    # id of the team to fetch
-    get "/teams/:id/reservations", TeamController, :table
-    get "/teams", TeamController, :index
+    # id of the team to fetch the current status
+    get "/teams/:name_or_id/reservations", TeamController, :table
+    get "/show_team_status/:name_or_id", TeamController, :table
 
-    post "/teams/:id/reservations", TeamController, :table
+    # id of the team to create a reservation on
+    post "/teams/:id/reservations", TeamController, :create_reservation
+    post "/create_reservation/:id", TeamController, :create_reservation
+
+    # id of the team to create a reservation on
+    delete "/reservations", TeamController, :delete_reservation
+    delete "/delete_reservation", TeamController, :delete_reservation
+
+    # show all teams
+    get "/teams", TeamController, :index
+    get "/get_teams", TeamController, :index
   end
 
   # these are paths that do not require authentication

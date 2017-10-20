@@ -166,8 +166,11 @@ defmodule Argonaut.TeamController do
   end
 
   # returns all the apps, environments and reservations for a team
-  def table(conn, %{"id" => team_id}) do
-    # current_user = Guardian.Plug.current_resource(conn)
+  def table(conn, %{"name_or_id" => team_name_or_id}) do
+    team_id = case Integer.parse(team_name_or_id) do
+      {id, ""} -> id
+      _  -> Repo.get_by(Team, name: team_name_or_id).id
+    end
     data = team_table(team_id)
     conn |> json(data)
   end
