@@ -80,7 +80,7 @@ defmodule Argonaut.Router do
     post "/teams/:id/join", TeamController, :join
     delete "/teams/:id", TeamController, :delete
     delete "/teams/:id/leave", TeamController, :leave
-    get "/teams/:id/table", TeamController, :table
+    get "/teams/:name_or_id/table", TeamController, :table
 
     post "/teams/:id/applications", TeamController, :new_team_application
     get "/teams/:id/applications", TeamController, :show_team_applications
