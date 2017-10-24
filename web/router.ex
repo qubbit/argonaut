@@ -24,6 +24,7 @@ defmodule Argonaut.Router do
     resources "/mails", MailController
   end
 
+  # TODO: readonly is not true anymore, rename it to something else
   scope "/api/readonly", Argonaut do
     # the verb_noun routes are all RPC style
     # they have their RESTful analogues
@@ -35,8 +36,8 @@ defmodule Argonaut.Router do
     get "/show_team_status/:name_or_id", TeamController, :table
 
     # id of the team to create a reservation on
-    post "/teams/:id/reservations", TeamController, :create_reservation
-    post "/create_reservation/:id", TeamController, :create_reservation
+    post "/reservations", TeamController, :create_reservation
+    post "/create_reservation", TeamController, :create_reservation
 
     # id of the team to create a reservation on
     delete "/reservations", TeamController, :delete_reservation

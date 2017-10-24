@@ -128,6 +128,65 @@ defmodule Argonaut.TeamController do
     end
   end
 
+  # create_reservation and delete_reservation
+
+  # These are different than the ones implemented in the channel file
+  # in that they take application name and environment name instead of ids
+  # now that an environment can be uniquely named and owned by one team, it will be easy to
+  # make reservations using just three pieces of info: user, application, environment
+  def create_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
+    # user set up by the token auth. mechanism
+    current_user = conn.assigns.current_user
+
+    { reservation, environment, application, team } = with environment <- (from environment in Environment,
+      where: environment.name == ^env_name,
+      preload: [team: :environments]) |> Repo.one,
+    team <- environment.team,
+    application <- (from application in Application,
+      where: application.name == ^app_name,
+      where: application.team_id == ^team.id) |> Repo.one,
+    reservation <- (from reservation in Reservation,
+      where: reservation.environment_id == ^environment.id,
+      where: reservation.application_id == ^application.id) |> Repo.one do
+      { reservation, environment, application, team }
+    else
+      :error -> conn |> put_status(:not_found) |> json(%{ success: false })
+    end
+
+    if can_reserve?(reservation, current_user) do
+      Repo.delete! reservation
+
+      Repo.insert!(%Reservation{
+        user_id: current_user.id,
+        environment_id: environment.id,
+        application_id: application.id,
+        team_id: team.id,
+        reserved_at: Ecto.DateTime.utc
+      })
+      conn |> json(%{ success: true })
+    else
+      conn |> json(%{ success: false })
+    end
+  end
+
+  defp can_reserve?(reservation, user) do
+    cond do
+      reservation == nil ->
+        true
+      user.is_admin == true ->
+        true
+      reservation.user_id != user.id ->
+        false
+    end
+  end
+
+  def delete_reservation(conn, %{application_name: app_name, environment_name: env_name}) do
+    # user set up by the token auth. mechanism
+    current_user = conn.assigns.current_user
+
+    conn
+  end
+
   def delete(conn, %{"id" => id}) do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get!(Team, id)

@@ -19,6 +19,7 @@ defmodule Argonaut.Plug.ReadOnlyToken do
     end
 
     conn
+    # |> Plug.Conn.put_session(:user_id, current_user.id)
+    |> Plug.Conn.assign(:current_user, current_user)
   end
-
 end
