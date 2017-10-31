@@ -1,7 +1,9 @@
 defmodule Argonaut.TeamController do
   use Argonaut.Web, :controller
 
-  alias Argonaut.{Reservation, Team, Repo, Application, Environment, ApiMessage}
+  import Argonaut.Utils
+
+  alias Argonaut.{Membership, Reservation, Team, Repo, Application, Environment, ApiMessage, User}
 
   def index(conn, params) do
     page = Team
@@ -17,9 +19,8 @@ defmodule Argonaut.TeamController do
 
     case Repo.insert(changeset) do
       {:ok, team} ->
-
-        assoc_changeset = Argonaut.Membership.changeset(
-          %Argonaut.Membership{},
+        assoc_changeset = Membership.changeset(
+          %Membership{},
           %{join_date: Ecto.DateTime.utc, user_id: current_user.id, is_admin: true, team_id: team.id}
         )
         Repo.insert!(assoc_changeset)
@@ -43,7 +44,7 @@ defmodule Argonaut.TeamController do
     team = Repo.get!(Team, id)
     current_user = Guardian.Plug.current_resource(conn)
 
-    if check_membership(current_user, team) do
+    if user_member_of_team?(current_user, team) do
       params = Map.put(params, "reserved_at", Ecto.DateTime.utc)
 
       changeset =
@@ -102,15 +103,19 @@ defmodule Argonaut.TeamController do
     conn |> json(applications)
   end
 
-  def check_membership(user, team) do
-    Argonaut.Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one
+  defp user_member_of_team?(%User{} = user, %Team{} = team) do
+    (Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one) != nil
+  end
+
+  defp user_member_of_team?(user_id, team_id) do
+    (Membership |> where([m], m.user_id == ^user_id and m.team_id == ^team_id) |> Repo.one) != nil
   end
 
   def update(conn, %{"id" => id, "description" => description}) do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get!(Team, id)
 
-    if check_membership(current_user, team) do
+    if user_member_of_team?(current_user, team) do
       changeset = Team.changeset(team, %{"description" => description})
 
       case Repo.update(changeset) do
@@ -135,50 +140,51 @@ defmodule Argonaut.TeamController do
   # now that an environment can be uniquely named and owned by one team, it will be easy to
   # make reservations using just three pieces of info: user, application, environment
   def create_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
-    # user set up by the token auth. mechanism
     current_user = conn.assigns.current_user
 
-    { reservation, environment, application, team } = with environment <- (from environment in Environment,
-      where: environment.name == ^env_name,
-      preload: [team: :environments]) |> Repo.one,
-    team <- environment.team,
-    application <- (from application in Application,
-      where: application.name == ^app_name,
-      where: application.team_id == ^team.id) |> Repo.one,
-    reservation <- (from reservation in Reservation,
-      where: reservation.environment_id == ^environment.id,
-      where: reservation.application_id == ^application.id) |> Repo.one do
-      { reservation, environment, application, team }
-    else
-      :error -> conn |> put_status(:not_found) |> json(%{ success: false })
-    end
+    environment = Repo.one(from env in Environment, where: env.name == ^env_name)
+    application = Repo.one(from app in Application, where: app.name == ^app_name, where: app.team_id == ^environment.team_id)
 
-    if can_reserve?(reservation, current_user) do
-      Repo.delete! reservation
+    { status, reason } = satisfies?("", [
+      fn(reason) -> if environment == nil, do: { :error, "No such environment #{env_name}" }, else: { :ok, "" } end,
+      fn(reason) -> if application == nil, do: { :error, "No such application #{app_name}" }, else: { :ok, "" } end,
+      fn(reason) -> if user_member_of_team?(current_user.id, environment.team_id), do: { :ok, "" }, else: { :error, "None of the teams which you are member of own environment #{env_name}" } end,
+      fn(reason) -> if decide_and_reserve!(environment, application, current_user), do: { :ok, "" }, else: { :error, "Nope!" } end
+    ])
 
-      Repo.insert!(%Reservation{
-        user_id: current_user.id,
-        environment_id: environment.id,
-        application_id: application.id,
-        team_id: team.id,
-        reserved_at: Ecto.DateTime.utc
-      })
+    if status == :ok do
       conn |> json(%{ success: true })
     else
-      conn |> json(%{ success: false })
+      conn |> json(%{ success: false, message: reason })
     end
   end
 
-  defp can_reserve?(reservation, user) do
-    cond do
-      reservation == nil ->
-        true
-      user.is_admin == true ->
-        true
-      reservation.user_id != user.id ->
-        false
+  defp decide_and_reserve!(environment = %Environment{}, application = %Application{}, user = %User{}) do
+    reservation = (from r in Reservation,
+      where: r.application_id == ^application.id,
+      where: r.environment_id == ^environment.id) |> Repo.one
+
+    if can_reserve?(reservation, user) do
+      if reservation do
+        Repo.delete reservation
+      end
+
+      Repo.insert!(%Reservation{
+        user_id: user.id,
+        environment_id: environment.id,
+        application_id: application.id,
+        team_id: environment.team_id,
+        reserved_at: Ecto.DateTime.utc
+      })
+      true
+    else
+      false
     end
   end
+
+  defp can_reserve?(nil, _), do: true
+  defp can_reserve?(_, %User{ is_admin: true }), do: true
+  defp can_reserve?(_, _), do: false
 
   def delete_reservation(conn, %{application_name: app_name, environment_name: env_name}) do
     # user set up by the token auth. mechanism
@@ -238,8 +244,8 @@ defmodule Argonaut.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    changeset = Argonaut.Membership.changeset(
-      %Argonaut.Membership{},
+    changeset = Membership.changeset(
+      %Membership{},
       %{team_id: team.id, user_id: current_user.id, is_admin: false, join_date: Ecto.DateTime.utc}
     )
 
@@ -258,7 +264,7 @@ defmodule Argonaut.TeamController do
   def leave(conn, %{"id" => team_id}) do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
-    membership = Repo.get_by(Argonaut.Membership, team_id: team.id, user_id: current_user.id)
+    membership = Repo.get_by(Membership, team_id: team.id, user_id: current_user.id)
 
     case Repo.delete(membership) do
       {:ok, _} ->
@@ -279,7 +285,7 @@ defmodule Argonaut.TeamController do
     #   conn |> json(%{"success" => false})
     # else
 
-    if check_membership(current_user, team) do
+    if user_member_of_team?(current_user, team) do
       application = Repo.get(Application, application_id)
       Repo.delete!(application)
       conn |> json(%{success: true, application_id: application_id})
@@ -295,9 +301,9 @@ defmodule Argonaut.TeamController do
     changeset = Application.changeset(application, params)
 
     case Repo.update(changeset) do
-      {:ok, _application} ->
+      {:ok, app} ->
         conn
-        |> json(_application)
+        |> json(app)
       {:error, changeset} ->
         conn
         |> json(%{})
@@ -314,7 +320,7 @@ defmodule Argonaut.TeamController do
     # else
 
     # only allow team members to delete a team's environment
-    if check_membership(current_user, team) do
+    if user_member_of_team?(current_user, team) do
       environment = Repo.get(Environment, environment_id)
       Repo.delete!(environment)
       conn |> json(%{success: true, environment_id: environment_id})
@@ -332,9 +338,9 @@ defmodule Argonaut.TeamController do
     changeset = Environment.changeset(environment, params)
 
     case Repo.update(changeset) do
-      {:ok, _environment} ->
+      {:ok, env} ->
         conn
-        |> json(_environment)
+        |> json(env)
       {:error, changeset} ->
         conn
         |> json(%{})
