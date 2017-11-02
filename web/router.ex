@@ -27,7 +27,7 @@ defmodule Argonaut.Router do
   # TODO: readonly is not true anymore, rename it to something else
   scope "/api/readonly", Argonaut do
     # the verb_noun routes are all RPC style
-    # they have their RESTful analogues
+    # they have their RESTful analogs
 
     pipe_through [:anonymous, :readonly]
 
@@ -35,13 +35,14 @@ defmodule Argonaut.Router do
     get "/teams/:name_or_id/reservations", TeamController, :table
     get "/show_team_status/:name_or_id", TeamController, :table
 
-    # id of the team to create a reservation on
     post "/reservations", TeamController, :create_reservation
     post "/create_reservation", TeamController, :create_reservation
 
-    # id of the team to create a reservation on
     delete "/reservations", TeamController, :delete_reservation
     delete "/delete_reservation", TeamController, :delete_reservation
+
+    delete "/clear_reservations", TeamController, :clear_user_reservations
+    get "/list_reservations", TeamController, :list_user_reservations
 
     # show all teams
     get "/teams", TeamController, :index

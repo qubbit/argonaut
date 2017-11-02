@@ -32,6 +32,7 @@ defmodule Argonaut.User do
 
     many_to_many :teams, Team, join_through: "membership"
     has_many :owned_teams, Team, foreign_key: :owner_id
+    has_many :reservations, Reservation, foreign_key: :user_id
 
     timestamps()
   end

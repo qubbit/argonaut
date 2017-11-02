@@ -186,11 +186,47 @@ defmodule Argonaut.TeamController do
   defp can_reserve?(_, %User{ is_admin: true }), do: true
   defp can_reserve?(_, _), do: false
 
-  def delete_reservation(conn, %{application_name: app_name, environment_name: env_name}) do
-    # user set up by the token auth. mechanism
+  defp can_release?(nil, _), do: false
+  defp can_release(_, %User{ is_admin: true }), do: true
+  defp can_release?(%Reservation{ user_id: user_id }, %User{ id: id }), do: user_id == id
+  defp can_release(_, _), do: false
+
+  def delete_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
     current_user = conn.assigns.current_user
 
-    conn
+    environment = Repo.one(from env in Environment, where: env.name == ^env_name)
+    application = Repo.one(from app in Application,
+      where: app.name == ^app_name,
+      where: app.team_id == ^environment.team_id)
+
+
+    reservation = (from r in Reservation,
+      where: r.application_id == ^application.id,
+      where: r.environment_id == ^environment.id) |> Repo.one
+
+    if can_release?(reservation, current_user) do
+      Repo.delete reservation
+      conn |> json(%{ success: true })
+    else
+      conn |> json(%{ success: false })
+    end
+  end
+
+  def clear_user_reservations(conn, params) do
+    current_user = conn.assigns.current_user
+
+    { deleted_count, _ } = (from r in Reservation, where: r.user_id == ^current_user.id) |> Repo.delete_all
+    conn |> json %{ success: true, message: "Cleared all (#{deleted_count}) reservations" }
+  end
+
+  def list_user_reservations(conn, params) do
+    current_user = conn.assigns.current_user
+
+    reservations = reservations_by_user(current_user.id)
+      |> Repo.all
+      |> Enum.map(fn r -> %{ environment: r.environment.name, application: r.application.name } end)
+
+    conn |> json %{ success: true, data: reservations }
   end
 
   def delete(conn, %{"id" => id}) do
@@ -205,6 +241,14 @@ defmodule Argonaut.TeamController do
       |> put_status(:forbidden)
       |> json(%ApiMessage{ status: 403, message: "Permission denied" })
     end
+  end
+
+  defp reservations_by_user(user_id) do
+    from reservation in Reservation,
+    where: reservation.user_id == ^user_id,
+    join: environment in assoc(reservation, :environment),
+    join: application in assoc(reservation, :application),
+    preload: [application: application, environment: environment]
   end
 
   defp reservations_with_users(team_id) do
