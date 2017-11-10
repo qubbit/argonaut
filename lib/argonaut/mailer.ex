@@ -60,7 +60,7 @@ defmodule Argonaut.Mailer do
 
   defp app_root_url do
     if Mix.env == :prod do
-      "https://theargonaut.herokuapp.com"
+      "https://argonaut.ninja"
     else
       "http://localhost:3000"
     end
