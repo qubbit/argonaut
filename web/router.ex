@@ -47,6 +47,8 @@ defmodule Argonaut.Router do
     # show all teams
     get "/teams", TeamController, :index
     get "/get_teams", TeamController, :index
+
+    get "/find_application", TeamController, :find_application
   end
 
   # these are paths that do not require authentication

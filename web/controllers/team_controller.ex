@@ -212,6 +212,16 @@ defmodule Argonaut.TeamController do
     end
   end
 
+  def find_application(conn, %{ "application_name" => app_name }) do
+    applications = (from r in Reservation,
+      join: a in Application, on: a.id == r.application_id,
+      join: e in Environment, on: e.id == r.environment_id,
+      where: a.name == ^app_name,
+      preload: [environment: e, application: a]) |> Repo.all
+
+    conn |> json(applications |> Enum.map(fn x -> %{ application: x.application.name, environment: x.environment.name} end))
+  end
+
   def clear_user_reservations(conn, params) do
     current_user = conn.assigns.current_user
 
@@ -224,7 +234,7 @@ defmodule Argonaut.TeamController do
 
     reservations = reservations_by_user(current_user.id)
       |> Repo.all
-      |> Enum.map(fn r -> %{ environment: r.environment.name, application: r.application.name } end)
+      |> Enum.map(fn r -> %{ environment: r.environment.name, application: r.application.name, reserved_at: r.reserved_at } end)
 
     conn |> json %{ success: true, data: reservations }
   end
