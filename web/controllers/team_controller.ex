@@ -1,9 +1,12 @@
 defmodule Argonaut.TeamController do
   use Argonaut.Web, :controller
 
+  @behaviour ApiBehaviour
   import Argonaut.Utils
 
   alias Argonaut.{Membership, Reservation, Team, Repo, Application, Environment, ApiMessage, User}
+
+  def api_response(conn, result), do: conn |> json(result)
 
   def index(conn, params) do
     page = Team
@@ -141,6 +144,7 @@ defmodule Argonaut.TeamController do
   # make reservations using just three pieces of info: user, application, environment
   def create_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
     current_user = conn.assigns.current_user
+      require IEx; IEx.pry
 
     environment = Repo.one(from env in Environment, where: env.name == ^env_name)
     application = Repo.one(from app in Application, where: app.name == ^app_name, where: app.team_id == ^environment.team_id)
@@ -149,13 +153,13 @@ defmodule Argonaut.TeamController do
       fn(reason) -> if environment == nil, do: { :error, "No such environment #{env_name}" }, else: { :ok, "" } end,
       fn(reason) -> if application == nil, do: { :error, "No such application #{app_name}" }, else: { :ok, "" } end,
       fn(reason) -> if user_member_of_team?(current_user.id, environment.team_id), do: { :ok, "" }, else: { :error, "None of the teams which you are member of own environment #{env_name}" } end,
-      fn(reason) -> if decide_and_reserve!(environment, application, current_user), do: { :ok, "" }, else: { :error, "Nope!" } end
+      fn(reason) -> if decide_and_reserve!(environment, application, current_user), do: { :ok, "" }, else: { :error, "Someone else is using that environment currently" } end
     ])
 
     if status == :ok do
-      conn |> json(%{ success: true })
+      conn |> api_response(%ApiMessage{ success: true, message: "Reserved #{app_name}:#{env_name}" })
     else
-      conn |> json(%{ success: false, message: reason })
+      conn |> api_response(%ApiMessage{ success: false, message: reason })
     end
   end
 
@@ -206,9 +210,9 @@ defmodule Argonaut.TeamController do
 
     if can_release?(reservation, current_user) do
       Repo.delete reservation
-      conn |> json(%{ success: true })
+      conn |> api_response(%{ message: "Deleted your reservation on #{env_name}:#{app_name}", success: true })
     else
-      conn |> json(%{ success: false })
+      conn |> api_response(%{ message: "Could not delete reservation on #{env_name}:#{app_name}", success: false })
     end
   end
 
@@ -226,7 +230,7 @@ defmodule Argonaut.TeamController do
     current_user = conn.assigns.current_user
 
     { deleted_count, _ } = (from r in Reservation, where: r.user_id == ^current_user.id) |> Repo.delete_all
-    conn |> json %{ success: true, message: "Cleared all (#{deleted_count}) reservations" }
+    conn |> api_response %ApiMessage{ success: true, status: 200, message: "Cleared all (#{deleted_count}) reservations" }
   end
 
   def list_user_reservations(conn, params) do
@@ -236,7 +240,7 @@ defmodule Argonaut.TeamController do
       |> Repo.all
       |> Enum.map(fn r -> %{ environment: r.environment.name, application: r.application.name, reserved_at: r.reserved_at } end)
 
-    conn |> json %{ success: true, data: reservations }
+    conn |> api_response(%ApiMessage{ message: "List of reservations made by you (#{current_user.username})", status: 200, success: true, data: reservations })
   end
 
   def delete(conn, %{"id" => id}) do
