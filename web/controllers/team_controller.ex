@@ -144,7 +144,6 @@ defmodule Argonaut.TeamController do
   # make reservations using just three pieces of info: user, application, environment
   def create_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
     current_user = conn.assigns.current_user
-      require IEx; IEx.pry
 
     environment = Repo.one(from env in Environment, where: env.name == ^env_name)
     application = Repo.one(from app in Application, where: app.name == ^app_name, where: app.team_id == ^environment.team_id)
@@ -217,11 +216,12 @@ defmodule Argonaut.TeamController do
   end
 
   def find_application(conn, %{ "application_name" => app_name }) do
-    applications = (from r in Reservation,
-      join: a in Application, on: a.id == r.application_id,
-      join: e in Environment, on: e.id == r.environment_id,
+    applications = (from a in Application,
       where: a.name == ^app_name,
-      preload: [environment: e, application: a]) |> Repo.all
+      join: r in Reservation, on: a.id == r.application_id,
+      join: e in Environment, on: e.id == r.environment_id,
+      preload: [reservations: a ]) |> Repo.all
+      # require IEx; IEx.pry
 
     conn |> json(applications |> Enum.map(fn x -> %{ application: x.application.name, environment: x.environment.name} end))
   end

@@ -1,7 +1,7 @@
 defmodule Argonaut.User do
   use Argonaut.Web, :model
 
-  alias Argonaut.{User, Team, Repo}
+  alias Argonaut.{User, Team, Repo, Reservation}
 
   # Don't show stuff like API access token, email, is_admin, background_url
   # TODO: check where not sending these fields breaks compatibility
