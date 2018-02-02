@@ -9,6 +9,7 @@ defmodule Argonaut.Application do
     field :repo, :string
 
     belongs_to :team, Argonaut.Team
+    has_many :reservations, Argonaut.Reservation
 
     timestamps()
   end

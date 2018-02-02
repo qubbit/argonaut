@@ -24,14 +24,31 @@ defmodule Argonaut.Router do
     resources "/mails", MailController
   end
 
+  # TODO: readonly is not true anymore, rename it to something else
   scope "/api/readonly", Argonaut do
+    # the verb_noun routes are all RPC style
+    # they have their RESTful analogs
+
     pipe_through [:anonymous, :readonly]
 
-    # id of the team to fetch
-    get "/teams/:id/reservations", TeamController, :table
-    get "/teams", TeamController, :index
+    # id of the team to fetch the current status
+    get "/teams/:name_or_id/reservations", TeamController, :table
+    get "/show_team_status/:name_or_id", TeamController, :table
 
-    post "/teams/:id/reservations", TeamController, :table
+    post "/reservations", TeamController, :create_reservation
+    post "/create_reservation", TeamController, :create_reservation
+
+    delete "/reservations", TeamController, :delete_reservation
+    delete "/delete_reservation", TeamController, :delete_reservation
+
+    delete "/clear_reservations", TeamController, :clear_user_reservations
+    get "/list_reservations", TeamController, :list_user_reservations
+
+    # show all teams
+    get "/teams", TeamController, :index
+    get "/get_teams", TeamController, :index
+
+    get "/find_application", TeamController, :find_application
   end
 
   # these are paths that do not require authentication
@@ -67,7 +84,7 @@ defmodule Argonaut.Router do
     post "/teams/:id/join", TeamController, :join
     delete "/teams/:id", TeamController, :delete
     delete "/teams/:id/leave", TeamController, :leave
-    get "/teams/:id/table", TeamController, :table
+    get "/teams/:name_or_id/table", TeamController, :table
 
     post "/teams/:id/applications", TeamController, :new_team_application
     get "/teams/:id/applications", TeamController, :show_team_applications
