@@ -35,10 +35,11 @@ config :phoenix, :stacktrace_depth, 20
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "argonaut",
-  username: "developer",
+  username: "developer@argonaut-development",
   password: "banana2017!",
-  hostname: "localhost",
-  pool_size: 10
+  hostname: "argonaut-development.postgres.database.azure.com",
+  pool_size: 10,
+  ssl: true
 
 config :mailgun,
   domain: "whatever",
