@@ -1,9 +1,7 @@
 variable "pg_admin_password" {}
 variable "pg_developer_password" {}
 
-provider "azurerm" {
-  version = "~> 1.3"
-}
+provider "azurerm" {}
 
 resource "azurerm_resource_group" "argonaut" {
   name     = "${terraform.workspace}-argonaut-development"
@@ -85,13 +83,16 @@ resource "azurerm_app_service" "argonaut" {
   app_service_plan_id = "${azurerm_app_service_plan.argonaut.id}"
 
   app_settings {
-    "DOCKER_CUSTOM_IMAGE_NAME"            = "DOCKER|argonaut.azurecr.io/argonaut:latest"
     "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.argonaut.login_server}"
     "DOCKER_REGISTRY_SERVER_USERNAME"     = "${azurerm_container_registry.argonaut.admin_username}"
     "DOCKER_REGISTRY_SERVER_PASSWORD"     = "${azurerm_container_registry.argonaut.admin_password}"
     "WEBSITE_HTTPLOGGING_RETENTION_DAYS"  = "2"
     "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
     "WEBSITES_PORT"                       = 4000
+  }
+
+  site_config {
+    linux_fx_version = "DOCKER|argonaut.azurecr.io/argonaut:latest"
   }
 }
 
