@@ -97,28 +97,6 @@ resource "azurerm_app_service" "argonaut" {
   }
 }
 
-resource "azurerm_app_service" "argonaut-ui" {
-  name = "argonaut-ui"
-
-  resource_group_name = "${azurerm_resource_group.argonaut.name}"
-  location            = "${azurerm_resource_group.argonaut.location}"
-
-  app_service_plan_id = "${azurerm_app_service_plan.argonaut.id}"
-
-  app_settings {
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.argonaut.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = "${azurerm_container_registry.argonaut.admin_username}"
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = "${azurerm_container_registry.argonaut.admin_password}"
-    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"  = "2"
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "WEBSITES_PORT"                       = 4000
-  }
-
-  site_config {
-    linux_fx_version = "DOCKER|argonaut.azurecr.io/argonaut-ui:latest"
-  }
-}
-
 resource "azurerm_log_analytics_workspace" "argonaut" {
   name                = "${terraform.workspace}-argonaut"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
@@ -179,18 +157,15 @@ resource "azurerm_template_deployment" "argonaut" {
   }
 }
 
-# output "docker_registry_hostname" {
-#   value = "${azurerm_container_registry.argonaut.login_server}"
-# }
+output "docker_registry_hostname" {
+  value = "${azurerm_container_registry.argonaut.login_server}"
+}
 
+output "docker_username" {
+  value = "${azurerm_container_registry.argonaut.admin_username}"
+}
 
-# output "docker_username" {
-#   value = "${azurerm_container_registry.argonaut.admin_username}"
-# }
-
-
-# output "docker_password" {
-#   value     = "${azurerm_container_registry.argonaut.admin_password}"
-#   sensitive = true
-# }
-
+output "docker_password" {
+  value     = "${azurerm_container_registry.argonaut.admin_password}"
+  sensitive = true
+}
