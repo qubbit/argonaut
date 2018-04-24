@@ -51,14 +51,14 @@ resource "azurerm_postgresql_firewall_rule" "miranova" {
 }
 
 resource "azurerm_application_insights" "argonaut" {
-  name                = "argonaut-mbp"
+  name                = "argonaut-${terraform.workspace}"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
   location            = "${azurerm_resource_group.argonaut.location}"
   application_type    = "Web"
 }
 
 resource "azurerm_app_service_plan" "argonaut" {
-  name                = "argonaut-mbp"
+  name                = "argonaut-${terraform.workspace}"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
   location            = "${azurerm_resource_group.argonaut.location}"
 
@@ -76,7 +76,7 @@ resource "azurerm_app_service_plan" "argonaut" {
 }
 
 resource "azurerm_app_service" "argonaut" {
-  name                = "argonaut-mbp"
+  name                = "argonaut-${terraform.workspace}"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
   location            = "${azurerm_resource_group.argonaut.location}"
 
@@ -119,7 +119,7 @@ resource "azurerm_app_service" "argonaut-ui" {
 }
 
 resource "azurerm_log_analytics_workspace" "argonaut" {
-  name                = "mbp-argonaut"
+  name                = "${terraform.workspace}-argonaut"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
   location            = "${azurerm_resource_group.argonaut.location}"
   sku                 = "Free"
