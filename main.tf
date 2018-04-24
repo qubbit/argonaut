@@ -83,6 +83,7 @@ resource "azurerm_app_service" "argonaut" {
   app_service_plan_id = "${azurerm_app_service_plan.argonaut.id}"
 
   app_settings {
+    "DOCKER_ENABLE_CI"                    = "true"
     "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.argonaut.login_server}"
     "DOCKER_REGISTRY_SERVER_USERNAME"     = "${azurerm_container_registry.argonaut.admin_username}"
     "DOCKER_REGISTRY_SERVER_PASSWORD"     = "${azurerm_container_registry.argonaut.admin_password}"
@@ -163,3 +164,33 @@ resource "postgresql_schema" "argonaut" {
     role  = "developer"
   }
 }
+
+resource "azurerm_template_deployment" "argonaut" {
+  name                = "argonaut"
+  resource_group_name = "${azurerm_resource_group.argonaut.name}"
+  deployment_mode     = "Incremental"
+  template_body       = "${file("azuredeploy.json")}"
+
+  parameters {
+    "webHookName"        = "argonaut${terraform.workspace}"
+    "publishingUsername" = "${azurerm_app_service.argonaut.site_credential.0.username}"
+    "publishingPassword" = "${azurerm_app_service.argonaut.site_credential.0.password}"
+    "siteName"           = "${azurerm_app_service.argonaut.name}"
+  }
+}
+
+# output "docker_registry_hostname" {
+#   value = "${azurerm_container_registry.argonaut.login_server}"
+# }
+
+
+# output "docker_username" {
+#   value = "${azurerm_container_registry.argonaut.admin_username}"
+# }
+
+
+# output "docker_password" {
+#   value     = "${azurerm_container_registry.argonaut.admin_password}"
+#   sensitive = true
+# }
+

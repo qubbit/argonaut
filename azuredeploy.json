@@ -1,0 +1,43 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "0.0.0.1",
+    "parameters": {
+        "registryName": {
+            "type": "string",
+            "defaultValue": "argonaut"
+        },
+        "webhookName": {
+            "type": "string",
+            "defaultValue": "argonaut"
+        },
+        "publishingUsername": {
+            "type": "string"
+        },
+        "publishingPassword": {
+            "type": "securestring"
+        },
+        "siteName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        "webhookUri": "[concat('https://', parameters('publishingUsername'), ':', parameters('publishingPassword'), '@', parameters('siteName'), '.scm.azurewebsites.net/docker/hook')]"
+    },
+    "resources": [
+        {
+            "name": "[concat(parameters('registryName'), '/', parameters('webhookName'))]",
+            "type": "Microsoft.ContainerRegistry/registries/webhooks",
+            "apiVersion": "2017-10-01",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "serviceUri": "[variables('webhookUri')]",
+                "status": "enabled",
+                "scope": "argonaut:latest",
+                "actions": [
+                    "push"
+                ]
+            }
+        }
+    ],
+    "outputs": {}
+}
