@@ -66,6 +66,8 @@ provider "postgresql" {
   version = "0.1"
   host    = "${azurerm_postgresql_server.argonaut.fqdn}"
 
+  # host = "argonaut-development.postgres.database.azure.com"
+
   database = "argonaut"
   username = "mpfefferle@argonaut-development"
   password = "${var.pg_admin_password}"
