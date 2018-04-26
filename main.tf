@@ -8,14 +8,6 @@ resource "azurerm_resource_group" "argonaut" {
   location = "East US"
 }
 
-resource "azurerm_container_registry" "argonaut" {
-  name                = "argonaut"
-  resource_group_name = "${azurerm_resource_group.argonaut.name}"
-  location            = "${azurerm_resource_group.argonaut.location}"
-  admin_enabled       = true
-  sku                 = "Basic"
-}
-
 resource "azurerm_postgresql_server" "argonaut" {
   name                = "argonaut-development"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
@@ -50,55 +42,8 @@ resource "azurerm_postgresql_firewall_rule" "miranova" {
   end_ip_address      = "63.84.60.226"
 }
 
-resource "azurerm_application_insights" "argonaut" {
-  name                = "argonaut-${terraform.workspace}"
-  resource_group_name = "${azurerm_resource_group.argonaut.name}"
-  location            = "${azurerm_resource_group.argonaut.location}"
-  application_type    = "Web"
-}
-
-resource "azurerm_app_service_plan" "argonaut" {
-  name                = "argonaut-${terraform.workspace}"
-  resource_group_name = "${azurerm_resource_group.argonaut.name}"
-  location            = "${azurerm_resource_group.argonaut.location}"
-
-  kind = "Linux"
-
-  # reserved = true
-
-  sku {
-    tier = "Standard"
-    size = "S1"
-  }
-  properties {
-    reserved = true
-  }
-}
-
-resource "azurerm_app_service" "argonaut" {
-  name                = "argonaut-${terraform.workspace}"
-  resource_group_name = "${azurerm_resource_group.argonaut.name}"
-  location            = "${azurerm_resource_group.argonaut.location}"
-
-  app_service_plan_id = "${azurerm_app_service_plan.argonaut.id}"
-
-  app_settings {
-    "DOCKER_ENABLE_CI"                    = "true"
-    "DOCKER_REGISTRY_SERVER_URL"          = "https://${azurerm_container_registry.argonaut.login_server}"
-    "DOCKER_REGISTRY_SERVER_USERNAME"     = "${azurerm_container_registry.argonaut.admin_username}"
-    "DOCKER_REGISTRY_SERVER_PASSWORD"     = "${azurerm_container_registry.argonaut.admin_password}"
-    "WEBSITE_HTTPLOGGING_RETENTION_DAYS"  = "2"
-    "WEBSITES_ENABLE_APP_SERVICE_STORAGE" = "false"
-    "WEBSITES_PORT"                       = 4000
-  }
-
-  site_config {
-    linux_fx_version = "DOCKER|argonaut.azurecr.io/argonaut:latest"
-  }
-}
-
 resource "azurerm_log_analytics_workspace" "argonaut" {
-  name                = "${terraform.workspace}-argonaut"
+  name                = "argonaut-${terraform.workspace}"
   resource_group_name = "${azurerm_resource_group.argonaut.name}"
   location            = "${azurerm_resource_group.argonaut.location}"
   sku                 = "Free"
@@ -150,22 +95,26 @@ resource "azurerm_template_deployment" "argonaut" {
   template_body       = "${file("azuredeploy.json")}"
 
   parameters {
-    "webHookName"        = "argonaut${terraform.workspace}"
-    "publishingUsername" = "${azurerm_app_service.argonaut.site_credential.0.username}"
-    "publishingPassword" = "${azurerm_app_service.argonaut.site_credential.0.password}"
-    "siteName"           = "${azurerm_app_service.argonaut.name}"
+    "appName" = "argonaut-${terraform.workspace}"
+
+    # "publishingUsername" = "${azurerm_app_service.argonaut.site_credential.0.username}"
+    # "publishingPassword" = "${azurerm_app_service.argonaut.site_credential.0.password}"
+    # "siteName"           = "${azurerm_app_service.argonaut.name}"
   }
 }
 
-output "docker_registry_hostname" {
-  value = "${azurerm_container_registry.argonaut.login_server}"
-}
+# output "docker_registry_hostname" {
+#   value = "${azurerm_container_registry.argonaut.login_server}"
+# }
 
-output "docker_username" {
-  value = "${azurerm_container_registry.argonaut.admin_username}"
-}
 
-output "docker_password" {
-  value     = "${azurerm_container_registry.argonaut.admin_password}"
-  sensitive = true
-}
+# output "docker_username" {
+#   value = "${azurerm_container_registry.argonaut.admin_username}"
+# }
+
+
+# output "docker_password" {
+#   value     = "${azurerm_container_registry.argonaut.admin_password}"
+#   sensitive = true
+# }
+

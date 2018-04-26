@@ -2,40 +2,85 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "0.0.0.1",
     "parameters": {
+        "appName": {
+            "type": "string",
+            "defaultValue": "argonaut"
+        },
         "registryName": {
             "type": "string",
             "defaultValue": "argonaut"
-        },
-        "webhookName": {
-            "type": "string",
-            "defaultValue": "argonaut"
-        },
-        "publishingUsername": {
-            "type": "string"
-        },
-        "publishingPassword": {
-            "type": "securestring"
-        },
-        "siteName": {
-            "type": "string"
         }
     },
-    "variables": {
-        "webhookUri": "[concat('https://', parameters('publishingUsername'), ':', parameters('publishingPassword'), '@', parameters('siteName'), '.scm.azurewebsites.net/docker/hook')]"
-    },
+    "variables": {},
     "resources": [
         {
-            "name": "[concat(parameters('registryName'), '/', parameters('webhookName'))]",
-            "type": "Microsoft.ContainerRegistry/registries/webhooks",
+            "name": "[concat(parameters('registryName'))]",
+            "type": "Microsoft.ContainerRegistry/registries",
             "apiVersion": "2017-10-01",
             "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Basic"
+            },
             "properties": {
-                "serviceUri": "[variables('webhookUri')]",
-                "status": "enabled",
-                "scope": "argonaut:latest",
-                "actions": [
-                    "push"
-                ]
+                "adminUserEnabled": true
+            }
+        },
+        {
+            "name": "[parameters('appName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2016-09-01",
+            "kind": "linux",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "name": "[parameters('appName')]"
+            },
+            "sku": {
+                "name": "S1",
+                "tier": "Standard",
+                "size": "S1",
+                "family": "S",
+                "capacity": 1
+            }
+        },
+        {
+            "name": "[parameters('appName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-08-01",
+            "kind": "app,linux,container",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms/', parameters('appName'))]",
+                "siteConfig": {
+                    "linuxFxVersion": "DOCKER|argonaut.azurecr.io/argonaut:latest",
+                    "appSettings": [
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_URL",
+                            "value": "[concat('https://', reference(parameters('registryName')).loginServer)]"
+                        },
+                        {
+                            "name": "DOCKER_REGISTRY_SERVER_USERNAME",
+                            "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-03-01').username]"
+                        },
+                        {
+                            "name": "DOCKER_REGISTER_SERVER_PASSWORD",
+                            "value": "[listCredentials(resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName')), '2017-03-01').passwords[0].value]"
+                        },
+                        {
+                            "name": "WEBSITES_PORT",
+                            "value": "4000"
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "[parameters('appName')]",
+            "type": "microsoft.insights/components",
+            "apiVersion": "2015-05-01",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web"
             }
         }
     ],
