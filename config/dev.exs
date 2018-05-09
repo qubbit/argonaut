@@ -12,17 +12,6 @@ config :argonaut, Argonaut.Endpoint,
   code_reloader: true,
   check_origin: false
 
-# Watch static and templates for browser reloading.
-config :argonaut, Argonaut.Endpoint,
-  live_reload: [
-    patterns: [
-      ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg|woff|eot|ttf)$},
-      ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
-    ]
-  ]
-
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
@@ -30,16 +19,14 @@ config :logger, :console, format: "[$level] $message\n"
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
 
-
 # database URL is overridden in production by the value of DATABASE_URL environment variable
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
-  database: "argonaut",
-  username: "developer@argonaut-development",
-  password: "banana2017!",
-  hostname: "argonaut-development.postgres.database.azure.com",
-  pool_size: 10,
-  ssl: true
+  hostname: System.get_env("DB_HOST") || "localhost",
+  username: System.get_env("DB_USER") || "postgres",
+  password: System.get_env("DB_PASS") || "postgres",
+  database: "argonaut_dev",
+  pool_size: 10
 
 config :mailgun,
   domain: "whatever",

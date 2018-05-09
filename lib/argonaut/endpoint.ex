@@ -3,13 +3,7 @@ defmodule Argonaut.Endpoint do
 
   socket "/socket", Argonaut.UserSocket
 
-  plug Plug.Static,
-    at: "/", from: :argonaut, gzip: false,
-    only: ~w(css fonts images js favicon.ico robots.txt)
-
   if code_reloading? do
-    socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
-    plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
   end
 
