@@ -19,6 +19,6 @@ defmodule Argonaut.Environment do
   def changeset(struct, params \\ %{}) do
     struct
     |> cast(params, [:name, :description, :is_integration, :team_id])
-    |> validate_required([:name, :description, :is_integration, :team_id])
+    |> validate_required([:name, :description, :team_id])
   end
 end
