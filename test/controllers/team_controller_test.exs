@@ -1,17 +1,29 @@
 defmodule Argonaut.TeamControllerTest do
   use Argonaut.ConnCase
+  alias Argonaut.{Repo,Team,User}
 
-  alias Argonaut.Team
   @valid_attrs %{description: "some content", logo_url: "some content", name: "some content"}
   @invalid_attrs %{}
 
+  @admin_user_attrs %{token: "abc", username: "hpotter", password: "12345678", email: "hpotter@example.com", is_admin: true}
+
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    changeset = User.changeset(%User{}, @admin_user_attrs)
+    {:ok, admin }= Repo.insert(changeset)
+    {:ok, token, _} =  Guardian.encode_and_sign(admin, %{}, token_type: :access)
+    authed_conn = conn
+                  |> put_req_header("accept", "application/json")
+                  |> put_req_header("authorization", token)
+
+    {:ok, conn: authed_conn}
   end
 
   test "lists all entries on index", %{conn: conn} do
-    conn = get conn, team_path(conn, :index)
-    assert json_response(conn, 200)["data"] == []
+    conn = get conn, team_path(conn, :index, %{token: "abc"})
+    assert %{"data" => [],
+      "pagination" =>
+        %{"page_number" => 1, "page_size" => 25, "total_entries" => 0, "total_pages" => 1}
+    } = json_response(conn, 200)
   end
 
   test "shows chosen resource", %{conn: conn} do
@@ -44,6 +56,7 @@ defmodule Argonaut.TeamControllerTest do
   test "updates and renders chosen resource when data is valid", %{conn: conn} do
     team = Repo.insert! %Team{}
     conn = put conn, team_path(conn, :update, team), team: @valid_attrs
+    require IEx; IEx.pry()
     assert json_response(conn, 200)["data"]["id"]
     assert Repo.get_by(Team, @valid_attrs)
   end
