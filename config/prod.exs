@@ -33,16 +33,9 @@ config :mailgun,
   mode: :prod
 
 config :argonaut, Argonaut.Repo,
-  # adapter: Ecto.Adapters.Postgres,
-  # url: System.get_env("DATABASE_URL"),
-  # pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
-  # ssl: true
   adapter: Ecto.Adapters.Postgres,
-  database: "argonaut",
-  username: "developer@argonaut-development",
-  password: "banana2017!",
-  hostname: "argonaut-development.postgres.database.azure.com",
-  pool_size: 10,
+  url: System.get_env("DATABASE_URL"),
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true
 
 config :guardian, Guardian,
