@@ -93,9 +93,19 @@ defmodule Argonaut.User do
     struct
     |> cast(params, @required_fields ++  @optional_fields)
     |> validate_required(@required_fields)
-    |> put_change(:avatar_url, default_gravatar())
+    |> put_gravatar
     |> generate_encrypted_password
     |> changeset
+  end
+
+  defp put_gravatar(changeset) do
+    case get_field(changeset, :email) do
+      nil ->
+        changeset
+
+      email ->
+        put_change(changeset, :avatar_url, default_gravatar(email))
+    end
   end
 
   # TODO: clean up potential code smell
@@ -127,9 +137,8 @@ defmodule Argonaut.User do
   def logged_in?(conn), do: !!current_user(conn)
 
 
-  def default_gravatar do
-    s = to_string :rand.uniform * 1000000000039
-    md5_hash = :crypto.hash(:md5, s) |> Base.encode16(case: :lower)
+  def default_gravatar(email) do
+    md5_hash = :crypto.hash(:md5, email) |> Base.encode16(case: :lower)
     "https://www.gravatar.com/avatar/#{md5_hash}?d=identicon"
   end
 
