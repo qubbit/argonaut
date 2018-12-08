@@ -39,6 +39,7 @@ defmodule Argonaut.TeamController do
   end
 
   def show(conn, %{"id" => id}) do
+    require IEx; IEx.pry()
     team = Repo.get!(Team, id)
     render(conn, "show.json", team: team)
   end
@@ -247,7 +248,7 @@ defmodule Argonaut.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get!(Team, id)
 
-    if team.owner_id == current_user.id do
+    if team.owner_id == current_user.id || current_user.is_admin do
       Repo.delete!(team)
       conn |> json(%{ id: team.id })
     else

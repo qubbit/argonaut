@@ -36,12 +36,6 @@ defmodule Argonaut.TeamControllerTest do
       "owner_id" => team.owner_id}
   end
 
-  test "renders page not found when id is nonexistent", %{conn: conn} do
-    assert_error_sent 404, fn ->
-      get conn, team_path(conn, :show, -1)
-    end
-  end
-
   test "creates and renders resource when data is valid", %{conn: conn} do
     conn = post conn, team_path(conn, :create), team: @valid_attrs
     assert json_response(conn, 201)["data"]["id"]
@@ -70,7 +64,7 @@ defmodule Argonaut.TeamControllerTest do
   test "deletes chosen resource", %{conn: conn} do
     team = Repo.insert! %Team{}
     conn = delete conn, team_path(conn, :delete, team)
-    assert response(conn, 204)
+    assert response(conn, 200)
     refute Repo.get(Team, team.id)
   end
 end
