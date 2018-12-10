@@ -1,9 +1,9 @@
-defmodule Argonaut.SessionView do
+defmodule ArgonautWeb.SessionView do
   use Argonaut.Web, :view
 
   def render("show.json", %{user: user, jwt: jwt}) do
     %{
-      data: render_one(user, Argonaut.UserView, "all.json"),
+      data: render_one(user, ArgonautWeb.UserView, "all.json"),
       meta: %{token: jwt}
     }
   end

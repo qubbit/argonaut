@@ -6,7 +6,7 @@ defmodule ArgonautWeb.TeamChannel do
   def join("teams:" <> team_id, _params, socket) do
     team = Repo.get!(Argonaut.Team, team_id)
     response = %{
-      team: Phoenix.View.render_one(team, Argonaut.TeamView, "team.json")
+      team: Phoenix.View.render_one(team, ArgonautWeb.TeamView, "team.json")
     }
 
     send(self(), :after_join)
@@ -29,7 +29,7 @@ defmodule ArgonautWeb.TeamChannel do
         broadcast_reservation_deletion(socket, id)
         {:reply, {:ok, reservation}, socket}
       {:error, changeset} ->
-        {:reply, {:error, Phoenix.View.render(Argonaut.ChangesetView, "error.json", changeset: changeset)}, socket}
+        {:reply, {:error, Phoenix.View.render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)}, socket}
     end
   end
 

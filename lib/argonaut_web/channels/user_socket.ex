@@ -1,7 +1,7 @@
 defmodule ArgonautWeb.UserSocket do
   use Phoenix.Socket
 
-  channel "teams:*", Argonaut.TeamChannel
+  channel "teams:*", ArgonautWeb.TeamChannel
 
   transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000
 

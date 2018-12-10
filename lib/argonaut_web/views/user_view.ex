@@ -1,4 +1,4 @@
-defmodule Argonaut.UserView do
+defmodule ArgonautWeb.UserView do
   use Argonaut.Web, :view
 
   def render("user.json", %{user: user}) do

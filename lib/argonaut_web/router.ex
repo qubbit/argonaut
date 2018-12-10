@@ -19,13 +19,13 @@ defmodule ArgonautWeb.Router do
     plug Argonaut.Plug.ReadOnlyToken
   end
 
-  scope "/api/admin", Argonaut do
+  scope "/api/admin", ArgonautWeb do
     pipe_through [:anonymous, :api, :admin]
     resources "/mails", MailController
   end
 
   # TODO: readonly is not true anymore, rename it to something else
-  scope "/api/readonly", Argonaut do
+  scope "/api/readonly", ArgonautWeb do
     # the verb_noun routes are all RPC style
     # they have their RESTful analogs
 
@@ -52,16 +52,15 @@ defmodule ArgonautWeb.Router do
   end
 
   # these are paths that do not require authentication
-  scope "/api/anonymous", Argonaut do
+  scope "/api/anonymous", ArgonautWeb do
     pipe_through :anonymous
-
     post "/forgot_password", SessionController, :forgot_password
     post "/reset_password", SessionController, :reset_password
     post "/sessions", SessionController, :create
     resources "/users", UserController, only: [:create]
   end
 
-  scope "/api", Argonaut do
+  scope "/api", ArgonautWeb do
     pipe_through [:anonymous, :api]
 
     resources "/reservations", ReservationController, except: [:new, :edit]
@@ -102,7 +101,7 @@ defmodule ArgonautWeb.Router do
     patch "/profile", ProfileController, :update
   end
 
-  scope "/", Argonaut do
+  scope "/", ArgonautWeb do
     get "/*path", BaseController, :not_found
   end
 end

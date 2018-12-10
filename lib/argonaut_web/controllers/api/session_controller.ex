@@ -1,4 +1,4 @@
-defmodule Argonaut.SessionController do
+defmodule ArgonautWeb.SessionController do
   use Argonaut.Web, :controller
 
   alias Argonaut.{ApiMessage, User, Mailer}

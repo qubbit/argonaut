@@ -1,15 +1,15 @@
-defmodule Argonaut.TeamView do
+defmodule ArgonautWeb.TeamView do
   use Argonaut.Web, :view
 
   def render("index.json", %{teams: teams}) do
     %{
-      data: render_many(teams, Argonaut.TeamView, "team.json"),
+      data: render_many(teams, ArgonautWeb.TeamView, "team.json"),
       pagination: Argonaut.PaginationHelpers.pagination(teams)
     }
   end
 
   def render("show.json", %{team: team}) do
-    %{data: render_one(team, Argonaut.TeamView, "team.json")}
+    %{data: render_one(team, ArgonautWeb.TeamView, "team.json")}
   end
 
   def render("team.json", %{team: team}) do

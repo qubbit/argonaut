@@ -4,6 +4,6 @@ defmodule ArgonautWeb.BaseController do
   def not_found(conn, _params) do
     conn
     |> put_status(:not_found)
-    |> json(Argonaut.ErrorView.render("404.json"))
+    |> json(ArgonautWeb.ErrorView.render("404.json"))
   end
 end

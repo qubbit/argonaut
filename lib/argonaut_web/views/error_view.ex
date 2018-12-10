@@ -1,4 +1,4 @@
-defmodule Argonaut.ErrorView do
+defmodule ArgonautWeb.ErrorView do
   use Argonaut.Web, :view
 
   @status_message_map %{"401" => "Hmm it looks like you can't do that.",
