@@ -1,3 +1,3 @@
-defmodule Argonaut.LayoutViewTest do
-  use Argonaut.ConnCase, async: true
+defmodule ArgonautWeb.LayoutViewTest do
+  use ArgonautWeb.ConnCase, async: true
 end

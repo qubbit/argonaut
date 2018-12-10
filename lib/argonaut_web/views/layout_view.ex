@@ -1,4 +1,4 @@
-defmodule Argonaut.LayoutView do
+defmodule ArgonautWeb.LayoutView do
   use Argonaut.Web, :view
 
   @spec logged_in?(%Plug.Conn{}) :: boolean()
