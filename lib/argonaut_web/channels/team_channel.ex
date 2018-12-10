@@ -14,10 +14,10 @@ defmodule ArgonautWeb.TeamChannel do
   end
 
   def handle_info(:after_join, socket) do
-    ArgonautWeb.Presence.track(socket, socket.assigns.current_user.id, %{
+    Argonaut.Presence.track(socket, socket.assigns.current_user.id, %{
       user: Phoenix.View.render_one(socket.assigns.current_user, ArgonautWeb.UserView, "user.json")
     })
-    push(socket, "presence_state", ArgonautWeb.Presence.list(socket))
+    push(socket, "presence_state", Argonaut.Presence.list(socket))
     {:noreply, socket}
   end
 

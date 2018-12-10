@@ -19,7 +19,7 @@ config :argonaut,
   git_sha: String.trim(elem(System.cmd("git", ["rev-parse", "HEAD"]), 0))
 
 # Configures the endpoint
-config :argonaut, Argonaut.Endpoint,
+config :argonaut, ArgonautWeb.Endpoint,
   url: [host: "localhost:4000"],
   # this is overridden in production by the value of SECRET_KEY_BASE environment variable
   secret_key_base: "5zZvSUCd+1zgUxUZvrIxMXdmvJZhIyNv3LJgOc9wZ6Fhln95e8tm7NxKsoZL5Uri",
