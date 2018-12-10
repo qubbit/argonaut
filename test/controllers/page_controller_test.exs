@@ -1,5 +1,5 @@
 defmodule Argonaut.PageControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"

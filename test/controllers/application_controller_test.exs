@@ -1,5 +1,5 @@
 defmodule Argonaut.ApplicationControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
 
   alias Argonaut.Application
   @valid_attrs %{team_id: 1, name: "some content", ping: "some content", repo: "some content"}

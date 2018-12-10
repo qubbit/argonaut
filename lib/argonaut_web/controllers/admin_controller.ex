@@ -1,4 +1,4 @@
-defmodule Argonaut.AdminController do
+defmodule ArgonautWeb.AdminController do
   use Argonaut.Web, :controller
 
   def index(conn, _params) do

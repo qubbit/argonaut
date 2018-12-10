@@ -1,5 +1,5 @@
 defmodule Argonaut.TeamControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
   alias Argonaut.{Repo,Team,User}
 
   @valid_attrs %{description: "some content", logo_url: "some content", name: "some content"}

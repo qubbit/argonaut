@@ -1,5 +1,5 @@
 defmodule Argonaut.ReservationsChannelTest do
-  use Argonaut.ChannelCase
+  use ArgonautWeb.ChannelCase
 
   alias Argonaut.ReservationsChannel
 

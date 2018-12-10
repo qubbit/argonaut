@@ -1,4 +1,4 @@
-defmodule Argonaut.MembershipController do
+defmodule ArgonautWeb.MembershipController do
   use Argonaut.Web, :controller
 
   alias Argonaut.Membership

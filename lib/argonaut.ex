@@ -11,8 +11,8 @@ defmodule Argonaut do
       # Start the Ecto repository
       supervisor(Argonaut.Repo, []),
       # Start the endpoint when the application starts
-      supervisor(Argonaut.Endpoint, []),
-      supervisor(Argonaut.Presence, []),
+      supervisor(ArgonautWeb.Endpoint, []),
+      supervisor(ArgonautWeb.Presence, []),
       # Start your own worker by calling: Argonaut.Worker.start_link(arg1, arg2, arg3)
       # worker(Argonaut.Worker, [arg1, arg2, arg3]),
     ]
@@ -26,7 +26,7 @@ defmodule Argonaut do
   # Tell Phoenix to update the endpoint configuration
   # whenever the application is updated.
   def config_change(changed, _new, removed) do
-    Argonaut.Endpoint.config_change(changed, removed)
+    ArgonautWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

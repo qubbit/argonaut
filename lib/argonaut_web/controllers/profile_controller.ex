@@ -1,4 +1,4 @@
-defmodule Argonaut.ProfileController do
+defmodule ArgonautWeb.ProfileController do
   use Argonaut.Web, :controller
 
   alias Argonaut.User

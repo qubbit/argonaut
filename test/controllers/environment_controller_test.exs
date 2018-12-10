@@ -1,5 +1,5 @@
 defmodule Argonaut.EnvironmentControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
 
   alias Argonaut.Environment
   @valid_attrs %{description: "some content", name: "some content", owning_team: "some content"}

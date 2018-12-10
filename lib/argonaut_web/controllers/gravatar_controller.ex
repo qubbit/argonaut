@@ -1,4 +1,4 @@
-defmodule Argonaut.GravatarController do
+defmodule ArgonautWeb.GravatarController do
   use Argonaut.Web, :controller
 
   def get_url(conn, params) do

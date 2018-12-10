@@ -1,4 +1,4 @@
-defmodule Argonaut.ReservationsChannel do
+defmodule ArgonautWeb.ReservationsChannel do
   use Argonaut.Web, :channel
 
   alias Argonaut.Reservation

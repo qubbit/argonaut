@@ -1,4 +1,4 @@
-defmodule Argonaut.UserSocket do
+defmodule ArgonautWeb.UserSocket do
   use Phoenix.Socket
 
   channel "teams:*", Argonaut.TeamChannel

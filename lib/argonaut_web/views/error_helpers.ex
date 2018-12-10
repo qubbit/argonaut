@@ -1,4 +1,4 @@
-defmodule Argonaut.ErrorHelpers do
+defmodule ArgonautWeb.ErrorHelpers do
   @moduledoc """
   Conveniences for translating and building error messages.
   """

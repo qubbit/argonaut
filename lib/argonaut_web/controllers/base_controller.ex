@@ -1,4 +1,4 @@
-defmodule Argonaut.BaseController do
+defmodule ArgonautWeb.BaseController do
   use Argonaut.Web, :controller
 
   def not_found(conn, _params) do

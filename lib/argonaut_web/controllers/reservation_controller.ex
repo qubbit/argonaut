@@ -1,4 +1,4 @@
-defmodule Argonaut.ReservationController do
+defmodule ArgonautWeb.ReservationController do
   use Argonaut.Web, :controller
 
   alias Argonaut.Reservation

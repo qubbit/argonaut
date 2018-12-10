@@ -1,4 +1,4 @@
-defmodule Argonaut.MailView do
+defmodule ArgonautWeb.MailView do
   use Argonaut.Web, :view
 
   def render("index.json", %{mails: mails}) do

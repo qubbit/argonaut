@@ -1,5 +1,5 @@
 defmodule Argonaut.MembershipControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
 
   alias Argonaut.Membership
   @valid_attrs %{is_admin: true, join_date: %{day: 17, hour: 14, min: 0, month: 4, sec: 0, year: 2010}}

@@ -1,4 +1,4 @@
-defmodule Argonaut.MailController do
+defmodule ArgonautWeb.MailController do
   use Argonaut.Web, :controller
 
   require Logger

@@ -1,4 +1,4 @@
-defmodule Argonaut.Router do
+defmodule ArgonautWeb.Router do
   use Argonaut.Web, :router
 
   pipeline :admin do

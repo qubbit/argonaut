@@ -19,7 +19,6 @@ defmodule Argonaut.Web do
   def model do
     quote do
       use Ecto.Schema
-
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
@@ -28,20 +27,18 @@ defmodule Argonaut.Web do
 
   def controller do
     quote do
-      use Phoenix.Controller
-
+      use Phoenix.Controller, namespace: ArgonautWeb
       alias Argonaut.Repo
       import Ecto
       import Ecto.Query
-
-      import Argonaut.Router.Helpers
-      import Argonaut.Gettext
+      import ArgonautWeb.Router.Helpers
+      import ArgonautWeb.Gettext
     end
   end
 
   def view do
     quote do
-      use Phoenix.View, root: "web/templates"
+      use Phoenix.View, root: "lib/argonaut_web/templates", namespace: ArgonautWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_csrf_token: 0, get_flash: 2, view_module: 1]
@@ -49,9 +46,9 @@ defmodule Argonaut.Web do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import Argonaut.Router.Helpers
-      import Argonaut.ErrorHelpers
-      import Argonaut.Gettext
+      import ArgonautWeb.Router.Helpers
+      import ArgonautWeb.ErrorHelpers
+      import ArgonautWeb.Gettext
     end
   end
 
@@ -64,11 +61,10 @@ defmodule Argonaut.Web do
   def channel do
     quote do
       use Phoenix.Channel
-
       alias Argonaut.Repo
       import Ecto
       import Ecto.Query
-      import Argonaut.Gettext
+      import ArgonautWeb.Gettext
     end
   end
 

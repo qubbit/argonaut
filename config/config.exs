@@ -23,7 +23,7 @@ config :argonaut, Argonaut.Endpoint,
   url: [host: "localhost:4000"],
   # this is overridden in production by the value of SECRET_KEY_BASE environment variable
   secret_key_base: "5zZvSUCd+1zgUxUZvrIxMXdmvJZhIyNv3LJgOc9wZ6Fhln95e8tm7NxKsoZL5Uri",
-  render_errors: [view: Argonaut.ErrorView, accepts: ~w(html json)],
+  render_errors: [view: ArgonautWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: Argonaut.PubSub,
            adapter: Phoenix.PubSub.PG2]
 

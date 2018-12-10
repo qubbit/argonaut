@@ -1,4 +1,4 @@
-defmodule Argonaut.EnvironmentController do
+defmodule ArgonautWeb.EnvironmentController do
   use Argonaut.Web, :controller
 
   alias Argonaut.Environment

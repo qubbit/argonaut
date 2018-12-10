@@ -1,7 +1,7 @@
-defmodule Argonaut.Endpoint do
+defmodule ArgonautWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :argonaut
 
-  socket "/socket", Argonaut.UserSocket
+  socket "/socket", ArgonautWeb.UserSocket
 
   if code_reloading? do
     plug Phoenix.CodeReloader
@@ -25,5 +25,5 @@ defmodule Argonaut.Endpoint do
 
   plug Corsica, allow_headers: ~w(Accept Content-Type Authorization Origin)
 
-  plug Argonaut.Router
+  plug ArgonautWeb.Router
 end

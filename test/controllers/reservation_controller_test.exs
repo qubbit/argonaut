@@ -1,5 +1,5 @@
 defmodule Argonaut.ReservationControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
 
   alias Argonaut.Reservation
   @valid_attrs %{}

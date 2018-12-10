@@ -1,4 +1,4 @@
-defmodule Argonaut.TeamController do
+defmodule ArgonautWeb.TeamController do
   use Argonaut.Web, :controller
 
   @behaviour ApiBehaviour

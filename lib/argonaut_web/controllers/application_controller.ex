@@ -1,4 +1,4 @@
-defmodule Argonaut.ApplicationController do
+defmodule ArgonautWeb.ApplicationController do
   use Argonaut.Web, :controller
 
   alias Argonaut.Application

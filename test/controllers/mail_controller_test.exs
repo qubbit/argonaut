@@ -1,5 +1,5 @@
 defmodule Argonaut.MailControllerTest do
-  use Argonaut.ConnCase
+  use ArgonautWeb.ConnCase
 
   alias Argonaut.Mail
   @valid_attrs %{from: "some content", is_html: true, message: "some content", subject: "some content", to: "some content"}
