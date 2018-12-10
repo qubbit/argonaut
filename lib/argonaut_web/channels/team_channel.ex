@@ -1,6 +1,7 @@
 defmodule ArgonautWeb.TeamChannel do
   use Argonaut.Web, :channel
   alias Argonaut.{Membership, Reservation}
+  # testing https://github.com/hassox/phoenix_guardian/blob/ueberauth-guardian/test/channels/authorized_channel_test.exs
 
   # returns a team after the team channel is joined
   def join("teams:" <> team_id, _params, socket) do
