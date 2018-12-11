@@ -10,6 +10,12 @@ defmodule Argonaut.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
+     test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: ["coveralls": :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
      deps: deps()]
   end
 
@@ -36,6 +42,7 @@ defmodule Argonaut.Mixfile do
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.6"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
+     {:excoveralls, "~> 0.10", only: :test},
      {:gettext, "~> 0.11"},
      {:plug_cowboy, "~> 1.0"},
      {:comeonin, "~> 3.0"},
