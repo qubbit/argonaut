@@ -14,4 +14,4 @@ export WS_ALLOWED_ORIGINS="list of allowed domains"
 # If first run, uncomment the following line and comment it after running it
 # MIX_ENV=prod mix ecto.migrate
 
-MIX_ENV=prod elixir --detached -S mix phoenix.server
+MIX_ENV=prod elixir --detached -S mix phx.server
