@@ -44,7 +44,7 @@ defmodule Argonaut.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:excoveralls, "~> 0.10", only: :test},
      {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
+     {:plug_cowboy, "~> 1.0"},
      {:comeonin, "~> 3.0"},
      {:guardian, "~> 0.14"},
      {:mustachex, "~> 0.0.1"},

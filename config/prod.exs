@@ -13,18 +13,18 @@ use Mix.Config
 # which you typically run after static files are built.
 config :argonaut, Argonaut.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: ~s(#{System.get_env("HEROKU_APP_NAME")}.herokuapp.com), port: 80],
   force_ssl: [rewrite_on: [:x_forwarded_proto]],
-  cache_static_manifest: "priv/static/manifest.json",
   secret_key_base: System.get_env("SECRET_KEY_BASE"),
   # super important for making websockets work in production
   # your config should have comma separated list of origins
+  # this URL is superate from what phoenix uses, it's for email resets... I think
+  url: [host: System.get_env("APP_NAME"), port: 80],
   check_origin: ~w(#{System.get_env("WS_ALLOWED_ORIGINS")})
 
 config :logger, level: :info
 
 config :argonaut,
-  git_sha: System.get_env("HEROKU_SLUG_COMMIT")
+  git_sha: ""
 
 config :mailgun,
   domain: System.get_env("MAILGUN_DOMAIN"),
