@@ -22,11 +22,11 @@ defmodule Argonaut.User do
     field :password_confirmation, :string, virtual: true
 
     field :password_reset_token, :string
-    field :password_reset_sent_at, :utc_datetime
+    field :password_reset_sent_at, :utc_datetime_usec
 
     field :confirmation_token, :string
-    field :confirmation_sent_at, :utc_datetime
-    field :confirmed_at, :utc_datetime
+    field :confirmation_sent_at, :utc_datetime_usec
+    field :confirmed_at, :utc_datetime_usec
 
     field :api_token, :string
 

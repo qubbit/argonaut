@@ -7,7 +7,7 @@ defmodule Argonaut.Repo.Migrations.CreateReservation do
       add :environment_id, references(:environments, on_delete: :delete_all), null: false
       add :application_id, references(:applications, on_delete: :delete_all), null: false
       add :team_id, references(:teams, on_delete: :delete_all), null: false
-      add :reserved_at, :datetime
+      add :reserved_at, :utc_datetime_usec
 
       timestamps()
     end

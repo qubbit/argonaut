@@ -6,7 +6,7 @@ defmodule Argonaut.Repo.Migrations.CreateMembership do
       add :user_id, references(:users, on_delete: :delete_all)
       add :team_id, references(:teams, on_delete: :delete_all)
       add :is_admin, :boolean, default: false, null: false
-      add :join_date, :datetime, null: false
+      add :join_date, :utc_datetime_usec, null: false
 
       timestamps()
     end

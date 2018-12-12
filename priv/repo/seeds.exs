@@ -16,9 +16,9 @@ team_changeset = Team.changeset(%Team{}, %{name: "EPA",
 epa_team = Repo.insert!(team_changeset)
 
 # membership
-Repo.insert!(%Membership{user_id: gopal.id, team_id: epa_team.id, is_admin: true, join_date: Ecto.DateTime.utc})
-Repo.insert!(%Membership{user_id: wade.id, team_id: epa_team.id, join_date: Ecto.DateTime.utc})
-Repo.insert!(%Membership{user_id: chris.id, team_id: epa_team.id, join_date: Ecto.DateTime.utc})
+Repo.insert!(%Membership{user_id: gopal.id, team_id: epa_team.id, is_admin: true, join_date: DateTime.utc_now})
+Repo.insert!(%Membership{user_id: wade.id, team_id: epa_team.id, join_date: DateTime.utc_now})
+Repo.insert!(%Membership{user_id: chris.id, team_id: epa_team.id, join_date: DateTime.utc_now})
 
 # testing environments
 pbm1  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "pbm1", description: "PBM1", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
@@ -27,7 +27,7 @@ epa1  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "epa1", descr
 
 epa2  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "epa2", description: "EPA2", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
 
-perf3  = Repo.insert!(Environment.changeset(%Environment{}, %{name: "perf3", description: "EPA performance testing environment", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
+Repo.insert!(Environment.changeset(%Environment{}, %{name: "perf3", description: "EPA performance testing environment", team_id: epa_team.id}) |> Ecto.Changeset.put_assoc(:team, epa_team))
 
 # apps
 admin = Repo.insert!(%Application{name: "admin",
@@ -92,25 +92,25 @@ Repo.insert!(%Application{name: "request-updater",
 
 # reservations
 Repo.insert!(Reservation.changeset(%Reservation{}, %{user_id: gopal.id,
-                          reserved_at: Ecto.DateTime.utc,
+                          reserved_at: DateTime.utc_now,
                           application_id: epamotron.id,
                           team_id: epa_team.id,
                           environment_id: pbm1.id}))
 
 Repo.insert!(Reservation.changeset(%Reservation{}, %{user_id: wade.id,
-                          reserved_at: Ecto.DateTime.utc,
+                          reserved_at: DateTime.utc_now,
                           application_id: admin.id,
                           team_id: epa_team.id,
                           environment_id: pbm1.id}))
 
 Repo.insert!(Reservation.changeset(%Reservation{}, %{user_id: gopal.id,
-                          reserved_at: Ecto.DateTime.utc,
+                          reserved_at: DateTime.utc_now,
                           application_id: epa_gateway.id,
                           team_id: epa_team.id,
                           environment_id: epa1.id}))
 
 Repo.insert!(Reservation.changeset(%Reservation{}, %{user_id: chris.id,
-                          reserved_at: Ecto.DateTime.utc,
+                          reserved_at: DateTime.utc_now,
                           application_id: epamotron.id,
                           team_id: epa_team.id,
                           environment_id: epa2.id}))
