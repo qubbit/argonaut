@@ -25,7 +25,7 @@ defmodule Argonaut.Mixfile do
   def application do
     [mod: {Argonaut, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :scrivener_ecto, :corsica, :comeonin, :calendar]]
+                    :phoenix_ecto, :ecto_sql, :postgrex, :scrivener_ecto, :corsica, :comeonin, :calendar]]
   end
 
   # Specifies which paths to compile per environment.

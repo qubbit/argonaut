@@ -1,7 +1,7 @@
 defmodule ArgonautWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :argonaut
 
-  socket "/socket", ArgonautWeb.UserSocket
+  socket "/socket", ArgonautWeb.UserSocket, websocket: true
 
   if code_reloading? do
     plug Phoenix.CodeReloader

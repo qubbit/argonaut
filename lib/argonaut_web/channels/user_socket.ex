@@ -3,12 +3,10 @@ defmodule ArgonautWeb.UserSocket do
 
   channel "teams:*", ArgonautWeb.TeamChannel
 
-  transport :websocket, Phoenix.Transports.WebSocket, timeout: 45_000
-
   def connect(%{"guardian_token" => token}, socket) do
-    case Guardian.decode_and_verify(token) do
+    case Argonaut.Guardian.decode_and_verify(token) do
       {:ok, claims} ->
-        case Argonaut.GuardianSerializer.from_token(claims["sub"]) do
+        case Argonaut.Guardian.resource_from_claims(claims) do
           {:ok, user} ->
             {:ok, assign(socket, :current_user, user)}
           {:error, _reason} ->

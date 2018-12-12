@@ -10,7 +10,7 @@ defmodule Argonaut.TeamControllerTest do
   setup %{conn: conn} do
     changeset = User.changeset(%User{}, @admin_user_attrs)
     {:ok, admin }= Repo.insert(changeset)
-    {:ok, token, _} =  Guardian.encode_and_sign(admin, %{}, token_type: :access)
+    {:ok, token, _} =  Guardian.encode_and_sign(admin, %{}, %{})
     authed_conn = conn
                   |> put_req_header("accept", "application/json")
                   |> put_req_header("authorization", token)

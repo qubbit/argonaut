@@ -10,9 +10,7 @@ defmodule ArgonautWeb.Router do
   end
 
   pipeline :api do
-    plug Guardian.Plug.VerifyHeader
-    plug Guardian.Plug.EnsureAuthenticated, handler: Argonaut.ApiToken
-    plug Guardian.Plug.LoadResource
+    plug Argonaut.Guardian.AuthPipeline
   end
 
   pipeline :readonly do

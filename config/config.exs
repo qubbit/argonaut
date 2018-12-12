@@ -35,7 +35,7 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :guardian, Guardian,
+config :argonaut, Argonaut.Guardian,
   allowed_algos: ["HS512"], # optional
   verify_module: Guardian.JWT,  # optional
   issuer: "MyApp",

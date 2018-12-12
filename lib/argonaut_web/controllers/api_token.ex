@@ -6,7 +6,7 @@ defmodule Argonaut.ApiToken do
                              "POST /api/reset_password"
                             ]
 
-  def unauthenticated(conn, _params) do
+  def auth_error(conn, {failure_type, reason}, opts) do
     # TODO: make this work for allowing anonymous auth
 
     # path = conn.path_info |> Enum.map(fn x -> "/" <> x end) |> Enum.join
@@ -15,8 +15,9 @@ defmodule Argonaut.ApiToken do
     # if not method_path in @whitelisted_method_paths do
     # end
     # conn
+    IO.inspect {failure_type, reason, opts}, label: "auth_error"
     conn
-    |> put_status(:unauthorized)
-    |> json(%{ error: "Authorization required" })
+    |> put_status(500)
+    |> json(%{error: "lol Auth error"})
   end
 end
