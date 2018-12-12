@@ -34,7 +34,7 @@ defmodule ArgonautWeb.TeamController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+        |> render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -78,7 +78,7 @@ defmodule ArgonautWeb.TeamController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+        |> render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -98,7 +98,7 @@ defmodule ArgonautWeb.TeamController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+        |> render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -128,7 +128,7 @@ defmodule ArgonautWeb.TeamController do
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)
-          |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+          |> render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)
       end
     else
       conn
@@ -314,7 +314,7 @@ defmodule ArgonautWeb.TeamController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+        |> render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)
     end
   end
 
@@ -330,7 +330,7 @@ defmodule ArgonautWeb.TeamController do
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
-        |> render(Argonaut.ChangesetView, "error.json", changeset: changeset)
+        |> render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)
     end
   end
 

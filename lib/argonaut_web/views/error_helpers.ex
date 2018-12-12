@@ -32,9 +32,9 @@ defmodule ArgonautWeb.ErrorHelpers do
     #     dgettext "errors", "is invalid"
     #
     if count = opts[:count] do
-      Gettext.dngettext(Argonaut.Gettext, "errors", msg, msg, count, opts)
+      Gettext.dngettext(ArgonautWeb.Gettext, "errors", msg, msg, count, opts)
     else
-      Gettext.dgettext(Argonaut.Gettext, "errors", msg, opts)
+      Gettext.dgettext(ArgonautWeb.Gettext, "errors", msg, opts)
     end
   end
 end

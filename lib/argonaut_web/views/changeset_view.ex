@@ -1,4 +1,4 @@
-defmodule Argonaut.ChangesetView do
+defmodule ArgonautWeb.ChangesetView do
   use Argonaut.Web, :view
 
   @doc """

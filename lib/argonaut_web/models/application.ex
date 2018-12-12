@@ -1,7 +1,7 @@
 defmodule Argonaut.Application do
   use Argonaut.Web, :model
 
-  @derive {Poison.Encoder, only: [:name, :ping, :id, :repo, :team_id]}
+  @derive {Jason.Encoder, only: [:name, :ping, :id, :repo, :team_id]}
 
   schema "applications" do
     field :name, :string

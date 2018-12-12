@@ -54,7 +54,7 @@ defmodule ArgonautWeb.TeamChannel do
           broadcast_reservation_creation(socket, reservation_tree)
           {:reply, {:ok, reservation_tree}, socket}
         {:error, changeset} ->
-          {:reply, {:error, Phoenix.View.render(Argonaut.ChangesetView, "error.json", changeset: changeset)}, socket}
+          {:reply, {:error, Phoenix.View.render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)}, socket}
       end
     else
       {:noreply, socket}

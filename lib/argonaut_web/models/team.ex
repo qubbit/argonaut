@@ -6,7 +6,7 @@ defmodule Argonaut.Team do
   # removing these aliases will result in failure at Ecto's level
   alias Argonaut.{Reservation, Membership, User, Environment, Application}
 
-  @derive {Poison.Encoder, only: [:name, :id, :description, :owner_id, :logo_url, :reservations, :environments, :applications]}
+  @derive {Jason.Encoder, only: [:name, :id, :description, :owner_id, :logo_url, :reservations, :environments, :applications]}
 
   schema "teams" do
     field :name, :string
