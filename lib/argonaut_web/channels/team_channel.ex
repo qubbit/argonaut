@@ -41,7 +41,7 @@ defmodule ArgonautWeb.TeamChannel do
   def handle_in("new_reservation", payload, socket) do
 
     if check_membership(socket.assigns.current_user, socket.assigns.team) do
-      payload = Map.put(payload, "reserved_at", Ecto.DateTime.utc)
+      payload = Map.put(payload, "reserved_at", DateTime)
 
       changeset =
         socket.assigns.team

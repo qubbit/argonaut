@@ -24,7 +24,7 @@ defmodule ArgonautWeb.TeamController do
       {:ok, team} ->
         assoc_changeset = Membership.changeset(
           %Membership{},
-          %{join_date: Ecto.DateTime.utc, user_id: current_user.id, is_admin: true, team_id: team.id}
+          %{join_date: DateTime, user_id: current_user.id, is_admin: true, team_id: team.id}
         )
         Repo.insert!(assoc_changeset)
 
@@ -44,12 +44,12 @@ defmodule ArgonautWeb.TeamController do
     render(conn, "show.json", team: team)
   end
 
-  def new_reservation(conn, %{"team_id" => id, "application_id" => application_id, "environment_id" => environment_id} = params) do
+  def new_reservation(conn, %{"team_id" => id} = params) do
     team = Repo.get!(Team, id)
     current_user = Guardian.Plug.current_resource(conn)
 
     if user_member_of_team?(current_user, team) do
-      params = Map.put(params, "reserved_at", Ecto.DateTime.utc)
+      params = Map.put(params, "reserved_at", DateTime.utc_now)
 
       changeset =
         team
@@ -178,7 +178,7 @@ defmodule ArgonautWeb.TeamController do
         environment_id: environment.id,
         application_id: application.id,
         team_id: environment.team_id,
-        reserved_at: Ecto.DateTime.utc
+        reserved_at: DateTime.utc_now
       })
       true
     else
@@ -191,9 +191,7 @@ defmodule ArgonautWeb.TeamController do
   defp can_reserve?(_, _), do: false
 
   defp can_release?(nil, _), do: false
-  defp can_release(_, %User{ is_admin: true }), do: true
   defp can_release?(%Reservation{ user_id: user_id }, %User{ id: id }), do: user_id == id
-  defp can_release(_, _), do: false
 
   def delete_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
     current_user = conn.assigns.current_user
@@ -231,7 +229,7 @@ defmodule ArgonautWeb.TeamController do
     current_user = conn.assigns.current_user
 
     { deleted_count, _ } = (from r in Reservation, where: r.user_id == ^current_user.id) |> Repo.delete_all
-    conn |> api_response %ApiMessage{ success: true, status: 200, message: "Cleared all (#{deleted_count}) reservations" }
+    conn |> api_response(%ApiMessage{ success: true, status: 200, message: "Cleared all (#{deleted_count}) reservations" })
   end
 
   def list_user_reservations(conn, params) do
@@ -305,7 +303,7 @@ defmodule ArgonautWeb.TeamController do
 
     changeset = Membership.changeset(
       %Membership{},
-      %{team_id: team.id, user_id: current_user.id, is_admin: false, join_date: Ecto.DateTime.utc}
+      %{team_id: team.id, user_id: current_user.id, is_admin: false, join_date: DateTime.utc_now}
     )
 
     case Repo.insert(changeset) do

@@ -4,7 +4,7 @@ defmodule Argonaut.Mixfile do
   def project do
     [app: :argonaut,
      version: "0.0.1",
-     elixir: "~> 1.4",
+     elixir: "~> 1.5",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -36,21 +36,23 @@ defmodule Argonaut.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.4"},
+    [{:phoenix, "~> 1.4.0"},
      {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.2"},
+     {:ecto_sql, "~> 3.0"},
+     {:phoenix_ecto, "~> 4.0"},
      {:postgrex, ">= 0.0.0"},
      {:phoenix_html, "~> 2.10"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:excoveralls, "~> 0.10", only: :test},
      {:gettext, "~> 0.11"},
-     {:plug_cowboy, "~> 1.0"},
+     {:plug_cowboy, "~> 2.0"},
      {:comeonin, "~> 3.0"},
-     {:guardian, "~> 0.14.6"},
+     {:guardian, "~> 1.1.1"},
      {:mustachex, "~> 0.0.1"},
      {:calendar, "~> 0.16.1"},
      {:corsica, "~> 0.5"},
-     {:scrivener_ecto, "~> 1.0"},
+     {:scrivener_ecto, "~> 2.0"},
+     {:jason, "~> 1.0"},
      {:mailgun, github: "qubbit/mailgun"}]
   end
 

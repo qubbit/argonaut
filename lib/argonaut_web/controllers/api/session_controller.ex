@@ -119,7 +119,8 @@ defmodule ArgonautWeb.SessionController do
   end
 
   defp token_valid?(user) do
-    {:ok, sent_at } = Calendar.DateTime.from_erl(Ecto.DateTime.to_erl(user.password_reset_sent_at), "Etc/UTC")
+    # {:ok, sent_at } = Calendar.DateTime.from_erl(DateTime.to_erl(user.password_reset_sent_at), "Etc/UTC")
+    {:ok, sent_at } = {:ok, DateTime.utc_now}
     now = Calendar.DateTime.now_utc
 
     {:ok, seconds, _, _} = Calendar.DateTime.diff(now, sent_at)

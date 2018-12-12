@@ -5,7 +5,7 @@ defmodule Argonaut.User do
 
   # Don't show stuff like API access token, email, is_admin, background_url
   # TODO: check where not sending these fields breaks compatibility
-  @derive {Poison.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone ]}
+  @derive {Jason.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone ]}
 
   schema "users" do
     field :username, :string
@@ -22,11 +22,11 @@ defmodule Argonaut.User do
     field :password_confirmation, :string, virtual: true
 
     field :password_reset_token, :string
-    field :password_reset_sent_at, Ecto.DateTime
+    field :password_reset_sent_at, :utc_datetime
 
     field :confirmation_token, :string
-    field :confirmation_sent_at, Ecto.DateTime
-    field :confirmed_at, Ecto.DateTime
+    field :confirmation_sent_at, :utc_datetime
+    field :confirmed_at, :utc_datetime
 
     field :api_token, :string
 

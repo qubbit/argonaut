@@ -4,7 +4,7 @@ defmodule Argonaut.Reservation do
   @derive {Poison.Encoder, only: [:id, :user, :application, :environment, :reserved_at]}
 
   schema "reservations" do
-    field :reserved_at, Ecto.DateTime
+    field :reserved_at, :utc_datetime
 
     belongs_to :user, Argonaut.User
     belongs_to :environment, Argonaut.Environment

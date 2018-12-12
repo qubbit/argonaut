@@ -5,6 +5,8 @@
 # is restricted to this project.
 use Mix.Config
 
+config :phoenix, :json_library, Jason
+
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
   database: "argonaut_repo",
