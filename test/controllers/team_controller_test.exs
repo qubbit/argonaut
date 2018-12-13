@@ -67,8 +67,6 @@ defmodule Argonaut.TeamControllerTest do
   test "updates and renders chosen resource when data is valid", %{conn: conn} do
     team = Repo.insert!(%Team{})
     conn = put(conn, team_path(conn, :update, team), team: @valid_attrs)
-    require IEx
-    IEx.pry()
     assert json_response(conn, 200)["data"]["id"]
     assert Repo.get_by(Team, @valid_attrs)
   end

@@ -43,8 +43,6 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def show(conn, %{"id" => id}) do
-    require IEx
-    IEx.pry()
     team = Repo.get!(Team, id)
     render(conn, "show.json", team: team)
   end
@@ -286,8 +284,6 @@ defmodule ArgonautWeb.TeamController do
       )
       |> Repo.all()
 
-    # require IEx; IEx.pry
-
     conn
     |> json(
       applications
@@ -453,10 +449,9 @@ defmodule ArgonautWeb.TeamController do
     # else
 
     if user_member_of_team?(current_user, team) do
-      require IEx; IEx.pry()
       application = Repo.get(Application, application_id)
       Repo.delete!(application)
-      conn |> json(%{success: true, application_id: application_id})
+      conn |> json(%{success: true, application_id: application.id})
     else
       conn |> json(%{success: false, message: "Permission denied"})
     end
@@ -490,7 +485,7 @@ defmodule ArgonautWeb.TeamController do
     if user_member_of_team?(current_user, team) do
       environment = Repo.get(Environment, environment_id)
       Repo.delete!(environment)
-      conn |> json(%{success: true, environment_id: environment_id})
+      conn |> json(%{success: true, environment_id: environment.id})
     else
       conn
       |> put_status(:forbidden)
