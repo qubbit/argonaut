@@ -4,11 +4,11 @@ defmodule Argonaut.Environment do
   @derive {Jason.Encoder, only: [:id, :name, :is_integration, :description, :team_id]}
 
   schema "environments" do
-    field :name, :string
-    field :description, :string
-    field :is_integration, :boolean
+    field(:name, :string)
+    field(:description, :string)
+    field(:is_integration, :boolean)
 
-    belongs_to :team, Argonaut.Team
+    belongs_to(:team, Argonaut.Team)
 
     timestamps()
   end

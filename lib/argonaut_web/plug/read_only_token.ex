@@ -7,7 +7,7 @@ defmodule Argonaut.Plug.ReadOnlyToken do
   def init(opts), do: opts
 
   def call(conn, _opts) do
-    %{ "token" => token } = conn.params
+    %{"token" => token} = conn.params
 
     current_user = Repo.get_by(User, api_token: token)
 

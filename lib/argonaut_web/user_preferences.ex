@@ -1,5 +1,4 @@
 defmodule Argonaut.UserPreferences do
-
   @background_images ~w(
   None
   45degreee_fabric.png
@@ -271,7 +270,6 @@ defmodule Argonaut.UserPreferences do
     |> Enum.map(fn u -> {normalize_filename(u), build_url(u)} end)
   end
 
-
   defp build_url("None"), do: ""
 
   defp build_url(u) do
@@ -279,9 +277,10 @@ defmodule Argonaut.UserPreferences do
   end
 
   defp normalize_filename(f) do
-    f |> String.replace(".png", "")
-      |> String.split("_")
-      |> Enum.map(fn s -> String.capitalize(s) end)
-      |> Enum.join(" ")
+    f
+    |> String.replace(".png", "")
+    |> String.split("_")
+    |> Enum.map(fn s -> String.capitalize(s) end)
+    |> Enum.join(" ")
   end
 end

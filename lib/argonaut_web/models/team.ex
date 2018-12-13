@@ -6,19 +6,29 @@ defmodule Argonaut.Team do
   # removing these aliases will result in failure at Ecto's level
   alias Argonaut.{Reservation, Membership, User, Environment, Application}
 
-  @derive {Jason.Encoder, only: [:name, :id, :description, :owner_id, :logo_url, :reservations, :environments, :applications]}
+  @derive {Jason.Encoder,
+           only: [
+             :name,
+             :id,
+             :description,
+             :owner_id,
+             :logo_url,
+             :reservations,
+             :environments,
+             :applications
+           ]}
 
   schema "teams" do
-    field :name, :string
-    field :description, :string
-    field :logo_url, :string
+    field(:name, :string)
+    field(:description, :string)
+    field(:logo_url, :string)
 
-    belongs_to :owner, User, foreign_key: :owner_id
-    many_to_many :members, User, join_through: "membership"
+    belongs_to(:owner, User, foreign_key: :owner_id)
+    many_to_many(:members, User, join_through: "membership")
 
-    has_many :environments, Environment
-    has_many :applications, Application
-    has_many :reservations, Reservation
+    has_many(:environments, Environment)
+    has_many(:applications, Application)
+    has_many(:reservations, Reservation)
 
     timestamps()
   end

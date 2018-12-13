@@ -26,6 +26,7 @@ defmodule ArgonautWeb.ApplicationController do
         conn
         |> put_flash(:info, "Application created successfully.")
         |> redirect(to: application_path(conn, :index))
+
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -51,6 +52,7 @@ defmodule ArgonautWeb.ApplicationController do
         conn
         |> put_flash(:info, "Application updated successfully.")
         |> redirect(to: application_path(conn, :show, application))
+
       {:error, changeset} ->
         render(conn, "edit.html", application: application, changeset: changeset)
     end

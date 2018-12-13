@@ -10,17 +10,21 @@ defmodule ArgonautWeb.MailController do
     render(conn, "index.json", mails: mails)
   end
 
-  def create(conn, %{"mail" => %{"to" => to, "subject" => subject, "message" => message} = _mail_params}) do
-    template_data = %EmailData{ subject: subject, message: message }
+  def create(conn, %{
+        "mail" => %{"to" => to, "subject" => subject, "message" => message} = _mail_params
+      }) do
+    template_data = %EmailData{subject: subject, message: message}
 
     if(to == "*") do
       Logger.warn("Sending email to all users!")
 
       Repo.all(User)
-      |> Enum.map(&Task.async(fn ->
+      |> Enum.map(
+        &Task.async(fn ->
           Logger.debug(&1.email)
           Mailer.send_general_email(&1.email, template_data)
-      end))
+        end)
+      )
       |> Enum.map(&Task.await/1)
     else
       Mailer.send_general_email(to, template_data)
@@ -41,6 +45,7 @@ defmodule ArgonautWeb.MailController do
     case Repo.update(changeset) do
       {:ok, mail} ->
         render(conn, "show.json", mail: mail)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

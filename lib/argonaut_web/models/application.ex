@@ -4,12 +4,12 @@ defmodule Argonaut.Application do
   @derive {Jason.Encoder, only: [:name, :ping, :id, :repo, :team_id]}
 
   schema "applications" do
-    field :name, :string
-    field :ping, :string
-    field :repo, :string
+    field(:name, :string)
+    field(:ping, :string)
+    field(:repo, :string)
 
-    belongs_to :team, Argonaut.Team
-    has_many :reservations, Argonaut.Reservation
+    belongs_to(:team, Argonaut.Team)
+    has_many(:reservations, Argonaut.Reservation)
 
     timestamps()
   end

@@ -14,7 +14,6 @@ config :argonaut, Argonaut.Repo,
   password: "pass",
   hostname: "localhost"
 
-
 # General application configuration
 config :argonaut,
   ecto_repos: [Argonaut.Repo],
@@ -26,9 +25,7 @@ config :argonaut, ArgonautWeb.Endpoint,
   # this is overridden in production by the value of SECRET_KEY_BASE environment variable
   secret_key_base: "5zZvSUCd+1zgUxUZvrIxMXdmvJZhIyNv3LJgOc9wZ6Fhln95e8tm7NxKsoZL5Uri",
   render_errors: [view: ArgonautWeb.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: Argonaut.PubSub,
-           adapter: Phoenix.PubSub.PG2]
-
+  pubsub: [name: Argonaut.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -36,17 +33,19 @@ config :logger, :console,
   metadata: [:request_id]
 
 config :argonaut, Argonaut.Guardian,
-  allowed_algos: ["HS512"], # optional
-  verify_module: Guardian.JWT,  # optional
+  # optional
+  allowed_algos: ["HS512"],
+  # optional
+  verify_module: Guardian.JWT,
   issuer: "MyApp",
-  ttl: { 30, :days },
+  ttl: {30, :days},
   allowed_drift: 2000,
-  verify_issuer: true, # optional
+  # optional
+  verify_issuer: true,
   # this is overridden in production by the value of GUARDIAN_JWK environment variable
   secret_key: "potato",
   serializer: Argonaut.GuardianSerializer
 
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

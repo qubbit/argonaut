@@ -5,34 +5,35 @@ defmodule Argonaut.User do
 
   # Don't show stuff like API access token, email, is_admin, background_url
   # TODO: check where not sending these fields breaks compatibility
-  @derive {Jason.Encoder, only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone ]}
+  @derive {Jason.Encoder,
+           only: [:id, :username, :first_name, :last_name, :avatar_url, :time_zone]}
 
   schema "users" do
-    field :username, :string
-    field :password_hash, :string
-    field :first_name, :string
-    field :last_name, :string
-    field :email, :string
-    field :avatar_url, :string
-    field :time_zone, :string
-    field :is_admin, :boolean
-    field :background_url, :string
+    field(:username, :string)
+    field(:password_hash, :string)
+    field(:first_name, :string)
+    field(:last_name, :string)
+    field(:email, :string)
+    field(:avatar_url, :string)
+    field(:time_zone, :string)
+    field(:is_admin, :boolean)
+    field(:background_url, :string)
 
-    field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
+    field(:password, :string, virtual: true)
+    field(:password_confirmation, :string, virtual: true)
 
-    field :password_reset_token, :string
-    field :password_reset_sent_at, :utc_datetime_usec
+    field(:password_reset_token, :string)
+    field(:password_reset_sent_at, :utc_datetime_usec)
 
-    field :confirmation_token, :string
-    field :confirmation_sent_at, :utc_datetime_usec
-    field :confirmed_at, :utc_datetime_usec
+    field(:confirmation_token, :string)
+    field(:confirmation_sent_at, :utc_datetime_usec)
+    field(:confirmed_at, :utc_datetime_usec)
 
-    field :api_token, :string
+    field(:api_token, :string)
 
-    many_to_many :teams, Team, join_through: "membership"
-    has_many :owned_teams, Team, foreign_key: :owner_id
-    has_many :reservations, Reservation, foreign_key: :user_id
+    many_to_many(:teams, Team, join_through: "membership")
+    has_many(:owned_teams, Team, foreign_key: :owner_id)
+    has_many(:reservations, Reservation, foreign_key: :user_id)
 
     timestamps()
   end
@@ -69,8 +70,8 @@ defmodule Argonaut.User do
     struct
     |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required([:username, :email])
-    |> validate_inclusion(:background_url, Argonaut.UserPreferences.background_image_urls)
-    |> validate_inclusion(:time_zone, Argonaut.TimeZone.zones)
+    |> validate_inclusion(:background_url, Argonaut.UserPreferences.background_image_urls())
+    |> validate_inclusion(:time_zone, Argonaut.TimeZone.zones())
     |> common_changeset
     |> generate_encrypted_password
   end
@@ -91,7 +92,7 @@ defmodule Argonaut.User do
 
   def registration_changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, @required_fields ++  @optional_fields)
+    |> cast(params, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
     |> put_gravatar
     |> generate_encrypted_password
@@ -119,14 +120,14 @@ defmodule Argonaut.User do
 
     case authenticate(user, params["password"]) do
       true -> {:ok, user}
-      _    -> {:error, changeset}
+      _ -> {:error, changeset}
     end
   end
 
   defp authenticate(user, password) do
     case user do
       nil -> false
-      _   -> Comeonin.Bcrypt.checkpw(password, user.password_hash)
+      _ -> Comeonin.Bcrypt.checkpw(password, user.password_hash)
     end
   end
 
@@ -135,7 +136,6 @@ defmodule Argonaut.User do
   end
 
   def logged_in?(conn), do: !!current_user(conn)
-
 
   def default_gravatar(email) do
     md5_hash = :crypto.hash(:md5, email) |> Base.encode16(case: :lower)
@@ -146,6 +146,7 @@ defmodule Argonaut.User do
     case current_changeset do
       %Ecto.Changeset{valid?: true, changes: %{password: password}} ->
         put_change(current_changeset, :password_hash, Comeonin.Bcrypt.hashpwsalt(password))
+
       _ ->
         current_changeset
     end

@@ -1,7 +1,7 @@
 defmodule ArgonautWeb.UserSocket do
   use Phoenix.Socket
 
-  channel "teams:*", ArgonautWeb.TeamChannel
+  channel("teams:*", ArgonautWeb.TeamChannel)
 
   def connect(%{"guardian_token" => token}, socket) do
     case Argonaut.Guardian.decode_and_verify(token) do
@@ -9,9 +9,11 @@ defmodule ArgonautWeb.UserSocket do
         case Argonaut.Guardian.resource_from_claims(claims) do
           {:ok, user} ->
             {:ok, assign(socket, :current_user, user)}
+
           {:error, _reason} ->
             :error
         end
+
       {:error, _reason} ->
         :error
     end

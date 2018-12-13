@@ -29,5 +29,4 @@ defmodule Argonaut.Plug.CurrentUser do
     |> render(Argonaut.ErrorView, "401.json")
     |> halt
   end
-
 end

@@ -1,5 +1,4 @@
 defmodule Argonaut.Mailer do
-
   alias Argonaut.{Repo, Mail, EmailData}
 
   # TODO find a better way to read prod vs non-prod config
@@ -13,11 +12,13 @@ defmodule Argonaut.Mailer do
   @from Application.get_env(:mailgun, :sender)
 
   def send_password_reset_email(user) do
-    params = %{ username: user.username,
+    params = %{
+      username: user.username,
       password_reset_url: "#{app_root_url()}/reset_password/#{user.password_reset_token}"
     }
+
     message = Mustachex.render_file("mails/reset_password.mustache", params)
-    template_data = %EmailData{ subject: "Reset your Argonaut Password", message: message }
+    template_data = %EmailData{subject: "Reset your Argonaut Password", message: message}
 
     finalize_and_send_email(user.email, @from, template_data)
   end
@@ -26,23 +27,19 @@ defmodule Argonaut.Mailer do
     finalize_and_send_email(email, @from, template_data)
   end
 
-  def finalize_and_send_email(to, from, %EmailData{ subject: subject } = template_data) do
+  def finalize_and_send_email(to, from, %EmailData{subject: subject} = template_data) do
     final_message = Mustachex.render_file("mails/email.mustache", Map.from_struct(template_data))
 
-    mail_params = %{to: to,
-      from: from,
-      subject: subject,
-      message: final_message,
-      is_html: true
-    }
+    mail_params = %{to: to, from: from, subject: subject, message: final_message, is_html: true}
 
-    send_email to: to, from: from, subject: subject, html: final_message
+    send_email(to: to, from: from, subject: subject, html: final_message)
 
     changeset = Mail.changeset(%Mail{}, mail_params)
 
     case Repo.insert(changeset) do
       {:ok, mail} ->
         mail
+
       {:error, changeset} ->
         changeset.errors
     end
@@ -59,7 +56,7 @@ defmodule Argonaut.Mailer do
   end
 
   defp app_root_url do
-    if Mix.env == :prod do
+    if Mix.env() == :prod do
       "https://argonaut.ninja"
     else
       "http://localhost:3000"

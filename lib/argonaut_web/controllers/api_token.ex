@@ -1,10 +1,11 @@
 defmodule Argonaut.ApiToken do
   use Argonaut.Web, :controller
 
-  @whitelisted_method_paths ["POST /api/sessions",
-                             "POST /api/forgot_password",
-                             "POST /api/reset_password"
-                            ]
+  @whitelisted_method_paths [
+    "POST /api/sessions",
+    "POST /api/forgot_password",
+    "POST /api/reset_password"
+  ]
 
   def auth_error(conn, {failure_type, reason}, opts) do
     # TODO: make this work for allowing anonymous auth
@@ -15,7 +16,8 @@ defmodule Argonaut.ApiToken do
     # if not method_path in @whitelisted_method_paths do
     # end
     # conn
-    IO.inspect {failure_type, reason, opts}, label: "auth_error"
+    IO.inspect({failure_type, reason, opts}, label: "auth_error")
+
     conn
     |> put_status(500)
     |> json(%{error: "lol Auth error"})

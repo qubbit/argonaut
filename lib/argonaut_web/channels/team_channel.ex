@@ -1,11 +1,13 @@
 defmodule ArgonautWeb.TeamChannel do
   use Argonaut.Web, :channel
   alias Argonaut.{Membership, Reservation}
+
   # testing https://github.com/hassox/phoenix_guardian/blob/ueberauth-guardian/test/channels/authorized_channel_test.exs
 
   # returns a team after the team channel is joined
   def join("teams:" <> team_id, _params, socket) do
     team = Repo.get!(Argonaut.Team, team_id)
+
     response = %{
       team: Phoenix.View.render_one(team, ArgonautWeb.TeamView, "team.json")
     }
@@ -16,8 +18,10 @@ defmodule ArgonautWeb.TeamChannel do
 
   def handle_info(:after_join, socket) do
     Argonaut.Presence.track(socket, socket.assigns.current_user.id, %{
-      user: Phoenix.View.render_one(socket.assigns.current_user, ArgonautWeb.UserView, "user.json")
+      user:
+        Phoenix.View.render_one(socket.assigns.current_user, ArgonautWeb.UserView, "user.json")
     })
+
     push(socket, "presence_state", Argonaut.Presence.list(socket))
     {:noreply, socket}
   end
@@ -29,19 +33,22 @@ defmodule ArgonautWeb.TeamChannel do
       {:ok, _res} ->
         broadcast_reservation_deletion(socket, id)
         {:reply, {:ok, reservation}, socket}
+
       {:error, changeset} ->
-        {:reply, {:error, Phoenix.View.render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)}, socket}
+        {:reply,
+         {:error,
+          Phoenix.View.render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)},
+         socket}
     end
   end
 
   def check_membership(user, team) do
-    Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one
+    Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one()
   end
 
   def handle_in("new_reservation", payload, socket) do
-
     if check_membership(socket.assigns.current_user, socket.assigns.team) do
-      payload = Map.put(payload, "reserved_at", DateTime.utc_now)
+      payload = Map.put(payload, "reserved_at", DateTime.utc_now())
 
       changeset =
         socket.assigns.team
@@ -53,8 +60,12 @@ defmodule ArgonautWeb.TeamChannel do
           reservation_tree = reservation_with_associations(reservation.id)
           broadcast_reservation_creation(socket, reservation_tree)
           {:reply, {:ok, reservation_tree}, socket}
+
         {:error, changeset} ->
-          {:reply, {:error, Phoenix.View.render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)}, socket}
+          {:reply,
+           {:error,
+            Phoenix.View.render(ArgonautWeb.ChangesetView, "error.json", changeset: changeset)},
+           socket}
       end
     else
       {:noreply, socket}
@@ -75,13 +86,16 @@ defmodule ArgonautWeb.TeamChannel do
 
   # TODO: move this somewhere else
   defp reservation_with_associations(reservation_id) do
-    query = from r in Reservation,
-    where: r.id == ^reservation_id,
-    join: a in assoc(r, :application),
-    join: e in assoc(r, :environment),
-    join: u in assoc(r, :user),
-    preload: [application: a, environment: e, user: u]
+    query =
+      from(
+        r in Reservation,
+        where: r.id == ^reservation_id,
+        join: a in assoc(r, :application),
+        join: e in assoc(r, :environment),
+        join: u in assoc(r, :user),
+        preload: [application: a, environment: e, user: u]
+      )
 
-    query |> Repo.one
+    query |> Repo.one()
   end
 end

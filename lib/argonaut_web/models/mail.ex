@@ -2,11 +2,11 @@ defmodule Argonaut.Mail do
   use Argonaut.Web, :model
 
   schema "mails" do
-    field :to, :string
-    field :from, :string
-    field :subject, :string
-    field :message, :string
-    field :is_html, :boolean, default: true
+    field(:to, :string)
+    field(:from, :string)
+    field(:subject, :string)
+    field(:message, :string)
+    field(:is_html, :boolean, default: true)
 
     timestamps()
   end

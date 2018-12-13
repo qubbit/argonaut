@@ -13,11 +13,12 @@ defmodule ArgonautWeb.TeamView do
   end
 
   def render("team.json", %{team: team}) do
-    %{id: team.id,
+    %{
+      id: team.id,
       name: team.name,
       description: team.description,
       logo_url: team.logo_url,
       owner_id: team.owner_id
-     }
+    }
   end
 end

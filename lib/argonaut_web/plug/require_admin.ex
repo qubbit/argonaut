@@ -12,6 +12,7 @@ defmodule Argonaut.Plug.RequireAdmin do
   end
 
   def require_admin(%{is_admin: true}, conn), do: conn
+
   def require_admin(_, conn) do
     conn
     |> put_status(:unauthorized)

@@ -8,7 +8,8 @@ defmodule ArgonautWeb.UserView do
   # this will show all the information about
   # the user... even the api_token
   def render("all.json", %{user: user}) do
-    %{id: user.id,
+    %{
+      id: user.id,
       first_name: user.first_name,
       last_name: user.last_name,
       username: user.username,
@@ -18,6 +19,6 @@ defmodule ArgonautWeb.UserView do
       time_zone: user.time_zone,
       background_url: user.background_url,
       api_token: user.api_token
-     }
+    }
   end
 end

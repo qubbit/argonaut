@@ -10,10 +10,12 @@ defmodule Argonaut.MembershipView do
   end
 
   def render("membership.json", %{membership: membership}) do
-    %{id: membership.id,
+    %{
+      id: membership.id,
       join_date: membership.join_date,
       user_id: membership.user_id,
       team_id: membership.team_id,
-      is_admin: membership.is_admin}
+      is_admin: membership.is_admin
+    }
   end
 end

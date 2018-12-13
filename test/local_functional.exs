@@ -1,6 +1,7 @@
 defmodule Argonaut.LocalFunctionTest do
   use ExUnit.Case
   import ExUnit.Assertions
+  import TestUtils
 
   @base_url "http://localhost:4000"
 
@@ -8,19 +9,49 @@ defmodule Argonaut.LocalFunctionTest do
 
   describe "user accounts" do
     setup %{} do
-      HTTPoison.start
+      HTTPoison.start()
     end
 
     test "sign up", _context do
-      membership_attributes = %{password: "abcd1234",
-        email: "t333@gmail.com",
-        username: "t33",
-        api_token: "4ed056a56ff67b085f5974294823d0046d16220d26cd9c6bfadd917c296188ce"
+      email = random_email()
+      username = random_string(10)
+
+      membership_attributes = %{
+        password: "abcd1234",
+        email: email,
+        username: username,
+        api_token: random_string(32)
       }
 
       payload = Jason.encode!(membership_attributes)
-      {:ok, response } = HTTPoison.post("#{@base_url}/api/anonymous/users", payload, %{"Content-Type" => "application/json"})
-      IO.inspect(response, label: "_____ response ____")
+
+      {:ok, response} =
+        HTTPoison.post("#{@base_url}/api/anonymous/users", payload, %{
+          "Content-Type" => "application/json"
+        })
+
+      assert 201 = response.status_code
+    end
+
+    test "reset password", _context do
+      email = random_email()
+      username = random_string(10)
+
+      membership_attributes = %{
+        password: "abcd1234",
+        email: email,
+        username: username,
+        api_token: random_string(32)
+      }
+
+      payload = Jason.encode!(membership_attributes)
+
+      {:ok, response} =
+        HTTPoison.post("#{@base_url}/api/anonymous/users", payload, %{
+          "Content-Type" => "application/json"
+        })
+
+      assert 201 = response.status_code
     end
   end
 end

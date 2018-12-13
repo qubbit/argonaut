@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+change_list=./script/changes
+touch $change_list
+
+git diff \
+  --name-only \
+  --diff-filter=d master \
+  -- . ':!script' ':!*.lock' ':!.gitignore' ':!*.yml' ':!*.md' ':!*.json' ':!*.xml' ':!Dockerfile' ':!.dialyzerignore'| tee $change_list
+for next in `cat $change_list`
+  do
+      echo "mix formatting ./$next"
+      mix format ./$next
+  done
+exit 0

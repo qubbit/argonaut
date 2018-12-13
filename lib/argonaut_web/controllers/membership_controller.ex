@@ -17,6 +17,7 @@ defmodule ArgonautWeb.MembershipController do
         |> put_status(:created)
         |> put_resp_header("location", membership_path(conn, :show, membership))
         |> render("show.json", membership: membership)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -36,6 +37,7 @@ defmodule ArgonautWeb.MembershipController do
     case Repo.update(changeset) do
       {:ok, membership} ->
         render(conn, "show.json", membership: membership)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

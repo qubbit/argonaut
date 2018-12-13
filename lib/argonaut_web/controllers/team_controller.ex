@@ -9,9 +9,10 @@ defmodule ArgonautWeb.TeamController do
   def api_response(conn, result), do: conn |> json(result)
 
   def index(conn, params) do
-    page = Team
-            |> order_by([asc: :id])
-            |> Repo.paginate(params)
+    page =
+      Team
+      |> order_by(asc: :id)
+      |> Repo.paginate(params)
 
     render(conn, "index.json", teams: page)
   end
@@ -22,15 +23,18 @@ defmodule ArgonautWeb.TeamController do
 
     case Repo.insert(changeset) do
       {:ok, team} ->
-        assoc_changeset = Membership.changeset(
-          %Membership{},
-          %{join_date: DateTime, user_id: current_user.id, is_admin: true, team_id: team.id}
-        )
+        assoc_changeset =
+          Membership.changeset(
+            %Membership{},
+            %{join_date: DateTime, user_id: current_user.id, is_admin: true, team_id: team.id}
+          )
+
         Repo.insert!(assoc_changeset)
 
         conn
         |> put_status(:created)
         |> render("show.json", team: team)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -39,7 +43,8 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def show(conn, %{"id" => id}) do
-    require IEx; IEx.pry()
+    require IEx
+    IEx.pry()
     team = Repo.get!(Team, id)
     render(conn, "show.json", team: team)
   end
@@ -49,7 +54,7 @@ defmodule ArgonautWeb.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
 
     if user_member_of_team?(current_user, team) do
-      params = Map.put(params, "reserved_at", DateTime.utc_now)
+      params = Map.put(params, "reserved_at", DateTime.utc_now())
 
       changeset =
         team
@@ -59,6 +64,7 @@ defmodule ArgonautWeb.TeamController do
       case Repo.insert(changeset) do
         {:ok, reservation} ->
           conn |> json(reservation)
+
         {:error, changeset} ->
           conn |> json(%{message: "Nope"})
       end
@@ -75,6 +81,7 @@ defmodule ArgonautWeb.TeamController do
         conn
         |> put_status(:created)
         |> json(environment)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -83,7 +90,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def show_team_environments(conn, %{"id" => id}) do
-    environments = Environment |> where(team_id: ^id) |> Repo.all
+    environments = Environment |> where(team_id: ^id) |> Repo.all()
     conn |> json(environments)
   end
 
@@ -95,6 +102,7 @@ defmodule ArgonautWeb.TeamController do
         conn
         |> put_status(:created)
         |> json(application)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -103,16 +111,16 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def show_team_applications(conn, %{"id" => id}) do
-    applications = Application |> where(team_id: ^id) |> Repo.all
+    applications = Application |> where(team_id: ^id) |> Repo.all()
     conn |> json(applications)
   end
 
   defp user_member_of_team?(%User{} = user, %Team{} = team) do
-    (Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one) != nil
+    Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one() != nil
   end
 
   defp user_member_of_team?(user_id, team_id) do
-    (Membership |> where([m], m.user_id == ^user_id and m.team_id == ^team_id) |> Repo.one) != nil
+    Membership |> where([m], m.user_id == ^user_id and m.team_id == ^team_id) |> Repo.one() != nil
   end
 
   def update(conn, %{"id" => id, "description" => description}) do
@@ -125,6 +133,7 @@ defmodule ArgonautWeb.TeamController do
       case Repo.update(changeset) do
         {:ok, team} ->
           render(conn, "show.json", team: team)
+
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)
@@ -133,7 +142,7 @@ defmodule ArgonautWeb.TeamController do
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{ status: 403, message: "Permission denied" })
+      |> json(%ApiMessage{status: 403, message: "Permission denied"})
     end
   end
 
@@ -146,31 +155,62 @@ defmodule ArgonautWeb.TeamController do
   def create_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
     current_user = conn.assigns.current_user
 
-    environment = Repo.one(from env in Environment, where: env.name == ^env_name)
-    application = Repo.one(from app in Application, where: app.name == ^app_name, where: app.team_id == ^environment.team_id)
+    environment = Repo.one(from(env in Environment, where: env.name == ^env_name))
 
-    { status, reason } = satisfies?("", [
-      fn(reason) -> if environment == nil, do: { :error, "No such environment #{env_name}" }, else: { :ok, "" } end,
-      fn(reason) -> if application == nil, do: { :error, "No such application #{app_name}" }, else: { :ok, "" } end,
-      fn(reason) -> if user_member_of_team?(current_user.id, environment.team_id), do: { :ok, "" }, else: { :error, "None of the teams which you are member of own environment #{env_name}" } end,
-      fn(reason) -> if decide_and_reserve!(environment, application, current_user), do: { :ok, "" }, else: { :error, "Someone else is using that environment currently" } end
-    ])
+    application =
+      Repo.one(
+        from(
+          app in Application,
+          where: app.name == ^app_name,
+          where: app.team_id == ^environment.team_id
+        )
+      )
+
+    {status, reason} =
+      satisfies?("", [
+        fn reason ->
+          if environment == nil, do: {:error, "No such environment #{env_name}"}, else: {:ok, ""}
+        end,
+        fn reason ->
+          if application == nil, do: {:error, "No such application #{app_name}"}, else: {:ok, ""}
+        end,
+        fn reason ->
+          if user_member_of_team?(current_user.id, environment.team_id),
+            do: {:ok, ""},
+            else:
+              {:error, "None of the teams which you are member of own environment #{env_name}"}
+        end,
+        fn reason ->
+          if decide_and_reserve!(environment, application, current_user),
+            do: {:ok, ""},
+            else: {:error, "Someone else is using that environment currently"}
+        end
+      ])
 
     if status == :ok do
-      conn |> api_response(%ApiMessage{ success: true, message: "Reserved #{app_name}:#{env_name}" })
+      conn
+      |> api_response(%ApiMessage{success: true, message: "Reserved #{app_name}:#{env_name}"})
     else
-      conn |> api_response(%ApiMessage{ success: false, message: reason })
+      conn |> api_response(%ApiMessage{success: false, message: reason})
     end
   end
 
-  defp decide_and_reserve!(environment = %Environment{}, application = %Application{}, user = %User{}) do
-    reservation = (from r in Reservation,
-      where: r.application_id == ^application.id,
-      where: r.environment_id == ^environment.id) |> Repo.one
+  defp decide_and_reserve!(
+         environment = %Environment{},
+         application = %Application{},
+         user = %User{}
+       ) do
+    reservation =
+      from(
+        r in Reservation,
+        where: r.application_id == ^application.id,
+        where: r.environment_id == ^environment.id
+      )
+      |> Repo.one()
 
     if can_reserve?(reservation, user) do
       if reservation do
-        Repo.delete reservation
+        Repo.delete(reservation)
       end
 
       Repo.insert!(%Reservation{
@@ -178,8 +218,9 @@ defmodule ArgonautWeb.TeamController do
         environment_id: environment.id,
         application_id: application.id,
         team_id: environment.team_id,
-        reserved_at: DateTime.utc_now
+        reserved_at: DateTime.utc_now()
       })
+
       true
     else
       false
@@ -187,59 +228,108 @@ defmodule ArgonautWeb.TeamController do
   end
 
   defp can_reserve?(nil, _), do: true
-  defp can_reserve?(_, %User{ is_admin: true }), do: true
+  defp can_reserve?(_, %User{is_admin: true}), do: true
   defp can_reserve?(_, _), do: false
 
   defp can_release?(nil, _), do: false
-  defp can_release?(%Reservation{ user_id: user_id }, %User{ id: id }), do: user_id == id
+  defp can_release?(%Reservation{user_id: user_id}, %User{id: id}), do: user_id == id
 
   def delete_reservation(conn, %{"application_name" => app_name, "environment_name" => env_name}) do
     current_user = conn.assigns.current_user
 
-    environment = Repo.one(from env in Environment, where: env.name == ^env_name)
-    application = Repo.one(from app in Application,
-      where: app.name == ^app_name,
-      where: app.team_id == ^environment.team_id)
+    environment = Repo.one(from(env in Environment, where: env.name == ^env_name))
 
+    application =
+      Repo.one(
+        from(
+          app in Application,
+          where: app.name == ^app_name,
+          where: app.team_id == ^environment.team_id
+        )
+      )
 
-    reservation = (from r in Reservation,
-      where: r.application_id == ^application.id,
-      where: r.environment_id == ^environment.id) |> Repo.one
+    reservation =
+      from(
+        r in Reservation,
+        where: r.application_id == ^application.id,
+        where: r.environment_id == ^environment.id
+      )
+      |> Repo.one()
 
     if can_release?(reservation, current_user) do
-      Repo.delete reservation
-      conn |> api_response(%{ message: "Deleted your reservation on #{env_name}:#{app_name}", success: true })
+      Repo.delete(reservation)
+
+      conn
+      |> api_response(%{
+        message: "Deleted your reservation on #{env_name}:#{app_name}",
+        success: true
+      })
     else
-      conn |> api_response(%{ message: "Could not delete reservation on #{env_name}:#{app_name}", success: false })
+      conn
+      |> api_response(%{
+        message: "Could not delete reservation on #{env_name}:#{app_name}",
+        success: false
+      })
     end
   end
 
-  def find_application(conn, %{ "application_name" => app_name }) do
-    applications = (from a in Application,
-      where: a.name == ^app_name,
-      join: r in Reservation, on: a.id == r.application_id,
-      join: e in Environment, on: e.id == r.environment_id,
-      preload: [reservations: a ]) |> Repo.all
-      # require IEx; IEx.pry
+  def find_application(conn, %{"application_name" => app_name}) do
+    applications =
+      from(
+        a in Application,
+        where: a.name == ^app_name,
+        join: r in Reservation,
+        on: a.id == r.application_id,
+        join: e in Environment,
+        on: e.id == r.environment_id,
+        preload: [reservations: a]
+      )
+      |> Repo.all()
 
-    conn |> json(applications |> Enum.map(fn x -> %{ application: x.application.name, environment: x.environment.name} end))
+    # require IEx; IEx.pry
+
+    conn
+    |> json(
+      applications
+      |> Enum.map(fn x -> %{application: x.application.name, environment: x.environment.name} end)
+    )
   end
 
   def clear_user_reservations(conn, params) do
     current_user = conn.assigns.current_user
 
-    { deleted_count, _ } = (from r in Reservation, where: r.user_id == ^current_user.id) |> Repo.delete_all
-    conn |> api_response(%ApiMessage{ success: true, status: 200, message: "Cleared all (#{deleted_count}) reservations" })
+    {deleted_count, _} =
+      from(r in Reservation, where: r.user_id == ^current_user.id) |> Repo.delete_all()
+
+    conn
+    |> api_response(%ApiMessage{
+      success: true,
+      status: 200,
+      message: "Cleared all (#{deleted_count}) reservations"
+    })
   end
 
   def list_user_reservations(conn, params) do
     current_user = conn.assigns.current_user
 
-    reservations = reservations_by_user(current_user.id)
-      |> Repo.all
-      |> Enum.map(fn r -> %{ environment: r.environment.name, application: r.application.name, reserved_at: r.reserved_at } end)
+    reservations =
+      reservations_by_user(current_user.id)
+      |> Repo.all()
+      |> Enum.map(fn r ->
+        %{
+          environment: r.environment.name,
+          application: r.application.name,
+          reserved_at: r.reserved_at
+        }
+      end)
 
-    conn |> api_response(%ApiMessage{ message: "List of reservations made by you (#{current_user.username})", status: 200, success: true, data: reservations })
+    conn
+    |> api_response(%ApiMessage{
+      message: "List of reservations made by you (#{current_user.username})",
+      status: 200,
+      success: true,
+      data: reservations
+    })
   end
 
   def delete(conn, %{"id" => id}) do
@@ -248,40 +338,50 @@ defmodule ArgonautWeb.TeamController do
 
     if team.owner_id == current_user.id || current_user.is_admin do
       Repo.delete!(team)
-      conn |> json(%{ id: team.id })
+      conn |> json(%{id: team.id})
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{ status: 403, message: "Permission denied" })
+      |> json(%ApiMessage{status: 403, message: "Permission denied"})
     end
   end
 
   defp reservations_by_user(user_id) do
-    from reservation in Reservation,
-    where: reservation.user_id == ^user_id,
-    join: environment in assoc(reservation, :environment),
-    join: application in assoc(reservation, :application),
-    preload: [application: application, environment: environment]
+    from(
+      reservation in Reservation,
+      where: reservation.user_id == ^user_id,
+      join: environment in assoc(reservation, :environment),
+      join: application in assoc(reservation, :application),
+      preload: [application: application, environment: environment]
+    )
   end
 
   defp reservations_with_users(team_id) do
-    from reservation in Reservation,
-    where: reservation.team_id == ^team_id,
-    left_join: user in assoc(reservation, :user),
-    left_join: environment in assoc(reservation, :environment),
-    left_join: application in assoc(reservation, :application),
-    preload: [user: user, application: application, environment: environment]
+    from(
+      reservation in Reservation,
+      where: reservation.team_id == ^team_id,
+      left_join: user in assoc(reservation, :user),
+      left_join: environment in assoc(reservation, :environment),
+      left_join: application in assoc(reservation, :application),
+      preload: [user: user, application: application, environment: environment]
+    )
   end
 
   def team_table(team_id) do
-    applications = Application |> where([a], a.team_id == ^team_id)
-                                |> order_by(asc: :name)
-                                |> Repo.all
-    environments = Environment |> where([e], e.team_id == ^team_id)
-                                |> order_by(asc: :name)
-                                |> Repo.all
+    applications =
+      Application
+      |> where([a], a.team_id == ^team_id)
+      |> order_by(asc: :name)
+      |> Repo.all()
 
-    %{reservations: reservations_with_users(team_id) |> Repo.all,
+    environments =
+      Environment
+      |> where([e], e.team_id == ^team_id)
+      |> order_by(asc: :name)
+      |> Repo.all()
+
+    %{
+      reservations: reservations_with_users(team_id) |> Repo.all(),
       applications: applications,
       environments: environments
     }
@@ -289,10 +389,12 @@ defmodule ArgonautWeb.TeamController do
 
   # returns all the apps, environments and reservations for a team
   def table(conn, %{"name_or_id" => team_name_or_id}) do
-    team_id = case Integer.parse(team_name_or_id) do
-      {id, ""} -> id
-      _  -> Repo.get_by(Team, name: team_name_or_id).id
-    end
+    team_id =
+      case Integer.parse(team_name_or_id) do
+        {id, ""} -> id
+        _ -> Repo.get_by(Team, name: team_name_or_id).id
+      end
+
     data = team_table(team_id)
     conn |> json(data)
   end
@@ -301,16 +403,23 @@ defmodule ArgonautWeb.TeamController do
     current_user = Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    changeset = Membership.changeset(
-      %Membership{},
-      %{team_id: team.id, user_id: current_user.id, is_admin: false, join_date: DateTime.utc_now}
-    )
+    changeset =
+      Membership.changeset(
+        %Membership{},
+        %{
+          team_id: team.id,
+          user_id: current_user.id,
+          is_admin: false,
+          join_date: DateTime.utc_now()
+        }
+      )
 
     case Repo.insert(changeset) do
       {:ok, _user_team} ->
         conn
         |> put_status(:created)
         |> render("show.json", %{team: team})
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -327,6 +436,7 @@ defmodule ArgonautWeb.TeamController do
       {:ok, _} ->
         conn
         |> render("show.json", %{team: team})
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -361,6 +471,7 @@ defmodule ArgonautWeb.TeamController do
       {:ok, app} ->
         conn
         |> json(app)
+
       {:error, changeset} ->
         conn
         |> json(%{})
@@ -398,6 +509,7 @@ defmodule ArgonautWeb.TeamController do
       {:ok, env} ->
         conn
         |> json(env)
+
       {:error, changeset} ->
         conn
         |> json(%{})

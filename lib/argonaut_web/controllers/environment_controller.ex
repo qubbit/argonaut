@@ -26,6 +26,7 @@ defmodule ArgonautWeb.EnvironmentController do
         conn
         |> put_flash(:info, "Environment created successfully.")
         |> redirect(to: environment_path(conn, :index))
+
       {:error, changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -51,6 +52,7 @@ defmodule ArgonautWeb.EnvironmentController do
         conn
         |> put_flash(:info, "Environment updated successfully.")
         |> redirect(to: environment_path(conn, :show, environment))
+
       {:error, changeset} ->
         render(conn, "edit.html", environment: environment, changeset: changeset)
     end

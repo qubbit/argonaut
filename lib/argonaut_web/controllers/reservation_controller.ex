@@ -4,15 +4,17 @@ defmodule ArgonautWeb.ReservationController do
   alias Argonaut.Reservation
 
   def reservations_with_users() do
-    from reservation in Reservation,
-    left_join: user in assoc(reservation, :user),
-    left_join: environment in assoc(reservation, :environment),
-    left_join: application in assoc(reservation, :application),
-    preload: [user: user, application: application, environment: environment]
+    from(
+      reservation in Reservation,
+      left_join: user in assoc(reservation, :user),
+      left_join: environment in assoc(reservation, :environment),
+      left_join: application in assoc(reservation, :application),
+      preload: [user: user, application: application, environment: environment]
+    )
   end
 
   def index(conn, _params) do
-    reservations = reservations_with_users() |> Repo.all
+    reservations = reservations_with_users() |> Repo.all()
     render(conn, "index.json", reservations: reservations)
   end
 
@@ -25,6 +27,7 @@ defmodule ArgonautWeb.ReservationController do
         |> put_status(:created)
         |> put_resp_header("location", reservation_path(conn, :show, reservation))
         |> render("show.json", reservation: reservation)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
@@ -44,6 +47,7 @@ defmodule ArgonautWeb.ReservationController do
     case Repo.update(changeset) do
       {:ok, reservation} ->
         render(conn, "show.json", reservation: reservation)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)

@@ -2,11 +2,11 @@ defmodule Argonaut.Membership do
   use Argonaut.Web, :model
 
   schema "membership" do
-    field :join_date, :utc_datetime_usec
-    field :is_admin, :boolean, default: false
+    field(:join_date, :utc_datetime_usec)
+    field(:is_admin, :boolean, default: false)
 
-    belongs_to :user, Argonaut.User
-    belongs_to :team, Argonaut.Team
+    belongs_to(:user, Argonaut.User)
+    belongs_to(:team, Argonaut.Team)
 
     timestamps()
   end

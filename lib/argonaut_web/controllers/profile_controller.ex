@@ -16,6 +16,7 @@ defmodule ArgonautWeb.ProfileController do
       {:ok, user} ->
         conn
         |> json(user)
+
       {:error, changeset} ->
         conn
         |> put_status(:unprocessable_entity)
