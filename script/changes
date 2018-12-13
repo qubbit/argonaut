@@ -73,6 +73,7 @@ test/controllers/user_controller_test.exs
 test/local_functional.exs
 test/support/channel_case.ex
 test/support/conn_case.ex
+test/support/utils.ex
 test/views/error_view_test.exs
 test/views/layout_view_test.exs
 test/views/page_view_test.exs

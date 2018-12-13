@@ -140,7 +140,11 @@ defmodule ArgonautWeb.TeamController do
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{status: 403, message: "Permission denied"})
+      |> json(%ApiMessage{
+        status: 403,
+        message:
+          "Permission denied. You need to be a member of the #{team.name} team to change it."
+      })
     end
   end
 
@@ -338,7 +342,11 @@ defmodule ArgonautWeb.TeamController do
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{status: 403, message: "Permission denied"})
+      |> json(%ApiMessage{
+        status: 403,
+        message:
+          "Permission denied. You need to be a member of the #{team.name} team to delete it."
+      })
     end
   end
 
@@ -453,7 +461,13 @@ defmodule ArgonautWeb.TeamController do
       Repo.delete!(application)
       conn |> json(%{success: true, application_id: application.id})
     else
-      conn |> json(%{success: false, message: "Permission denied"})
+      conn
+      |> put_status(:forbidden)
+      |> json(%ApiMessage{
+        status: 403,
+        message:
+          "Permission denied. You need to be a member of the #{team.name} team to delete this application."
+      })
     end
   end
 
@@ -489,7 +503,11 @@ defmodule ArgonautWeb.TeamController do
     else
       conn
       |> put_status(:forbidden)
-      |> json(%ApiMessage{status: 403, message: "Permission denied"})
+      |> json(%ApiMessage{
+        status: 403,
+        message:
+          "Permission denied. You need to be a member of the #{team.name} team to delete this environment."
+      })
     end
   end
 
