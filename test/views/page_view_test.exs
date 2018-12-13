@@ -1,3 +1,3 @@
 defmodule Argonaut.PageViewTest do
-  use Argonaut.ConnCase, async: true
+  use ArgonautWeb.ConnCase, async: true
 end

@@ -1,4 +1,4 @@
-defmodule Argonaut.ChannelCase do
+defmodule ArgonautWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -25,9 +25,8 @@ defmodule Argonaut.ChannelCase do
       import Ecto.Changeset
       import Ecto.Query
 
-
       # The default endpoint for testing
-      @endpoint Argonaut.Endpoint
+      @endpoint ArgonautWeb.Endpoint
     end
   end
 
