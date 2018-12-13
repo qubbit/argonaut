@@ -63,6 +63,7 @@ defmodule ArgonautWeb.SessionController do
         )
 
       user = Repo.update!(changeset)
+
       Mailer.send_password_reset_email(user)
 
       conn
@@ -143,12 +144,11 @@ defmodule ArgonautWeb.SessionController do
     |> String.downcase()
   end
 
-  defp token_valid?(user) do
-    # {:ok, sent_at } = Calendar.DateTime.from_erl(DateTime.to_erl(user.password_reset_sent_at), "Etc/UTC")
-    {:ok, sent_at} = {:ok, DateTime.utc_now()}
-    now = Calendar.DateTime.now_utc()
+  @seconds_in_a_day 86400
 
-    {:ok, seconds, _, _} = Calendar.DateTime.diff(now, sent_at)
-    seconds / 86400 <= 1
+  defp token_valid?(user) do
+    token_sent_time = user.password_reset_sent_at
+    now = DateTime.utc_now()
+    @seconds_in_a_day >= DateTime.diff(now, token_sent_time)
   end
 end
