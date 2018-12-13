@@ -18,7 +18,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def create(conn, team_params) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     changeset = Team.changeset(%Team{owner_id: current_user.id}, team_params)
 
     case Repo.insert(changeset) do
@@ -51,7 +51,7 @@ defmodule ArgonautWeb.TeamController do
 
   def new_reservation(conn, %{"team_id" => id} = params) do
     team = Repo.get!(Team, id)
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
 
     if user_member_of_team?(current_user, team) do
       params = Map.put(params, "reserved_at", DateTime.utc_now())
@@ -124,7 +124,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def update(conn, %{"id" => id, "description" => description}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     team = Repo.get!(Team, id)
 
     if user_member_of_team?(current_user, team) do
@@ -333,7 +333,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def delete(conn, %{"id" => id}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     team = Repo.get!(Team, id)
 
     if team.owner_id == current_user.id || current_user.is_admin do
@@ -400,7 +400,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def join(conn, %{"id" => team_id}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
     changeset =
@@ -428,7 +428,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def leave(conn, %{"id" => team_id}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
     membership = Repo.get_by(Membership, team_id: team.id, user_id: current_user.id)
 
@@ -445,7 +445,7 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def delete_team_application(conn, %{"id" => team_id, "application_id" => application_id}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
     # if team.owner_id != current_user.id do
@@ -453,14 +453,13 @@ defmodule ArgonautWeb.TeamController do
     # else
 
     if user_member_of_team?(current_user, team) do
+      require IEx; IEx.pry()
       application = Repo.get(Application, application_id)
       Repo.delete!(application)
       conn |> json(%{success: true, application_id: application_id})
     else
       conn |> json(%{success: false, message: "Permission denied"})
     end
-
-    conn
   end
 
   def update_team_application(conn, params) do
@@ -479,15 +478,15 @@ defmodule ArgonautWeb.TeamController do
   end
 
   def delete_team_environment(conn, %{"id" => team_id, "environment_id" => environment_id}) do
-    current_user = Guardian.Plug.current_resource(conn)
+    current_user = Argonaut.Guardian.Plug.current_resource(conn)
     team = Repo.get(Team, team_id)
 
-    # only team owners can delete an environment
+    # Only team owners can delete an environment
     # if team.owner_id != current_user.id do
     #   conn |> json(%{"success" => false})
     # else
 
-    # only allow team members to delete a team's environment
+    # Only allow team members to delete a team's environment
     if user_member_of_team?(current_user, team) do
       environment = Repo.get(Environment, environment_id)
       Repo.delete!(environment)
@@ -497,8 +496,6 @@ defmodule ArgonautWeb.TeamController do
       |> put_status(:forbidden)
       |> json(%ApiMessage{status: 403, message: "Permission denied"})
     end
-
-    conn
   end
 
   def update_team_environment(conn, params) do
