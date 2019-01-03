@@ -20,5 +20,6 @@ defmodule Argonaut.Environment do
     struct
     |> cast(params, [:name, :description, :is_integration, :team_id])
     |> validate_required([:name, :description, :team_id])
+    |> unique_constraint(:name, name: :environments__lower_name_index)
   end
 end
