@@ -40,5 +40,6 @@ defmodule Argonaut.Team do
     struct
     |> cast(params, [:name, :description, :logo_url])
     |> validate_required([:name])
+    |> unique_constraint(:name, name: :teams__lower_name_index)
   end
 end
