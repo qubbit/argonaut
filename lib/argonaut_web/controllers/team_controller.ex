@@ -26,7 +26,7 @@ defmodule ArgonautWeb.TeamController do
         assoc_changeset =
           Membership.changeset(
             %Membership{},
-            %{join_date: DateTime, user_id: current_user.id, is_admin: true, team_id: team.id}
+            %{join_date: DateTime.utc_now, user_id: current_user.id, is_admin: true, team_id: team.id}
           )
 
         Repo.insert!(assoc_changeset)
