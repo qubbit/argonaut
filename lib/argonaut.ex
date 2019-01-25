@@ -12,7 +12,8 @@ defmodule Argonaut do
       supervisor(Argonaut.Repo, []),
       # Start the endpoint when the application starts
       supervisor(ArgonautWeb.Endpoint, []),
-      supervisor(Argonaut.Presence, [])
+      supervisor(Argonaut.Presence, []),
+      worker(Argonaut.Scheduler, [])
       # Start your own worker by calling: Argonaut.Worker.start_link(arg1, arg2, arg3)
       # worker(Argonaut.Worker, [arg1, arg2, arg3]),
     ]

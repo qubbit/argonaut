@@ -4,12 +4,13 @@ defmodule Argonaut.Reservation do
   @derive {Jason.Encoder, only: [:id, :user, :application, :environment, :reserved_at]}
 
   schema "reservations" do
-    field(:reserved_at, :utc_datetime)
+    field(:reserved_at, :utc_datetime_usec)
 
     belongs_to(:user, Argonaut.User)
     belongs_to(:environment, Argonaut.Environment)
     belongs_to(:application, Argonaut.Application)
     belongs_to(:team, Argonaut.Team)
+    has_one(:reminder, Argonaut.Reminder)
 
     timestamps()
   end

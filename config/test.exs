@@ -12,10 +12,10 @@ config :logger, level: :warn
 # Configure your database
 config :argonaut, Argonaut.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "developer",
-  password: "banana2017!",
   database: "argonaut_test",
-  hostname: "localhost",
+  hostname: System.get_env("DB_HOST") || "localhost",
+  username: System.get_env("DB_USER") || "postgres",
+  password: System.get_env("DB_PASS") || "postgres",
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :comeonin, :bcrypt_log_rounds, 4

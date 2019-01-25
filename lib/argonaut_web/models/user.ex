@@ -30,6 +30,7 @@ defmodule Argonaut.User do
     field(:confirmed_at, :utc_datetime_usec)
 
     field(:api_token, :string)
+    field(:slack_user_id, :string)
 
     many_to_many(:teams, Team, join_through: "membership")
     has_many(:owned_teams, Team, foreign_key: :owner_id)
@@ -97,6 +98,14 @@ defmodule Argonaut.User do
     |> put_gravatar
     |> generate_encrypted_password
     |> changeset
+  end
+
+  def slack_username_changeset(struct, params \\ %{}) do
+    struct
+    |> cast(params, [:slack_user_id])
+    |> validate_length(:slack_user_id, max: 21)
+    |> unique_constraint(:username, message: "Username already taken")
+    |> unique_constraint(:email, message: "Email already taken")
   end
 
   defp put_gravatar(changeset) do

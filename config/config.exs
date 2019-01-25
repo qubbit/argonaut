@@ -17,7 +17,9 @@ config :argonaut, Argonaut.Repo,
 # General application configuration
 config :argonaut,
   ecto_repos: [Argonaut.Repo],
-  git_sha: String.trim(elem(System.cmd("git", ["rev-parse", "HEAD"]), 0))
+  git_sha: String.trim(elem(System.cmd("git", ["rev-parse", "HEAD"]), 0)),
+  argonaut_token_for_slack: "test_token",
+  slack_both_oauth_token: "slack-12345"
 
 # Configures the endpoint
 config :argonaut, ArgonautWeb.Endpoint,
@@ -45,6 +47,17 @@ config :argonaut, Argonaut.Guardian,
   # this is overridden in production by the value of GUARDIAN_JWK environment variable
   secret_key: "potato",
   serializer: Argonaut.GuardianSerializer
+
+config :argonaut, Argonaut.Scheduler,
+  timezone: "America/New_York",
+  jobs: [
+    phoenix_job: [
+      # schedule: "* * * * *", # every minute
+      # every 10 minutes
+      schedule: "*/10 * * * *",
+      task: {Argonaut.SlackNotifier, :work, []}
+    ]
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
