@@ -74,7 +74,8 @@ defmodule Argonaut.Mixfile do
       {:scrivener_ecto, "~> 2.0"},
       {:jason, "~> 1.0"},
       {:mailgun, github: "qubbit/mailgun"},
-      {:httpoison, "~> 1.4"}
+      {:httpoison, "~> 1.4"},
+      {:logger_file_backend, "~> 0.0.10"}
     ]
   end
 

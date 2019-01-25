@@ -21,7 +21,16 @@ config :argonaut, ArgonautWeb.Endpoint,
   url: [host: System.get_env("APP_NAME"), port: 80],
   check_origin: ~w(#{System.get_env("WS_ALLOWED_ORIGINS")})
 
-config :logger, level: :info
+# config :logger, level: :info
+
+# tell logger to load a LoggerFileBackend processes
+config :logger,
+  backends: [{LoggerFileBackend, :error_log}]
+
+# configuration for the {LoggerFileBackend, :error_log} backend
+config :logger, :error_log,
+  path: "log/production.log",
+  level: :info
 
 config :argonaut,
   git_sha: ""
