@@ -112,46 +112,36 @@ defmodule ArgonautWeb.SlackController do
 
       Logger.info("Found slack user in system #{inspect(argonaut_user)}")
 
-      if argonaut_user.username == "gadhikari" do
-        bot_reply = Bot.reply(%{message: text, user: argonaut_user})
+      bot_reply = Bot.reply(%{message: text, user: argonaut_user})
 
-        slack_message =
-          case bot_reply do
-            %{success: true, message: message} ->
-              success_message(message)
+      slack_message =
+        case bot_reply do
+          %{success: true, message: message} ->
+            success_message(message)
 
-            %{success: false, message: message} ->
-              error_message(message)
+          %{success: false, message: message} ->
+            error_message(message)
 
-            %{success: _, message: message} ->
-              failure_message(message)
+          %{success: _, message: message} ->
+            failure_message(message)
 
-            _ ->
-              %{
-                text: ~s"""
-                ```
-                #{Jason.encode!(bot_reply)}
-                ```
-                """
-              }
-          end
+          _ ->
+            %{
+              text: ~s"""
+              ```
+              #{Jason.encode!(bot_reply)}
+              ```
+              """
+            }
+        end
 
-        SlackApi.send_message(
-          nil,
-          [slack_message],
-          channel
-        )
+      SlackApi.send_message(
+        nil,
+        [slack_message],
+        channel
+      )
 
-        Logger.info("Simulating bot interaction #{inspect(bot_reply)}")
-      else
-        SlackApi.send_message(
-          "Hi, I am still under active development. Talk later! :wave::skin-tone-5:",
-          [],
-          channel
-        )
-      end
-
-      nil
+      Logger.info("Simulating bot interaction #{inspect(bot_reply)}")
     end
 
     conn |> send_resp(:ok, "")
