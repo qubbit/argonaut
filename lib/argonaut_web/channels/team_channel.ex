@@ -1,8 +1,11 @@
 defmodule ArgonautWeb.TeamChannel do
   use Argonaut.Web, :channel
-  alias Argonaut.{Membership, Reservation}
 
-  # testing https://github.com/hassox/phoenix_guardian/blob/ueberauth-guardian/test/channels/authorized_channel_test.exs
+  alias Argonaut.Membership
+  alias Argonaut.Reservation
+  alias Argonaut.Reservations
+
+  # TODO: testing https://github.com/hassox/phoenix_guardian/blob/ueberauth-guardian/test/channels/authorized_channel_test.exs
 
   # returns a team after the team channel is joined
   def join("teams:" <> team_id, _params, socket) do
@@ -27,7 +30,7 @@ defmodule ArgonautWeb.TeamChannel do
   end
 
   def handle_in("delete_reservation", %{"reservation_id" => id} = _payload, socket) do
-    reservation = reservation_with_associations(id)
+    reservation = Reservations.reservation_with_associations(id)
 
     case Repo.delete(reservation) do
       {:ok, _res} ->
@@ -57,7 +60,7 @@ defmodule ArgonautWeb.TeamChannel do
 
       case Repo.insert(changeset) do
         {:ok, reservation} ->
-          reservation_tree = reservation_with_associations(reservation.id)
+          reservation_tree = Reservations.reservation_with_associations(reservation.id)
           broadcast_reservation_creation(socket, reservation_tree)
           {:reply, {:ok, reservation_tree}, socket}
 
@@ -82,20 +85,5 @@ defmodule ArgonautWeb.TeamChannel do
 
   defp broadcast_reservation_creation(socket, reservation) do
     broadcast!(socket, "reservation_created", reservation)
-  end
-
-  # TODO: move this somewhere else
-  defp reservation_with_associations(reservation_id) do
-    query =
-      from(
-        r in Reservation,
-        where: r.id == ^reservation_id,
-        join: a in assoc(r, :application),
-        join: e in assoc(r, :environment),
-        join: u in assoc(r, :user),
-        preload: [application: a, environment: e, user: u]
-      )
-
-    query |> Repo.one()
   end
 end

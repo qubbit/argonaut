@@ -55,6 +55,20 @@ defmodule Argonaut.Reservations do
     )
   end
 
+  def reservation_with_associations(reservation_id) do
+    query =
+      from(
+        r in Reservation,
+        where: r.id == ^reservation_id,
+        join: a in assoc(r, :application),
+        join: e in assoc(r, :environment),
+        join: u in assoc(r, :user),
+        preload: [application: a, environment: e, user: u]
+      )
+
+    query |> Repo.one()
+  end
+
   # TODO: These are copied from team_controller.ex. Keep them in one place
   # Actions
   # create_reservation and delete_reservation: These are different than the
@@ -127,8 +141,8 @@ defmodule Argonaut.Reservations do
         reserved_at: DateTime.utc_now()
       })
 
-      with_user = Repo.preload(new_reservation, :user)
-      ArgonautWeb.Endpoint.broadcast("teams:#{environment.team_id}", "reservation_created", with_user)
+      reservation_tree = reservation_with_associations(new_reservation.id)
+      ArgonautWeb.Endpoint.broadcast!("teams:#{environment.team_id}", "reservation_created", reservation_tree)
 
       true
     else
@@ -164,6 +178,9 @@ defmodule Argonaut.Reservations do
 
     if can_release?(reservation, current_user) do
       Repo.delete(reservation)
+
+      reservation_tree = %{reservation | application: application, environment: environment, user: current_user}
+      ArgonautWeb.Endpoint.broadcast!("teams:#{environment.team_id}", "reservation_deleted", reservation_tree)
 
       %{message: "Deleted your reservation on #{env}:#{app}", success: true}
     else
