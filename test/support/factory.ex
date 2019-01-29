@@ -43,11 +43,21 @@ defmodule Argonaut.Factory do
 
   def reminder_factory do
     %Argonaut.Reminder{
-      reservation: build(:reservation)
+      reservation: build(:reservation),
+      reminded_at: DateTime.utc_now
     }
   end
 
   def expired_reservation_with_reminder_factory do
+    struct!(
+      expired_reservation_factory(),
+      %{
+        reminder: build(:reminder)
+      }
+    )
+  end
+
+  def expired_reservation_with_expired_reminder_factory do
     struct!(
       expired_reservation_factory(),
       %{

@@ -10,7 +10,7 @@ defmodule Argonaut.SlackNotifierTest do
   alias Argonaut.Reminder
 
   setup do
-    # TODO: find how to do this before
+    # TODO: find out how to reset DB after tests run
     Repo.delete_all(Argonaut.Environment)
     Repo.delete_all(Argonaut.Team)
     Repo.delete_all(Argonaut.User)
@@ -19,14 +19,14 @@ defmodule Argonaut.SlackNotifierTest do
   end
 
   describe "work" do
-    test "does not notify for reservations less than 24 hours old" do
+    test "does not notify users for reservations less than 24 hours old" do
       insert(:reservation)
       insert(:reservation)
       insert(:reservation)
       assert 0 = SlackNotifier.work(true)
     end
 
-    test "notifies for reservations over 24 hours with no reminders" do
+    test "notifies users about reservations over 24 hours that do not have reminders" do
       res = insert(:expired_reservation)
       notif_message = "Are you still using *#{res.environment.name}:#{res.application.name}*?"
 
@@ -43,8 +43,13 @@ defmodule Argonaut.SlackNotifierTest do
       end
     end
 
-    test "notifies for reservations over 24 hours" do
+    test "does notify users about reservations over 24 hours when the reminder was sent less than two hours ago" do
       res = insert(:expired_reservation_with_reminder)
+      assert 0 = SlackNotifier.work(true)
+    end
+
+    test "notifies users for reservations over 24 hours that have reminders with expired grace period" do
+      res = insert(:expired_reservation_with_expired_reminder)
       notif_message = "Are you still using *#{res.environment.name}:#{res.application.name}*?"
 
       with_mock SlackApi,
