@@ -19,7 +19,7 @@ config :argonaut,
   ecto_repos: [Argonaut.Repo],
   git_sha: String.trim(elem(System.cmd("git", ["rev-parse", "HEAD"]), 0)),
   argonaut_token_for_slack: "test_token",
-  slack_both_oauth_token: "slack-12345"
+  slack_bot_oauth_token: "slack-12345"
 
 # Configures the endpoint
 config :argonaut, ArgonautWeb.Endpoint,
