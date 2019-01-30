@@ -69,6 +69,14 @@ defmodule Argonaut.Reservations do
     query |> Repo.one()
   end
 
+  defp environment_by_name(name) do
+    Repo.one(from(env in Environment, where: env.name == ^name))
+  end
+
+  defp application_by_name(name) do
+    Repo.one(from(app in Application, where: app.name == ^name))
+  end
+
   # TODO: These are copied from team_controller.ex. Keep them in one place
   # Actions
   # create_reservation and delete_reservation: These are different than the
@@ -77,16 +85,8 @@ defmodule Argonaut.Reservations do
   # named and owned by one team, it will be easy to make reservations using
   # just three pieces of info: user, application, environment
   def create_reservation(%{"app" => app, "env" => env}, current_user) do
-    environment = Repo.one(from(env in Environment, where: env.name == ^env))
-
-    application =
-      Repo.one(
-        from(
-          app in Application,
-          where: app.name == ^app,
-          where: app.team_id == ^environment.team_id
-        )
-      )
+    environment = environment_by_name(env)
+    application = application_by_name(app)
 
     {status, reason} =
       satisfies?("", [
@@ -109,7 +109,7 @@ defmodule Argonaut.Reservations do
       ])
 
     if status == :ok do
-      %{success: true, message: "Reserved #{app}:#{env}"}
+      %{success: true, message: "Reserved #{env}:#{app}"}
     else
       %{success: false, message: reason}
     end
@@ -155,6 +155,33 @@ defmodule Argonaut.Reservations do
 
   defp can_release?(nil, _), do: false
   defp can_release?(%Reservation{user_id: user_id}, %User{id: id}), do: user_id == id
+
+  def reservation_by_app_env_name(%{"app" => app, "env" => env}) do
+    from(
+      reservation in Reservation,
+      left_join: user in assoc(reservation, :user),
+      left_join: environment in assoc(reservation, :environment),
+      left_join: application in assoc(reservation, :application),
+      where: environment.name == ^env,
+      where: application.name == ^app,
+      preload: [
+        user: user,
+        application: application,
+        environment: environment
+      ]
+    ) |> Repo.one()
+  end
+
+  def reservation_info(params) do
+    r = reservation_by_app_env_name(params)
+
+    case r do
+      %Reservation{} ->
+        %{success: true, message: "#{r.environment.name}:#{r.application.name} is in use by #{r.user.username}"}
+      nil ->
+        %{success: true, message: "Hmm..."}
+    end
+  end
 
   def delete_reservation(%{"app" => app, "env" => env}, current_user) do
     environment = Repo.one(from(env in Environment, where: env.name == ^env))

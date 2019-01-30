@@ -6,6 +6,7 @@ defmodule ArgonautWeb.SlackController do
   alias Argonaut.User
   alias Argonaut.Reminder
   alias Argonaut.SlackApi
+  alias Argonaut.Bot
 
   @argonaut_token_for_slack Application.get_env(:argonaut, :argonaut_token_for_slack)
 

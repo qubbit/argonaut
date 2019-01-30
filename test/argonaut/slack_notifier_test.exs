@@ -1,5 +1,6 @@
 defmodule Argonaut.SlackNotifierTest do
   use ExUnit.Case, async: false
+  use ArgonautWeb.CleanupCase
 
   import Mock
   import Argonaut.Factory
@@ -8,15 +9,6 @@ defmodule Argonaut.SlackNotifierTest do
   alias Argonaut.SlackApi
   alias Argonaut.Repo
   alias Argonaut.Reminder
-
-  setup do
-    # TODO: find out how to reset DB after tests run
-    Repo.delete_all(Argonaut.Environment)
-    Repo.delete_all(Argonaut.Team)
-    Repo.delete_all(Argonaut.User)
-
-    :ok
-  end
 
   describe "work" do
     test "does not notify users for reservations less than 24 hours old" do

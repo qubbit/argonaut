@@ -1,18 +1,18 @@
-defmodule Bot do
+defmodule Argonaut.Bot do
   alias Argonaut.Reservations
 
-  @env_app_re "(?<env>.*):(?<app>.*)"
+  @env_app_re "(?<env>[\\w-]+):(?<app>[\\w-]+)"
   # handle im, i'm, i am
   @i_am_re "I(?:'m|m| am)"
   # handle whos, who's, who is
   @who_is_re "Who(?:'s|s| is)"
 
   @matchers [
-    {:reservation_action, ~r/#{@env_app_re} (?<action>info|release|renew|reserve)/},
-    {:reservation_info, ~r/#{@who_is_re} using #{@env_app_re}(\?)?/},
-    {:reservation_release, ~r/#{@i_am_re} done using #{@env_app_re}/},
-    {:reservation_renew, ~r/#{@i_am_re} still using #{@env_app_re}/},
-    {:reservation_reserve, ~r/#{@i_am_re} using #{@env_app_re}(for (?<reason>.*))?/}
+    {:reservation_action, ~r/#{@env_app_re} (?<action>info|release|renew|reserve)/i},
+    {:reservation_info, ~r/#{@who_is_re} using #{@env_app_re}(\?)?/i},
+    {:reservation_release, ~r/#{@i_am_re} done using #{@env_app_re}/i},
+    {:reservation_renew, ~r/#{@i_am_re} still using #{@env_app_re}/i},
+    {:reservation_reserve, ~r/#{@i_am_re} using #{@env_app_re}(for (?<reason>.*))?/i}
   ]
 
   @default_handler {:default_handler, nil}
@@ -35,8 +35,8 @@ defmodule Bot do
     apply(__MODULE__, action_function, [params, user])
   end
 
-  def reservation_info(%{"app" => app, "env" => env}, user) do
-    %{success: true, message: "Info about #{env} #{app}"}
+  def reservation_info(%{"app" => app, "env" => env} = params, _) do
+    Reservations.reservation_info(params)
   end
 
   def reservation_release(%{"app" => app, "env" => env} = params, user) do

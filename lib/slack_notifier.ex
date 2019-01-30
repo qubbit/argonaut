@@ -26,7 +26,7 @@ defmodule Argonaut.SlackNotifier do
     |> Enum.sum()
   end
 
-  defp create_or_update_reminder(%Reminder{} = reminder, %Reservation{} = reservation) do
+  defp create_or_update_reminder(%Reminder{} = reminder, _) do
     reminder
     |> Reminder.changeset(%{reminded_at: DateTime.utc_now()})
     |> Repo.update()

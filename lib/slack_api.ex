@@ -79,14 +79,6 @@ defmodule Argonaut.SlackApi do
     HTTPoison.post(url, payload, @slack_headers)
   end
 
-  defp log_response(response, function) do
-    Logger.info("#{inspect(function)} Response:\n#{inspect(response)}\n")
-  end
-
-  defp endpoint_path(chat_method) do
-    "https://slack.com/api/chat.#{chat_method}?token=#{@token}&as_user=true"
-  end
-
   defp build_notification_attachment(callback_id) do
     [
       %{

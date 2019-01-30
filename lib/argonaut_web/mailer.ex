@@ -1,7 +1,6 @@
 defmodule Argonaut.Mailer do
   alias Argonaut.{Repo, Mail, EmailData}
 
-  # TODO find a better way to read prod vs non-prod config
   @config domain: Application.get_env(:mailgun, :domain),
           key: Application.get_env(:mailgun, :key),
           test_file_path: Application.get_env(:mailgun, :test_file_path),
@@ -42,16 +41,6 @@ defmodule Argonaut.Mailer do
 
       {:error, changeset} ->
         changeset.errors
-    end
-  end
-
-  # utilities
-
-  defp normalize_username(user) do
-    if user.first_name do
-      user.first_name <> user.last_name
-    else
-      user.username
     end
   end
 
