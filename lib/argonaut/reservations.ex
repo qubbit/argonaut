@@ -1,17 +1,11 @@
 defmodule Argonaut.Reservations do
   import Ecto.Query
-  import Argonaut.Utils
 
   alias Argonaut.Application
   alias Argonaut.Environment
-  alias Argonaut.Membership
   alias Argonaut.Repo
   alias Argonaut.Reservation
   alias Argonaut.Reminder
-  alias Argonaut.Team
-  alias Argonaut.User
-
-  # TODO: Use ecto query composition in the below functions
 
   def reminders do
     Repo.all(
@@ -70,91 +64,86 @@ defmodule Argonaut.Reservations do
   end
 
   defp environment_by_name(name) do
-    Repo.one(from(env in Environment, where: env.name == ^name))
+    environment = Repo.one(from(env in Environment, where: env.name == ^name))
+
+    if environment do
+      {:ok, environment}
+    else
+      {:error, :no_such_environment}
+    end
   end
 
-  defp application_by_name(name) do
-    Repo.one(from(app in Application, where: app.name == ^name))
+  # The table can have multiple applications with same name so we need to find
+  # the correct application the user is ending to release, renew or reserve.
+  # The only way to know this is by associated the application with the same
+  # team_id as the corresponding environment
+  defp application_by_name_and_team(name, team_id) do
+    application = (from app in Application,
+      where: app.name == ^name,
+      where: app.team_id == ^team_id) |> Repo.one
+
+    if application do
+      {:ok, application}
+    else
+      {:error, :no_such_application_for_team}
+    end
   end
 
-  # TODO: These are copied from team_controller.ex. Keep them in one place
-  # Actions
-  # create_reservation and delete_reservation: These are different than the
-  # ones implemented in the channel file in that they take application name and
-  # environment name instead of ids now that an environment can be uniquely
-  # named and owned by one team, it will be easy to make reservations using
-  # just three pieces of info: user, application, environment
   def create_reservation(%{"app" => app, "env" => env}, current_user) do
-    environment = environment_by_name(env)
-    application = application_by_name(app)
-
-    {status, reason} =
-      satisfies?("", [
-        fn _ ->
-          if environment == nil, do: {:error, "No such environment #{env}"}, else: {:ok, ""}
-        end,
-        fn _ ->
-          if application == nil, do: {:error, "No such application #{app}"}, else: {:ok, ""}
-        end,
-        fn _ ->
-          if user_member_of_team?(current_user.id, environment.team_id),
-            do: {:ok, ""},
-            else: {:error, "None of the teams you are member of own the environment #{env}"}
-        end,
-        fn _ ->
-          if decide_and_reserve!(environment, application, current_user),
-            do: {:ok, ""},
-            else: {:error, "Someone else is using that environment currently"}
-        end
-      ])
-
-    if status == :ok do
-      %{success: true, message: "Reserved #{env}:#{app}"}
+    with {:ok, environment } <- environment_by_name(env),
+         {:ok, application } <- application_by_name_and_team(app, environment.team_id),
+         {:ok, _ } <- decide_and_reserve(application, environment, current_user)
+    do
+      %{success: true, message: ":sparkles: Reserved #{env}:#{app}"}
     else
-      %{success: false, message: reason}
+      {:error, :no_such_environment} ->
+        %{success: false, message: "*#{env}*: No such environment found"}
+      {:error, :no_such_application_for_team} ->
+        %{success: false, message: "*#{app}*: No such application found"}
+      {:error, :already_reserved_by_you} ->
+        %{success: true, message: "*#{env}:#{app}*: You are already using that environment"}
+      {:error, :already_reserved_by_someone} ->
+        %{success: false, message: "*#{env}:#{app}*: Someone else is using that environment"}
+      _ ->
+        %{success: false, message: "Hmm... something is wrong :thinking_face:"}
     end
   end
 
-  defp decide_and_reserve!(
-         environment = %Environment{},
-         application = %Application{},
-         user = %User{}
-       ) do
-    reservation =
-      from(
-        r in Reservation,
-        where: r.application_id == ^application.id,
-        where: r.environment_id == ^environment.id
-      )
-      |> Repo.one()
+  def reservation_by_app_env(application, environment) do
+    reservation = from(
+      r in Reservation,
+      where: r.application_id == ^application.id,
+      where: r.environment_id == ^environment.id
+    ) |> Repo.one()
 
-    if can_reserve?(reservation, user) do
-      if reservation do
-        Repo.delete(reservation)
-      end
-
-      new_reservation = Repo.insert!(%Reservation{
-        user_id: user.id,
-        environment_id: environment.id,
-        application_id: application.id,
-        team_id: environment.team_id,
-        reserved_at: DateTime.utc_now()
-      })
-
-      reservation_tree = reservation_with_associations(new_reservation.id)
-      ArgonautWeb.Endpoint.broadcast!("teams:#{environment.team_id}", "reservation_created", reservation_tree)
-
-      true
+    if reservation do
+      {:ok, reservation}
     else
-      false
+      {:error, nil}
     end
   end
 
-  defp can_reserve?(nil, _), do: true
-  defp can_reserve?(_, _), do: false
+  defp decide_and_reserve(application, environment, user) do
+    {_, reservation} = reservation_by_app_env(application, environment)
+    user_id = user.id
 
-  defp can_release?(nil, _), do: false
-  defp can_release?(%Reservation{user_id: user_id}, %User{id: id}), do: user_id == id
+    case reservation do
+      nil ->
+        new_reservation = Repo.insert!(%Reservation{
+          user: user,
+          environment: environment,
+          application: application,
+          team_id: environment.team_id,
+          reserved_at: DateTime.utc_now()
+        })
+        ArgonautWeb.Endpoint.broadcast("teams:#{environment.team_id}", "reservation_created", new_reservation)
+        {:ok, new_reservation}
+      %Reservation{user_id: ^user_id} ->
+        {:error, :already_reserved_by_you}
+      _ ->
+        {:error, :already_reserved_by_someone}
+    end
+  end
 
   def reservation_by_app_env_name(%{"app" => app, "env" => env}) do
     from(
@@ -183,35 +172,35 @@ defmodule Argonaut.Reservations do
     end
   end
 
-  def delete_reservation(%{"app" => app, "env" => env}, current_user) do
-    environment = Repo.one(from(env in Environment, where: env.name == ^env))
-
-    application =
-      Repo.one(
-        from(
-          app in Application,
-          where: app.name == ^app,
-          where: app.team_id == ^environment.team_id
-        )
-      )
-
-    reservation =
-      from(
-        r in Reservation,
-        where: r.application_id == ^application.id,
-        where: r.environment_id == ^environment.id
-      )
-      |> Repo.one()
-
-    if can_release?(reservation, current_user) do
+  def delete_reservation(%Reservation{} = reservation, current_user) do
+    if reservation.user_id == current_user.id do
       Repo.delete(reservation)
-
-      reservation_tree = %{reservation | application: application, environment: environment, user: current_user}
-      ArgonautWeb.Endpoint.broadcast!("teams:#{environment.team_id}", "reservation_deleted", reservation_tree)
-
-      %{message: "Deleted your reservation on #{env}:#{app}", success: true}
+      {:ok, reservation}
     else
-      %{message: "Could not delete reservation on #{env}:#{app}", success: false}
+      {:error, :reservation_does_not_belong_to_user}
+    end
+  end
+
+  def delete_reservation(%{"app" => app, "env" => env}, current_user) do
+    with {:ok, environment } <- environment_by_name(env),
+         {:ok, application } <- application_by_name_and_team(app, environment.team_id),
+         {:ok, reservation } <- reservation_by_app_env(application, environment),
+         {:ok, deleted_reservation } <- delete_reservation(reservation, current_user)
+    do
+      ArgonautWeb.Endpoint.broadcast("teams:#{environment.team_id}",
+        "reservation_deleted",
+        %{reservation_id: deleted_reservation.id}
+      )
+      %{success: true, message: ":wastebasket: Reservation deleted on #{env}:#{app}"}
+    else
+      {:error, :no_such_environment} ->
+        %{success: false, message: "*#{env}*: No such environment found"}
+      {:error, :no_such_application_for_team} ->
+        %{success: false, message: "*#{app}*: No such application found"}
+      {:error, :reservation_does_not_belong_to_user} ->
+        %{success: false, message: "*#{env}:#{app}*: Someone else is using that environment"}
+      _ ->
+        %{success: false, message: "Hmm... something is wrong :thinking_face:"}
     end
   end
 
@@ -256,13 +245,5 @@ defmodule Argonaut.Reservations do
       message: "List of reservations made by you (#{current_user.username})",
       data: reservations
     }
-  end
-
-  defp user_member_of_team?(%User{} = user, %Team{} = team) do
-    Membership |> where([m], m.user_id == ^user.id and m.team_id == ^team.id) |> Repo.one() != nil
-  end
-
-  defp user_member_of_team?(user_id, team_id) do
-    Membership |> where([m], m.user_id == ^user_id and m.team_id == ^team_id) |> Repo.one() != nil
   end
 end
