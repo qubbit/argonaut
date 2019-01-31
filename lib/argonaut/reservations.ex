@@ -64,7 +64,7 @@ defmodule Argonaut.Reservations do
         Timex.from_now(r.reserved_at)
       ]
     end)
-    table = TableRex.quick_render!(header, rows)
+    table = TableRex.quick_render!(rows, header)
     %{success: true, message: "```\n#{table}\n```"}
   end
 
