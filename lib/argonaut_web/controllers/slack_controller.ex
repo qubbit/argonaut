@@ -122,7 +122,8 @@ defmodule ArgonautWeb.SlackController do
 
           %{success: false, message: message} ->
             error_message(message)
-
+          %{success: true, data: data} ->
+            data
           %{success: _, message: message} ->
             failure_message(message)
 

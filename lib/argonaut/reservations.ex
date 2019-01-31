@@ -39,6 +39,35 @@ defmodule Argonaut.Reservations do
     )
   end
 
+  defp reservations_with_users(team_id) do
+    from(
+      reservation in Reservation,
+      where: reservation.team_id == ^team_id,
+      left_join: user in assoc(reservation, :user),
+      left_join: environment in assoc(reservation, :environment),
+      left_join: application in assoc(reservation, :application),
+      preload: [user: user, application: application, environment: environment]
+    ) |> Repo.all
+  end
+
+  def list_team_info(%{"name_or_id" => name_or_id}) do
+    team_id = case Integer.parse(name_or_id) do
+      {id, ""} -> id
+      _ -> Repo.get_by(Team, name: name_or_id).id
+    end
+    list = reservations_with_users(team_id)
+    header = ["app:env", "User", "Since"]
+    rows = Enum.map(list, fn r ->
+      [
+        "#{r.environment.name}:#{r.application.name}",
+        r.user.username,
+        Timex.from_now(r.reserved_at)
+      ]
+    end)
+    table = TableRex.quick_render!(header, rows)
+    %{success: true, message: "```\n#{table}\n```"}
+  end
+
   def reservations_by_user(user_id) do
     from(
       reservation in Reservation,

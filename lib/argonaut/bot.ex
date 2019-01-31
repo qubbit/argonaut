@@ -10,12 +10,27 @@ defmodule Argonaut.Bot do
   @matchers [
     {:reservation_action, ~r/#{@env_app_re} (?<action>info|release|renew|reserve)/i},
     {:reservation_info, ~r/#{@who_is_re} using #{@env_app_re}(\?)?/i},
-    {:reservation_release, ~r/#{@i_am_re} done using #{@env_app_re}/i},
+    {:reservation_release, ~r/#{@i_am_re} done (with|using) #{@env_app_re}/i},
     {:reservation_renew, ~r/#{@i_am_re} still using #{@env_app_re}/i},
-    {:reservation_reserve, ~r/#{@i_am_re} using #{@env_app_re}(for (?<reason>.*))?/i}
+    {:reservation_reserve, ~r/#{@i_am_re} using #{@env_app_re}(for (?<reason>.*))?/i},
+    {:list_environments, ~r/\A(?<action>show|list) (?<thing>envs|environments)\z/i},
+    {:list_teams, ~r/\A(?<action>show|list) (?<thing>teams)\z/i},
+    {:list_team_info, ~r/(?<action>show|list) team (?<name_or_id>.+)/i}
   ]
 
   @default_handler {:default_handler, nil}
+
+    def list_team_info(%{"name_or_id" => name_or_id} = params, user) do
+    Reservations.list_team_info(params)
+  end
+
+  def list_environments(params) do
+    # Reservations.list_environments()
+  end
+
+  def list_teams(params) do
+    # Reservations.list_environments()
+  end
 
   def reply(%{message: message, user: user}) do
     {action, regex} =
@@ -62,6 +77,9 @@ defmodule Argonaut.Bot do
       *To reserve a testing environment*: I am using _env_:_app_ [for _reason_]
       *To release a testing environment*: I am done using _env_:_app_
       *Get information about an environment*: Who is using _env_:_app_?
+
+      Shorthand:
+      _env_:_app_ <reserve | release | info>
       """
     }
   end

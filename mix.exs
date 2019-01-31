@@ -42,7 +42,8 @@ defmodule Argonaut.Mixfile do
         :scrivener_ecto,
         :corsica,
         :comeonin,
-        :calendar
+        :calendar,
+        :table_rex
       ]
     ]
   end
@@ -79,7 +80,8 @@ defmodule Argonaut.Mixfile do
       {:quantum, "~> 2.3"},
       {:timex, "~> 3.0"},
       {:ex_machina, "~> 2.2", only: :test},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      {:table_rex, "~> 2.0.0"}
     ]
   end
 
