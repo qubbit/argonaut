@@ -24,6 +24,7 @@ defmodule ArgonautWeb.ConnCase do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
+      import Argonaut.Factory
 
       import ArgonautWeb.Router.Helpers
 

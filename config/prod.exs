@@ -33,7 +33,8 @@ config :logger, :error_log,
   level: :info
 
 config :argonaut,
-  git_sha: ""
+  argonaut_token_for_slack: System.get_env("ARGONAUT_TOKEN_FOR_SLACK"),
+  slack_bot_oauth_token: System.get_env("SLACK_BOT_OAUTH_TOKEN")
 
 config :mailgun,
   domain: System.get_env("MAILGUN_DOMAIN"),
@@ -50,3 +51,14 @@ config :argonaut, Argonaut.Repo,
 config :guardian, Guardian,
   allowed_algos: ["HS512"],
   secret_key: System.get_env("GUARDIAN_JWK")
+
+config :argonaut, Argonaut.Scheduler,
+  timezone: "America/New_York",
+  jobs: [
+    phoenix_job: [
+      # schedule: "0 * * * *", # every hour
+      # M-F 9am-5pm, hourly
+      schedule: "0 9-16 * * 1-5",
+      task: {Argonaut.SlackNotifier, :work, []}
+    ]
+  ]

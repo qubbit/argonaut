@@ -42,7 +42,8 @@ defmodule Argonaut.Mixfile do
         :scrivener_ecto,
         :corsica,
         :comeonin,
-        :calendar
+        :calendar,
+        :table_rex
       ]
     ]
   end
@@ -69,13 +70,18 @@ defmodule Argonaut.Mixfile do
       {:comeonin, "~> 3.0"},
       {:guardian, "~> 1.1.1"},
       {:mustachex, "~> 0.0.1"},
-      {:calendar, "~> 0.16.1"},
+      {:calendar, "~> 0.17"},
       {:corsica, "~> 0.5"},
       {:scrivener_ecto, "~> 2.0"},
       {:jason, "~> 1.0"},
       {:mailgun, github: "qubbit/mailgun"},
       {:httpoison, "~> 1.4"},
-      {:logger_file_backend, "~> 0.0.10"}
+      {:logger_file_backend, "~> 0.0.10"},
+      {:quantum, "~> 2.3"},
+      {:timex, "~> 3.0"},
+      {:ex_machina, "~> 2.2", only: :test},
+      {:mock, "~> 0.3.0", only: :test},
+      {:table_rex, "~> 2.0.0"}
     ]
   end
 

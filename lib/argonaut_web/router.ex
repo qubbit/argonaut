@@ -100,6 +100,7 @@ defmodule ArgonautWeb.Router do
   end
 
   scope "/", ArgonautWeb do
+    post("/slack", SlackController, :respond)
     get("/*path", BaseController, :not_found)
   end
 end
