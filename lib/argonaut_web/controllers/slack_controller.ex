@@ -89,7 +89,7 @@ defmodule ArgonautWeb.SlackController do
       channel
     )
 
-    Logger.info("Simulating bot interaction #{inspect(bot_reply)}")
+    Logger.info(["Bot reply:\n", inspect(bot_reply)])
 
     conn |> send_resp(:ok, "")
   end

@@ -45,7 +45,7 @@ defmodule Argonaut.Bot do
   end
 
   def reservation_action(%{"action" => action, "app" => app, "env" => env} = params, user) do
-    action_function = String.to_atom("reservation_#{action}")
+    action_function = String.to_existing_atom("reservation_#{action}")
 
     apply(__MODULE__, action_function, [params, user])
   end
