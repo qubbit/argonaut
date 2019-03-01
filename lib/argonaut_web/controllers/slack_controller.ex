@@ -15,13 +15,13 @@ defmodule ArgonautWeb.SlackController do
 
     {:ok,
      success_message(
-       "You said *yes*. I have renewed the environment for you. #{random_success_emoji()}"
+       "I have renewed the environment for you. #{random_success_emoji()}"
      )}
   end
 
   defp change_reservation(%Reservation{} = reservation, "renew", "no") do
     Repo.delete!(reservation)
-    {:ok, success_message("You said *no*. I have cleared the environment for you.")}
+    {:ok, success_message("I have cleared the environment for you.")}
   end
 
   defp change_reservation(_, _, _) do

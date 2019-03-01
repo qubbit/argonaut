@@ -197,7 +197,7 @@ defmodule Argonaut.Reservations do
       %Reservation{} ->
         %{success: true, message: "#{r.environment.name}:#{r.application.name} is in use by #{r.user.username}"}
       nil ->
-        %{success: true, message: "Hmm..."}
+        %{success: true, message: "Nobody is using that environment currently."}
     end
   end
 

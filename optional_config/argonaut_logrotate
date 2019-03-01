@@ -1,0 +1,10 @@
+/var/www/argonaut.ninja/argonaut/log/*.log {
+  daily
+  missingok
+  rotate 14
+  compress
+  delaycompress
+  notifempty
+  create 0640 www-data adm
+  sharedscripts
+}
